@@ -1,0 +1,44 @@
+# Liquid Agent — Tokenized Stock Index
+
+> An agent-native, on-chain index of Coinbase's tokenized US stocks (NVDAc, METAc, AAPLc, GOOGLc) on Base. An AI agent mints its own ERC-4626 vault, buys a band-rebalanced stock basket from $1, sets custom weights, rebalances, and exits in-kind or to USDC any block. No oracle (self-priced TWAP NAV), no project token, fully self-custodial. Reads are free; every transaction is returned as UNSIGNED calldata the agent signs and broadcasts with its own gas. The server holds no key.
+
+Base mainnet (chainId 8453). Auth is x402 / SIWX per request; discovery is permissionless, no API key, no account, no allowlist.
+
+## Start here
+- [Agent guide](https://api.liquidagent.ai/v1/guide): plain-English walkthrough of the whole lifecycle (create, buy, rebalance, exit).
+- [OpenAPI 3.1 spec](https://api.liquidagent.ai/openapi.json): full machine-readable API.
+- [x402 discovery manifest](https://api.liquidagent.ai/.well-known/x402): embedded agent playbook + resource catalog.
+- [Agent card (A2A)](https://api.liquidagent.ai/.well-known/agent-card.json): agent-to-agent capability card.
+
+## How to use it (create, buy, rebalance, exit)
+1. GET https://api.liquidagent.ai/v1/basket - discover the 4 stocks, live prices, and fees (free).
+2. GET https://api.liquidagent.ai/v1/quote?usdc=2000000 - preview shares + the 0.20% fee (optional; 2000000 = $2.00, USDC-6).
+3. POST https://api.liquidagent.ai/v1/create-vault - SIGN + BROADCAST the returned unsigned tx; opens your vault (ONE time; you become the sole strategist).
+4. GET https://api.liquidagent.ai/v1/balance/<your-address> - vaults[0].vault is your vault address.
+5. POST https://api.liquidagent.ai/v1/set-weights {vault, weightsBps:[4 ints summing to 10000]} - SIGN + BROADCAST (optional; default is equal-weight).
+6. POST https://api.liquidagent.ai/v1/buy {vault, usdc} - SIGN + BROADCAST the approve + deposit txs (from $1). Buy into the SAME vault anytime; no need to create again.
+7. GET https://api.liquidagent.ai/v1/vault/<vault> - check NAV, weights, and whether it needs rebalancing (free).
+8. POST https://api.liquidagent.ai/v1/rebalance {vault} - SIGN + BROADCAST (optional; moves the vault back to target).
+9. POST https://api.liquidagent.ai/v1/redeem {vault, shares, inKind?} - SIGN + BROADCAST; exit to USDC (inKind:false) or raw stock tokens (inKind:true, un-trappable), any block.
+
+Signing: WRITE endpoints return an UNSIGNED {to,data,value,chainId}. Sign it with your own wallet and broadcast via eth_sendRawTransaction to any Base RPC. If gas estimation fails (deposit/rebalance/redeem swap B20 precompiles), pass gas ~3,000,000. Amounts are USDC-6 (1000000 = $1.00); weightsBps sum to 10000. The server holds no key. Full step-by-step with example requests + responses: https://api.liquidagent.ai/v1/guide
+
+## Read endpoints (free)
+- [GET https://api.liquidagent.ai/v1/basket](https://api.liquidagent.ai/v1/basket): the 4 constituents with live prices, factory, fees, and the flow.
+- GET https://api.liquidagent.ai/v1/vault/{address}: a vault's NAV, current vs target weights, rebalance status.
+- GET https://api.liquidagent.ai/v1/balance/{agent}: an agent's vaults, shares, and USD value.
+- GET https://api.liquidagent.ai/v1/quote?usdc=<amount6>: preview shares + fee before buying (2000000 = $2).
+
+## Transact endpoints (return unsigned calldata to sign + broadcast)
+- POST https://api.liquidagent.ai/v1/create-vault: mint your own vault (one time; reuse it after).
+- POST https://api.liquidagent.ai/v1/set-weights: set a custom allocation (bps, sum 10000).
+- POST https://api.liquidagent.ai/v1/buy: buy the basket from $1 (approve + deposit).
+- POST https://api.liquidagent.ai/v1/rebalance: move your vault to its target weights.
+- POST https://api.liquidagent.ai/v1/redeem: exit to USDC, or take raw pro-rata stock tokens (un-trappable).
+
+## Status
+- [System status](https://api.liquidagent.ai/v1/status): self-measured uptime, schema validity, and latency.
+
+## Contracts (Base mainnet)
+- BasketVaultFactory: 0x1B205660780CbC57849019Df2BA64B719b00AEA8
+- USDC: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913

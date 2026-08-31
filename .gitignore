@@ -1,0 +1,12 @@
+# Never commit secrets — this repo is public.
+.env
+.env.*
+*.key
+*.pem
+*.keystore
+wallet.json
+secrets*
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
