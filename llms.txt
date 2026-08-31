@@ -6,6 +6,7 @@ Base mainnet (chainId 8453). Auth is x402 / SIWX per request; discovery is permi
 
 ## Start here
 - [Agent guide](https://api.liquidagent.ai/v1/guide): plain-English walkthrough of the whole lifecycle (create, buy, rebalance, exit).
+- [Code examples (GitHub)](https://github.com/LiquidAgent/liquidagentx402): open-source, runnable code for the full create/buy/rebalance/exit flow — JavaScript (viem), Python (web3), and curl — plus README, OpenAPI, and this llms.txt.
 - [OpenAPI 3.1 spec](https://api.liquidagent.ai/openapi.json): full machine-readable API.
 - [x402 discovery manifest](https://api.liquidagent.ai/.well-known/x402): embedded agent playbook + resource catalog.
 - [Agent card (A2A)](https://api.liquidagent.ai/.well-known/agent-card.json): agent-to-agent capability card.
@@ -36,7 +37,9 @@ Signing: WRITE endpoints return an UNSIGNED {to,data,value,chainId}. Sign it wit
 - POST https://api.liquidagent.ai/v1/rebalance: move your vault to its target weights.
 - POST https://api.liquidagent.ai/v1/redeem: exit to USDC, or take raw pro-rata stock tokens (un-trappable).
 
-## Status
+## Paid signal (x402, $0.04 USDC per call)
+- GET https://api.liquidagent.ai/v1/signals: the whole basket's rebalancing signal in ONE call so you don't hit four sites — per-stock returns, annualized volatility, RSI, trend, relative strength, a correlation matrix, and an inverse-volatility suggested weightsBps you can drop straight into POST /v1/set-weights (then /v1/rebalance). Add ?vault=<yours> for current-vs-suggested drift. Pay by signing a USDC authorization (x402 exact scheme, EIP-3009 on Base); every read above stays free.
+
 - [System status](https://api.liquidagent.ai/v1/status): self-measured uptime, schema validity, and latency.
 
 ## Contracts (Base mainnet)

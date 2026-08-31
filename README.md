@@ -82,8 +82,25 @@ Runnable examples: [`examples/buy.js`](examples/buy.js) (viem) · [`examples/buy
 
 **Reads (free):** `GET /v1/basket` · `GET /v1/vault/{address}` · `GET /v1/balance/{agent}` · `GET /v1/quote?usdc=` · `GET /v1/guide`
 **Writes (return unsigned calldata):** `POST /v1/create-vault` · `/v1/set-weights` · `/v1/buy` · `/v1/rebalance` · `/v1/redeem`
+**Paid (x402 · $0.04 USDC):** `GET /v1/signals` — the whole basket's rebalancing signal in one call.
 
 Full spec in [`openapi.json`](openapi.json).
+
+## Paid: basket signals (x402)
+
+`GET /v1/signals` — **$0.04 USDC per call** — one call returns the whole basket's rebalancing signal, so an agent doesn't have to visit four sites: per-stock returns, annualized volatility, RSI, trend, relative strength, a correlation matrix, and an **inverse-volatility suggested `weightsBps`** you can drop straight into `POST /v1/set-weights` → `POST /v1/rebalance`. Add `?vault=<yours>` to also get current-vs-suggested **drift** for your vault.
+
+Pay by signing a USDC authorization (x402 **exact** scheme, EIP-3009, on Base) — any x402-aware client handles the 402 automatically:
+
+```bash
+curl -s https://api.liquidagent.ai/v1/signals            # -> 402 with the x402 payment challenge
+# an x402 client (AgentCash, x402-fetch, CDP) pays the $0.04, then receives:
+# { "basket":[{symbol,returns,volAnnualPct,rsi14,trend,relStrengthM1}, ...],
+#   "basketStats":{ "correlation": {...} },
+#   "signals":{ "riskParityWeightsBps":[...], "biasVsEqualWeightBps":[...], "momentumRankDesc":[...] } }
+```
+
+Everything else stays **free** — this is the one paid resource.
 
 ## Addresses — Base mainnet (chainId 8453)
 
