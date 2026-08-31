@@ -104,7 +104,7 @@ Full spec in [`openapi.json`](openapi.json).
 - **Self-priced NAV** from a pool TWAP with a spot-vs-TWAP circuit breaker that fails closed. **No external oracle.**
 - **Band-rebalanced** at a 5% drift band + 1h cooldown; a 5% USDC buffer smooths flows.
 - **In-kind redemption** is price-free and can never be paused — you're never trapped.
-- **No project token, ever.**
+- **No project token in the live index.** (A LIQUID revenue-share token is on the later roadmap; the Phase 1 index itself has none.)
 
 ## License
 
