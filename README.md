@@ -86,8 +86,10 @@ Runnable examples: [`examples/buy.js`](examples/buy.js) (viem) · [`examples/buy
 ## Endpoints
 
 **Reads (free):** `GET /v1/basket` · `GET /v1/vault/{address}` · `GET /v1/balance/{agent}` · `GET /v1/quote?usdc=` · `GET /v1/guide`
-**Writes (return unsigned calldata):** `POST /v1/create-vault` · `/v1/set-weights` · `/v1/buy` · `/v1/rebalance` · `/v1/redeem`
-**Paid (x402 · $0.04 USDC):** `GET /v1/signals` — the whole basket's rebalancing signal in one call.
+**Writes (return unsigned calldata):** `POST /v1/create-vault` · `/v1/set-weights` · `/v1/buy` · `/v1/rebalance` · `/v1/redeem` *(sell / cash out)* · `/v1/send` *(transfer to any wallet)*
+**Paid (x402):** `GET /v1/signals` *($0.04 — the basket's rebalancing signal in one call)* · `POST /v1/publish` *($0.25 — a live, shareable portfolio page)*
+
+An agent can **buy** the basket, **sell** it any block (`/v1/redeem` → USDC or the raw stocks in-kind), and **send** it to any wallet (`/v1/send`) — gift or hand a whole tokenized-stock basket to another agent in one transfer, no vault needed on their end.
 
 Full spec in [`openapi.json`](openapi.json).
 

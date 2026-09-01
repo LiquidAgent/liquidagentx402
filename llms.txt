@@ -20,7 +20,8 @@ Base mainnet (chainId 8453). Auth is x402 / SIWX per request; discovery is permi
 6. POST https://api.liquidagent.ai/v1/buy {vault, usdc, permit:true, owner} - sign the returned EIP-712 permit OFF-CHAIN, re-POST with permit:{deadline,signature}, SIGN + BROADCAST the single depositWithPermit tx (from $1, NO approve). Buy into the SAME vault anytime; no need to create again.
 7. GET https://api.liquidagent.ai/v1/vault/<vault> - check NAV, weights, and whether it needs rebalancing (free).
 8. POST https://api.liquidagent.ai/v1/rebalance {vault} - SIGN + BROADCAST (optional; moves the vault back to target).
-9. POST https://api.liquidagent.ai/v1/redeem {vault, shares, inKind?} - SIGN + BROADCAST; exit to USDC (inKind:false) or raw stock tokens (inKind:true, un-trappable), any block.
+9. POST https://api.liquidagent.ai/v1/redeem {vault, shares, inKind?} - SIGN + BROADCAST; SELL / cash out to USDC (inKind:false) or take raw stock tokens (inKind:true, un-trappable), any block. This is how anyone holding shares sells — no vault needed.
+10. POST https://api.liquidagent.ai/v1/send {vault, to, shares} - SIGN + BROADCAST; send your basket shares to any wallet (gift or hand off to another agent). The recipient needs no vault and can hold, sell, or forward them; irreversible once sent.
 
 Signing: WRITE endpoints return an UNSIGNED {to,data,value,chainId}. Sign it with your own wallet and broadcast via eth_sendRawTransaction to any Base RPC. If gas estimation fails (deposit/rebalance/redeem swap B20 precompiles), pass gas ~3,000,000. Amounts are USDC-6 (1000000 = $1.00); weightsBps sum to 10000. The server holds no key. Full step-by-step with example requests + responses: https://api.liquidagent.ai/v1/guide
 
@@ -35,7 +36,8 @@ Signing: WRITE endpoints return an UNSIGNED {to,data,value,chainId}. Sign it wit
 - POST https://api.liquidagent.ai/v1/set-weights: set a custom allocation (bps, sum 10000).
 - POST https://api.liquidagent.ai/v1/buy: buy the basket from $1 - one tx via EIP-2612 permit (no approve), or legacy approve + deposit.
 - POST https://api.liquidagent.ai/v1/rebalance: move your vault to its target weights.
-- POST https://api.liquidagent.ai/v1/redeem: exit to USDC, or take raw pro-rata stock tokens (un-trappable).
+- POST https://api.liquidagent.ai/v1/redeem: SELL / cash out to USDC, or take raw pro-rata stock tokens in-kind (un-trappable). Anyone holding shares can sell this way — no vault needed.
+- POST https://api.liquidagent.ai/v1/send: send your basket shares to any wallet (gift/hand off to another agent). Recipient needs no vault; they can hold, sell, or forward them.
 
 ## Paid endpoints (x402)
 - GET https://api.liquidagent.ai/v1/signals ($0.04 USDC/call): the whole basket's rebalancing signal in ONE call so you don't hit four sites — per-stock returns, annualized volatility, RSI, trend, relative strength, a correlation matrix, and an inverse-volatility suggested weightsBps you can drop straight into POST /v1/set-weights (then /v1/rebalance). Add ?vault=<yours> for current-vs-suggested drift.
