@@ -52,12 +52,19 @@ def main():
     vault = bal["vaults"][-1]["vault"]
     print("your vault:", vault)
 
-    # 3. Buy $2 into it (USDC-6: 2000000 = $2.00) — approve + deposit
-    print("buy $2...")
-    buy = requests.post(f"{API}/v1/buy", json={"vault": vault, "usdc": "2000000"}).json()
-    for step in buy["steps"]:
-        print("  ", step["label"])
-        send(step)
+    # 3. Buy $2 into it (USDC-6: 2000000 = $2.00) — ONE tx via EIP-2612 permit, no approve:
+    #    a) ask for the permit payload, b) sign it OFF-CHAIN (free), c) exchange the signature
+    #    for a single unsigned depositWithPermit tx and broadcast that.
+    print("buy $2 (one tx, no approve)...")
+    p1 = requests.post(f"{API}/v1/buy", json={"vault": vault, "usdc": "2000000", "permit": True, "owner": acct.address}).json()
+    td = p1["typedData"]
+    msg = {**td["message"], "value": int(td["message"]["value"]), "nonce": int(td["message"]["nonce"]), "deadline": int(td["message"]["deadline"])}
+    signed = acct.sign_typed_data(domain_data=td["domain"], message_types=td["types"], message_data=msg)
+    buy = requests.post(f"{API}/v1/buy", json={
+        "vault": vault, "usdc": "2000000",
+        "permit": {"deadline": td["message"]["deadline"], "signature": signed.signature.to_0x_hex()},
+    }).json()
+    send(buy)
 
     # 4. Read the result (free)
     v = requests.get(f"{API}/v1/vault/{vault}").json()

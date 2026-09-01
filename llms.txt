@@ -17,7 +17,7 @@ Base mainnet (chainId 8453). Auth is x402 / SIWX per request; discovery is permi
 3. POST https://api.liquidagent.ai/v1/create-vault - SIGN + BROADCAST the returned unsigned tx; opens your vault (ONE time; you become the sole strategist).
 4. GET https://api.liquidagent.ai/v1/balance/<your-address> - vaults[0].vault is your vault address.
 5. POST https://api.liquidagent.ai/v1/set-weights {vault, weightsBps:[4 ints summing to 10000]} - SIGN + BROADCAST (optional; default is equal-weight).
-6. POST https://api.liquidagent.ai/v1/buy {vault, usdc} - SIGN + BROADCAST the approve + deposit txs (from $1). Buy into the SAME vault anytime; no need to create again.
+6. POST https://api.liquidagent.ai/v1/buy {vault, usdc, permit:true, owner} - sign the returned EIP-712 permit OFF-CHAIN, re-POST with permit:{deadline,signature}, SIGN + BROADCAST the single depositWithPermit tx (from $1, NO approve). Buy into the SAME vault anytime; no need to create again.
 7. GET https://api.liquidagent.ai/v1/vault/<vault> - check NAV, weights, and whether it needs rebalancing (free).
 8. POST https://api.liquidagent.ai/v1/rebalance {vault} - SIGN + BROADCAST (optional; moves the vault back to target).
 9. POST https://api.liquidagent.ai/v1/redeem {vault, shares, inKind?} - SIGN + BROADCAST; exit to USDC (inKind:false) or raw stock tokens (inKind:true, un-trappable), any block.
@@ -33,12 +33,14 @@ Signing: WRITE endpoints return an UNSIGNED {to,data,value,chainId}. Sign it wit
 ## Transact endpoints (return unsigned calldata to sign + broadcast)
 - POST https://api.liquidagent.ai/v1/create-vault: mint your own vault (one time; reuse it after).
 - POST https://api.liquidagent.ai/v1/set-weights: set a custom allocation (bps, sum 10000).
-- POST https://api.liquidagent.ai/v1/buy: buy the basket from $1 (approve + deposit).
+- POST https://api.liquidagent.ai/v1/buy: buy the basket from $1 - one tx via EIP-2612 permit (no approve), or legacy approve + deposit.
 - POST https://api.liquidagent.ai/v1/rebalance: move your vault to its target weights.
 - POST https://api.liquidagent.ai/v1/redeem: exit to USDC, or take raw pro-rata stock tokens (un-trappable).
 
-## Paid signal (x402, $0.04 USDC per call)
-- GET https://api.liquidagent.ai/v1/signals: the whole basket's rebalancing signal in ONE call so you don't hit four sites — per-stock returns, annualized volatility, RSI, trend, relative strength, a correlation matrix, and an inverse-volatility suggested weightsBps you can drop straight into POST /v1/set-weights (then /v1/rebalance). Add ?vault=<yours> for current-vs-suggested drift. Pay by signing a USDC authorization (x402 exact scheme, EIP-3009 on Base); every read above stays free.
+## Paid endpoints (x402)
+- GET https://api.liquidagent.ai/v1/signals ($0.04 USDC/call): the whole basket's rebalancing signal in ONE call so you don't hit four sites — per-stock returns, annualized volatility, RSI, trend, relative strength, a correlation matrix, and an inverse-volatility suggested weightsBps you can drop straight into POST /v1/set-weights (then /v1/rebalance). Add ?vault=<yours> for current-vs-suggested drift.
+- POST https://api.liquidagent.ai/v1/publish ($0.25 USDC flat): publish a live, shareable portfolio page for a vault at https://api.liquidagent.ai/v/<slug> for 24h (holdings, allocation, live prices, signals). Return the viewUrl to your user; they open it with no wallet, no login. Re-publish to keep it alive.
+Pay by signing a USDC authorization (x402 exact scheme, EIP-3009 on Base); every read above stays free.
 
 - [System status](https://api.liquidagent.ai/v1/status): self-measured uptime, schema validity, and latency.
 

@@ -59,9 +59,14 @@ curl -s $BASE/v1/balance/0xYourAddress          # -> vaults[0].vault
 curl -s -X POST $BASE/v1/set-weights -H 'content-type: application/json' \
   -d '{"vault":"0xYourVault","weightsBps":[4000,2000,2000,2000]}'
 
-# 6. Buy in — returns approve + deposit txs; sign + broadcast both
+# 6. Buy in — ONE tx, no approve: get an EIP-2612 permit payload, sign it OFF-CHAIN,
+#    then exchange the signature for a single unsigned depositWithPermit tx
 curl -s -X POST $BASE/v1/buy -H 'content-type: application/json' \
-  -d '{"vault":"0xYourVault","usdc":"2000000"}'
+  -d '{"vault":"0xYourVault","usdc":"2000000","permit":true,"owner":"0xYourAddress"}'
+#    -> {typedData} ... sign with eth_signTypedData_v4, then:
+curl -s -X POST $BASE/v1/buy -H 'content-type: application/json' \
+  -d '{"vault":"0xYourVault","usdc":"2000000","permit":{"deadline":<from typedData>,"signature":"0x..."}}'
+#    (omit `permit` entirely for the legacy approve + deposit two-step)
 
 # 7. Check your vault (free)
 curl -s $BASE/v1/vault/0xYourVault

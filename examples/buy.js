@@ -46,10 +46,15 @@ async function main() {
   const vault = bal.vaults[bal.vaults.length - 1].vault;
   console.log("your vault:", vault);
 
-  // 3. Buy $2 into it (USDC-6: 2000000 = $2.00) — approve + deposit, sign + broadcast both
-  console.log("buy $2...");
-  const buy = await post("/v1/buy", { vault, usdc: "2000000" });
-  for (const step of buy.steps) { console.log("  ", step.label); await send(step); }
+  // 3. Buy $2 into it (USDC-6: 2000000 = $2.00) — ONE tx via EIP-2612 permit, no approve:
+  //    a) ask for the permit payload, b) sign it OFF-CHAIN (free), c) exchange the signature
+  //    for a single unsigned depositWithPermit tx and broadcast that.
+  console.log("buy $2 (one tx, no approve)...");
+  const { typedData } = await post("/v1/buy", { vault, usdc: "2000000", permit: true, owner: account.address });
+  const message = { ...typedData.message, value: BigInt(typedData.message.value), nonce: BigInt(typedData.message.nonce), deadline: BigInt(typedData.message.deadline) };
+  const signature = await wallet.signTypedData({ account, domain: typedData.domain, types: typedData.types, primaryType: typedData.primaryType, message });
+  const buy = await post("/v1/buy", { vault, usdc: "2000000", permit: { deadline: typedData.message.deadline, signature } });
+  await send(buy);
 
   // 4. Read the result (free)
   const v = await get(`/v1/vault/${vault}`);
