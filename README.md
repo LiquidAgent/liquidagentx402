@@ -36,6 +36,15 @@ Instead of picking four stocks, sizing each, buying them separately, and rebalan
 | ERC-8004 registration | https://api.liquidagent.ai/.well-known/erc8004.json |
 | llms.txt | https://api.liquidagent.ai/llms.txt |
 
+## Agent skill (OpenClaw · ClawHub · skills.sh)
+
+A ready-made skill that teaches an agent the whole flow lives in [`skills/liquid-agent-stocks/SKILL.md`](skills/liquid-agent-stocks/SKILL.md).
+
+```bash
+clawhub install liquid-agent-stocks          # OpenClaw / ClawHub
+npx skills add LiquidAgent/liquidagentx402   # skills.sh (any agent that reads SKILL.md)
+```
+
 ## Quickstart — create → buy → rebalance → exit
 
 Reads are free. Writes return an unsigned `{to,data,value,chainId}` (or `{steps:[...]}`) that **you sign and broadcast**.
