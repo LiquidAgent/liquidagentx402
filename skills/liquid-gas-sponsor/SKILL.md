@@ -1,7 +1,8 @@
 ---
 name: liquid-gas-sponsor
 description: Send any transaction on Base with a wallet that holds USDC but no ETH. Pay the gas per operation in USDC over x402 (from $0.03) through an ERC-4337 paymaster; one endpoint for smart-wallet SDKs and plain wallets. No account, no API key.
-homepage: https://api.liquidagent.ai/v1/gas
+homepage: "https://api.liquidagent.ai/v1/gas"
+
 metadata:
   openclaw:
     requires:

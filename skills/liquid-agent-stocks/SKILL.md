@@ -1,7 +1,8 @@
 ---
 name: liquid-agent-stocks
 description: Buy, hold, rebalance and sell a basket of Coinbase tokenized US stocks (NVDA, AAPL, META, GOOGL) on Base from $1 through the free Liquid Agent API. Use when a user asks to invest in stocks, buy an index or ETF on-chain, put USDC into equities, check or rebalance a stock portfolio, or cash out of stocks.
-homepage: https://api.liquidagent.ai
+homepage: "https://api.liquidagent.ai"
+
 metadata:
   openclaw:
     requires:
