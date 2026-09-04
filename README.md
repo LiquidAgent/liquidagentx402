@@ -41,7 +41,8 @@ Instead of picking four stocks, sizing each, buying them separately, and rebalan
 A ready-made skill that teaches an agent the whole flow lives in [`skills/liquid-agent-stocks/SKILL.md`](skills/liquid-agent-stocks/SKILL.md).
 
 ```bash
-clawhub install liquid-agent-stocks          # OpenClaw / ClawHub
+clawhub install liquid-agent-stocks          # OpenClaw / ClawHub — the stock index
+clawhub install liquid-gas-sponsor           # OpenClaw / ClawHub — the gas sponsor (transact with USDC only, no ETH)
 npx skills add LiquidAgent/liquidagentx402   # skills.sh (any agent that reads SKILL.md)
 ```
 
