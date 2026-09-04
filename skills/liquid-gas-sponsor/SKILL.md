@@ -48,6 +48,9 @@ curl -s -X POST https://api.liquidagent.ai/v1/gas -H 'content-type: application/
 
 Your EOA becomes an eth-infinitism `Simple7702Account` by delegation (owner = you, reversible, no deployment);
 that is what lets the sponsor pay for it. Only operations the sponsor signed are accepted, once each.
+Already delegated to another EIP-7702 implementation (MetaMask and friends)? The first call returns 409. Add
+`"redelegate": true` to the same body and the sponsor returns an authorization you sign that re-points the wallet
+to `Simple7702Account` in the same transaction (reversible), or keep your delegation and use the next section.
 
 ### Any other smart account — bring your own operation
 

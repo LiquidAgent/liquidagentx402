@@ -45,7 +45,10 @@ if (MODE === "transfer") {
 }
 
 // 2. quote: POST {sender, calls} with no payment -> 402 carrying the exact USDC price
-const body = { sender: agent.address, calls: [call] };
+// Already delegated to another EIP-7702 implementation? Add --redelegate: the sponsor returns an authorization you sign
+// that re-points your wallet to Simple7702Account (owner = you, reversible) in the same transaction. Or keep your
+// delegation and use examples/gasless-bring-your-own.js instead.
+const body = { sender: agent.address, calls: [call], ...(process.argv.includes("--redelegate") ? { redelegate: true } : {}) };
 let sp = await post("/v1/gas", body);
 if (sp.status !== 402) throw new Error("expected 402, got " + sp.status + " " + JSON.stringify(sp.body).slice(0, 200));
 const acc = sp.body.accepts[0];

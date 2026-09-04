@@ -138,7 +138,7 @@ curl -s -X POST https://api.liquidagent.ai/v1/gas -H 'content-type: application/
 #    No further charge. Only operations we sponsored are accepted, once each.
 ```
 
-Full walkthrough with signatures in [`examples/gasless.js`](examples/gasless.js) — a wallet with **zero ETH** buys the index end to end.
+Full walkthrough with signatures in [`examples/gasless.js`](examples/gasless.js) — a wallet with **zero ETH** buys the index end to end. Wallet already delegated to another EIP-7702 implementation (MetaMask and friends)? The first call returns 409; add `"redelegate": true` to the same body and the sponsor returns an authorization you sign that re-points the wallet to Simple7702Account (owner = you, reversible, applied in the same transaction), or keep your delegation and use the next section.
 
 **Any other smart account (bring your own operation).** Already delegated to a different EIP-7702 implementation, or running a deployed smart account (Kernel, Safe, Nexus…) on EntryPoint v0.8? Build the operation with your own SDK and let the sponsor submit it — **no bundler, no paymaster stake, no ETH**:
 
