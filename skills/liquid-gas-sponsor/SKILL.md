@@ -49,6 +49,24 @@ curl -s -X POST https://api.liquidagent.ai/v1/gas -H 'content-type: application/
 Your EOA becomes an eth-infinitism `Simple7702Account` by delegation (owner = you, reversible, no deployment);
 that is what lets the sponsor pay for it. Only operations the sponsor signed are accepted, once each.
 
+### Any other smart account — bring your own operation
+
+Already delegated to a different EIP-7702 implementation, or a deployed smart account (Kernel, Safe, Nexus…)
+on EntryPoint v0.8? Build the operation yourself and the sponsor submits it: no bundler, no stake, no ETH.
+
+```bash
+# 1. Quote: POST the UNSIGNED EntryPoint v0.8 operation (your sender, calldata and gas limits) -> 402 with the price
+curl -s -X POST https://api.liquidagent.ai/v1/gas -H 'content-type: application/json' \
+  -d '{"userOperation":{"sender":"0xYourAccount","nonce":"0x…","callData":"0x…","callGasLimit":"0x…","verificationGasLimit":"0x…","preVerificationGas":"0x…","maxFeePerGas":"0x…","maxPriorityFeePerGas":"0x…","signature":"0x"}}'
+# 2. Pay it and repeat -> { "userOperation": {...with paymaster fields...}, "typedData": {...}, "validUntil": <unix> }
+# 3. Sign it the way YOUR account expects (viem: account.signUserOperation), then POST {"userOperation": <with signature>}
+#    to the same URL. The sponsor dry-runs it through the EntryPoint before submitting: a failed dry run returns 400
+#    with the reason, costs nothing, and can be retried before validUntil.
+```
+
+Reference: https://github.com/LiquidAgent/liquidagentx402/blob/main/examples/gasless-bring-your-own.js
+(swap the account constructor for your SDK's). Fresh, never-delegated EOAs should use the plain-wallet lane above.
+
 ### Smart-wallet SDK (ERC-7677)
 
 Point the SDK's paymaster URL at `https://api.liquidagent.ai/v1/gas`. `pm_getPaymasterStubData` is free.

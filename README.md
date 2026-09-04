@@ -138,7 +138,20 @@ curl -s -X POST https://api.liquidagent.ai/v1/gas -H 'content-type: application/
 #    No further charge. Only operations we sponsored are accepted, once each.
 ```
 
-Full walkthrough with signatures in [`examples/gasless.js`](examples/gasless.js) — a wallet with **zero ETH** buys the index end to end. `GET /v1/gas` describes the sponsor; `GET /v1/gas/stats` shows live usage.
+Full walkthrough with signatures in [`examples/gasless.js`](examples/gasless.js) — a wallet with **zero ETH** buys the index end to end.
+
+**Any other smart account (bring your own operation).** Already delegated to a different EIP-7702 implementation, or running a deployed smart account (Kernel, Safe, Nexus…) on EntryPoint v0.8? Build the operation with your own SDK and let the sponsor submit it — **no bundler, no paymaster stake, no ETH**:
+
+```bash
+# 1. quote: POST the UNSIGNED EntryPoint v0.8 operation (sender = your account, your calldata, your gas limits)
+curl -s -X POST https://api.liquidagent.ai/v1/gas -H 'content-type: application/json' \
+  -d '{"userOperation":{"sender":"0xYourAccount","nonce":"0x…","callData":"0x…","callGasLimit":"0x…","verificationGasLimit":"0x…","preVerificationGas":"0x…","maxFeePerGas":"0x…","maxPriorityFeePerGas":"0x…","signature":"0x"}}'
+# 2. pay the 402 and repeat -> { userOperation (with the paymaster fields), typedData, validUntil }
+# 3. sign it the way YOUR account expects (viem: account.signUserOperation), POST {"userOperation": <with signature>} to the same URL.
+#    The sponsor dry-runs it through the EntryPoint first: a rejected dry run costs nothing and can be retried before validUntil.
+```
+
+Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bring-your-own.js): swap the account constructor for your SDK's. `GET /v1/gas` describes the sponsor; `GET /v1/gas/stats` shows live usage.
 
 ## Addresses — Base mainnet (chainId 8453)
 
