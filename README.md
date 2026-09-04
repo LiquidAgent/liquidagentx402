@@ -16,7 +16,7 @@
 - **Mint its own vault** (ERC-4626) holding a band-rebalanced basket of Coinbase's tokenized **NVDA / META / AAPL / GOOGL**.
 - **Buy from $1**, set custom weights, rebalance, and **exit any block** — to USDC, or the raw stock tokens in-kind (un-trappable).
 
-Every **read is free**. Every **write returns an unsigned transaction** the agent signs with its own wallet and broadcasts with its own gas — **the server never holds a key**, so there's no account to create and nothing to steal.
+Every **read is free**. Every **write returns an unsigned transaction** the agent signs with its own wallet and broadcasts with its own gas (or hands it to the **gas sponsor** and pays in USDC) — **the server never holds a key**, so there's no account to create and nothing to steal.
 
 Built for the agent economy: **x402-discoverable**, an **A2A agent card**, `llms.txt` / `agents.txt`, and a permissionless **ERC-8004 on-chain identity** (agentId `74094` on Base).
 
@@ -96,7 +96,7 @@ Runnable examples: [`examples/buy.js`](examples/buy.js) (viem) · [`examples/buy
 
 **Reads (free):** `GET /v1/basket` · `GET /v1/vault/{address}` · `GET /v1/balance/{agent}` · `GET /v1/quote?usdc=` · `GET /v1/guide`
 **Writes (return unsigned calldata):** `POST /v1/create-vault` · `/v1/set-weights` · `/v1/buy` · `/v1/rebalance` · `/v1/redeem` *(sell / cash out)* · `/v1/send` *(transfer to any wallet)*
-**Paid (x402):** `GET /v1/signals` *($0.04 — the basket's rebalancing signal in one call)* · `POST /v1/publish` *($0.25 — a live, shareable portfolio page)*
+**Paid (x402):** `GET /v1/signals` *($0.04 — the basket's rebalancing signal in one call)* · `POST /v1/publish` *($0.25 — a live, shareable portfolio page)* · `POST /v1/gas` *(from $0.03 — the gas sponsor: transact with USDC only, no ETH)*
 
 An agent can **buy** the basket, **sell** it any block (`/v1/redeem` → USDC or the raw stocks in-kind), and **send** it to any wallet (`/v1/send`) — gift or hand a whole tokenized-stock basket to another agent in one transfer, no vault needed on their end.
 
@@ -116,7 +116,28 @@ curl -s https://api.liquidagent.ai/v1/signals            # -> 402 with the x402 
 #   "signals":{ "riskParityWeightsBps":[...], "biasVsEqualWeightBps":[...], "momentumRankDesc":[...] } }
 ```
 
-Everything else stays **free** — this is the one paid resource.
+Everything else stays **free**; the paid resources are signals, publish, and the gas sponsor below.
+
+## Paid: gas sponsor (x402) — transact with USDC only, no ETH
+
+Most agent wallets hold USDC and nothing else. `POST /v1/gas` is an **ERC-4337 paymaster you pay per operation in USDC over x402**: no ETH, no account, no API key. Price is `max($0.03, 1.3 × the operation's gas cap)`; the signed sponsorship locks the gas limits and max fee, so the sponsor can never charge more than it quoted. **One endpoint, the body picks the lane:**
+
+**Smart-wallet SDKs (ERC-7677).** Point the SDK's paymaster URL at `https://api.liquidagent.ai/v1/gas`. `pm_getPaymasterStubData` is free; an unpaid `pm_getPaymasterData` returns a JSON-RPC error `{code:402, data:<x402 PaymentRequired>}` (HTTP stays 200 so SDKs don't choke). Put the x402 payment object in `params[3].context.x402` and retry.
+
+**Plain wallets (any EOA, via EIP-7702).** Two calls to the same URL:
+
+```bash
+# 1. quote: the 402 IS the quote (exact price for THIS operation, valid 120 s)
+curl -s -X POST https://api.liquidagent.ai/v1/gas -H 'content-type: application/json' \
+  -d '{"sender":"0xYourEOA","calls":[{"to":"0x…","data":"0x…","value":"0"}]}'      # any calls, e.g. an unsigned tx from this API
+# 2. pay it: an x402 client repeats the call with X-PAYMENT and receives
+#    { userOperation (sponsored), typedData, authorization? (EIP-7702, only if your EOA is not delegated yet), validUntil }
+#    sign typedData with eth_signTypedData_v4 (+ sign the authorization if given), then POST them back to the same URL:
+#    {"userOperation": <with signature>, "authorization": <signed, optional>}  -> we submit; our deposit pays the gas.
+#    No further charge. Only operations we sponsored are accepted, once each.
+```
+
+Full walkthrough with signatures in [`examples/gasless.js`](examples/gasless.js) — a wallet with **zero ETH** buys the index end to end. `GET /v1/gas` describes the sponsor; `GET /v1/gas/stats` shows live usage.
 
 ## Addresses — Base mainnet (chainId 8453)
 
@@ -128,7 +149,10 @@ Everything else stays **free** — this is the one paid resource.
 | METAc (Meta) | `0xb2000000000000000000008bC8786B856E61707C` |
 | AAPLc (Apple) | `0xb200000000000000000000C2e324d24d7eEcd1fb` |
 | GOOGLc (Alphabet) | `0xb2000000000000000000002D0BA3164cc74f58B7` |
-| Fee sink / treasury | `0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90` |
+| Fee sink / treasury (x402 payTo) | `0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90` |
+| Gas sponsor paymaster (EntryPoint v0.8) | `0x9676897c3bf08977cdbe78213f84e72a29b844ec` |
+| EntryPoint v0.8 | `0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108` |
+| Simple7702Account (EOA delegation target) | `0xe6Cae83BdE06E4c305530e199D7217f42808555B` |
 | ERC-8004 identity | `eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432/74094` |
 
 ## Fees & mechanics

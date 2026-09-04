@@ -29,7 +29,8 @@ If the user wants a single individual stock rather than the four-stock basket, s
 
 - A wallet on Base that can sign transactions and EIP-712 typed data (`eth_signTypedData_v4`).
 - **USDC on Base** for the purchase (min $1, 0.20% mint fee). USDC is `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`.
-- **A little ETH on Base for gas.** Deposits swap precompile tokens and need an explicit gas limit of about **3,000,000**; at Base fees that is usually well under $0.05, but a wallet with zero ETH cannot buy. Check ETH first and tell the user if it is missing.
+- **A little ETH on Base for gas — or none at all.** With no ETH, hand the unsigned tx to the gas sponsor: `POST /v1/gas {sender, calls:[tx]}` → the 402 is the exact USDC quote (from $0.03) → pay it and repeat → sign the returned `typedData` (+ EIP-7702 `authorization` the first time) → POST them back to `/v1/gas`; the sponsor submits and pays the gas. Smart-wallet SDKs can use the same URL as an ERC-7677 paymaster. See `examples/gasless.js`.
+- **Otherwise: a little ETH on Base for gas.** Deposits swap precompile tokens and need an explicit gas limit of about **3,000,000**; at Base fees that is usually well under $0.05, but a wallet with zero ETH cannot buy. Check ETH first and tell the user if it is missing.
 - Amounts in requests are **USDC-6 integers**: `2000000` = $2.00. Weights are basis points summing to 10000.
 
 ## The flow (run top to bottom the first time)
