@@ -779,11 +779,11 @@
             },
             "post": {
                 "operationId": "postV1Gas",
-                "summary": "GAS SPONSOR: pay per operation in USDC over x402 and we cover the gas on Base. One endpoint for smart-wallet SDKs (ERC-7677 JSON-RPC) and for plain wallets ({sender, calls}). No ETH, no account, no API key.",
+                "summary": "GAS SPONSOR: pay per operation in USDC over x402 and we cover the gas on Base. One endpoint for plain wallets ({sender, calls}), any EntryPoint v0.8 smart account ({userOperation}, bring your own operation) and smart-wallet SDKs (ERC-7677 JSON-RPC). No ETH, no account, no API key.",
                 "tags": [
                     "Liquid Agent"
                 ],
-                "description": "PAID, dynamic (from $0.03 USDC per operation; the 402 is the quote, valid 120 s). ONE endpoint, the body picks the lane. (A) Smart-wallet SDKs: standard ERC-7677 JSON-RPC {jsonrpc:\"2.0\", method: pm_getPaymasterStubData | pm_getPaymasterData, params:[userOperation, entryPoint, chainId, context]} \u2014 HTTP is always 200 and an unpaid pm_getPaymasterData returns a JSON-RPC error {code:402, data:<x402 PaymentRequired>}; put the x402 payment object in params[3].context.x402 and retry. (B) Plain wallets, no ETH: POST {sender, calls:[{to,data,value?}]} -> 402 with the exact price; pay it (X-PAYMENT) and the same call returns {userOperation (sponsored), typedData, authorization? (EIP-7702, only if the EOA is not delegated yet), validUntil}. Sign typedData with the sender's key, sign the authorization if given, then POST {userOperation, authorization?} back to this URL: we submit it and our deposit pays the gas. No further charge; only operations we sponsored are accepted, once each. EntryPoint v0.8. Price = max($0.03, 1.3\u00d7 the op's gas cap) and the signed sponsorship locks the gas limits and max fee, so the sponsor can never charge more than quoted.",
+                "description": "PAID, dynamic (from $0.03 USDC per operation; the 402 is the quote, valid 120 s). ONE endpoint, the body picks the lane. (A) Smart-wallet SDKs: standard ERC-7677 JSON-RPC {jsonrpc:\"2.0\", method: pm_getPaymasterStubData | pm_getPaymasterData, params:[userOperation, entryPoint, chainId, context]} \u2014 HTTP is always 200 and an unpaid pm_getPaymasterData returns a JSON-RPC error {code:402, data:<x402 PaymentRequired>}; put the x402 payment object in params[3].context.x402 and retry. (B) Plain wallets, no ETH: POST {sender, calls:[{to,data,value?}]} -> 402 with the exact price; pay it (X-PAYMENT) and the same call returns {userOperation (sponsored), typedData, authorization? (EIP-7702, only if the EOA is not delegated yet), validUntil}. Sign typedData with the sender's key, sign the authorization if given, then POST {userOperation, authorization?} back to this URL: we submit it and our deposit pays the gas. No further charge; only operations we sponsored are accepted, once each. EntryPoint v0.8. Price = max($0.03, 1.3\u00d7 the op's gas cap) and the signed sponsorship locks the gas limits and max fee, so the sponsor can never charge more than quoted. (C) Bring your own operation, for any EntryPoint v0.8 smart account (a wallet already delegated to another EIP-7702 implementation, or a deployed Kernel / Safe / Nexus account): POST {userOperation} unsigned (your sender, calldata and gas limits; no paymaster fields) -> 402 with the exact price; pay it and repeat -> {userOperation with paymaster fields, typedData, validUntil}; sign it the way your account expects (viem: account.signUserOperation) and POST {userOperation} back: we dry-run it through the EntryPoint (a failing dry run returns 400 with the reason and costs nothing) and then submit it from our wallet. No bundler, no stake. Lane B note: if the EOA is already delegated to another implementation the first call returns 409; add \"redelegate\": true to the same body and the returned authorization (signed by you, applied in the same transaction, reversible) re-points the wallet to Simple7702Account.",
                 "security": [
                     {
                         "x402": []
@@ -881,11 +881,15 @@
                                                     }
                                                 },
                                                 "description": "any calls, e.g. an unsigned tx from this API"
+                                            },
+                                            "redelegate": {
+                                                "type": "boolean",
+                                                "description": "only if your EOA is already EIP-7702-delegated to another implementation: true = return an authorization (you sign it) that re-points the wallet to Simple7702Account in the same transaction; reversible"
                                             }
                                         }
                                     },
                                     {
-                                        "title": "Direct lane, step 2 (submit)",
+                                        "title": "Bring your own operation, step 1 (any EntryPoint v0.8 smart account)",
                                         "type": "object",
                                         "required": [
                                             "userOperation"
@@ -893,11 +897,24 @@
                                         "properties": {
                                             "userOperation": {
                                                 "type": "object",
-                                                "description": "the sponsored operation from step 1 with your signature in userOperation.signature"
+                                                "description": "your UNSIGNED EntryPoint v0.8 user operation: sender, nonce, callData, callGasLimit, verificationGasLimit, preVerificationGas, maxFeePerGas, maxPriorityFeePerGas (hex strings), signature '0x', factory/factoryData if not deployed; no paymaster fields. The 402 is the quote; pay and repeat to receive the paymaster fields and typedData."
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "title": "Submit (both lanes)",
+                                        "type": "object",
+                                        "required": [
+                                            "userOperation"
+                                        ],
+                                        "properties": {
+                                            "userOperation": {
+                                                "type": "object",
+                                                "description": "the sponsored operation from step 1 with your signature in userOperation.signature (direct lane: eth_signTypedData_v4 of typedData; bring your own: however your account signs). We dry-run it through the EntryPoint, then submit it; our deposit pays the gas."
                                             },
                                             "authorization": {
                                                 "type": "object",
-                                                "description": "the signed EIP-7702 authorization from step 1, if one was returned"
+                                                "description": "the signed EIP-7702 authorization from step 1, if one was returned (direct lane only)"
                                             }
                                         }
                                     }
