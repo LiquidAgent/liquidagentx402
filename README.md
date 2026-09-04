@@ -123,7 +123,7 @@ Everything else stays **free**; the paid resources are signals, publish, and the
 
 Most agent wallets hold USDC and nothing else. `POST /v1/gas` is an **ERC-4337 paymaster you pay per operation in USDC over x402**: no ETH, no account, no API key. Price is `max($0.03, 1.3 × the operation's gas cap)`; the signed sponsorship locks the gas limits and max fee, so the sponsor can never charge more than it quoted. **One endpoint, the body picks the lane:**
 
-**Smart-wallet SDKs (ERC-7677).** Point the SDK's paymaster URL at `https://api.liquidagent.ai/v1/gas`. `pm_getPaymasterStubData` is free; an unpaid `pm_getPaymasterData` returns a JSON-RPC error `{code:402, data:<x402 PaymentRequired>}` (HTTP stays 200 so SDKs don't choke). Put the x402 payment object in `params[3].context.x402` and retry.
+**Smart-wallet SDKs (ERC-7677).** Point the SDK's paymaster URL at `https://api.liquidagent.ai/v1/gas`. `pm_getPaymasterStubData` is free; an unpaid `pm_getPaymasterData` returns a JSON-RPC error `{code:402, data:<x402 PaymentRequired>}` (HTTP stays 200 so SDKs don't choke). Put the x402 payment object in `params[3].context.x402` and retry. **Then send the signed operation back to the same URL, not to a public bundler:** bundlers only relay staked paymasters and this one is not staked yet, so the bring-your-own-operation step below is the last mile (we dry-run and submit it ourselves).
 
 **Plain wallets (any EOA, via EIP-7702).** Two calls to the same URL:
 

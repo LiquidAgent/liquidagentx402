@@ -73,6 +73,8 @@ Point the SDK's paymaster URL at `https://api.liquidagent.ai/v1/gas`. `pm_getPay
 An unpaid `pm_getPaymasterData` returns a JSON-RPC error `{code:402, data:<x402 PaymentRequired>}` with HTTP
 200 (so SDKs don't treat it as a transport failure). Put the x402 payment object in `params[3].context.x402`
 and retry; the result is the standard `{paymaster, paymasterData, paymasterVerificationGasLimit, paymasterPostOpGasLimit}`.
+Then POST the signed operation back to the same URL instead of a public bundler: bundlers only relay staked
+paymasters and this one is not staked yet, so the bring-your-own-operation step above is the last mile.
 
 ## Paying the 402
 
