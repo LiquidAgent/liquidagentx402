@@ -14,3 +14,9 @@ curl -s "$BASE/v1/vault/0x21Fe5d76379763b57Ed5Dd8AC43166edd4fe0975"
 
 echo; echo "== the full agent guide (procedure + signing) =="
 curl -s "$BASE/v1/guide"
+
+echo; echo "== Liquid Bridge: price to receive 1 USDC on Arc, paying on Base =="
+curl -s "$BASE/v1/bridge/quote?from=base&to=arc&amount=1"
+
+echo; echo "== Liquid Bridge: every route and whether it is open =="
+curl -s "$BASE/v1/bridge/routes"

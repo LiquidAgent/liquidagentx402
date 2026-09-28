@@ -31,7 +31,7 @@
             "x402": {
                 "type": "http",
                 "scheme": "x402",
-                "description": "Pay-per-call via x402 (exact scheme, EIP-3009 USDC on Base eip155:8453). Sign a USDC authorization; no account, no key held by the server."
+                "description": "Pay-per-call via x402 (exact scheme, EIP-3009 USDC on Base eip155:8453 or Polygon eip155:137). Sign a USDC authorization; no account, no key held by the server."
             }
         }
     },
@@ -598,7 +598,7 @@
                 "tags": [
                     "Liquid Agent"
                 ],
-                "description": "PAID: $0.04 USDC per call via x402 (exact scheme, EIP-3009, Base eip155:8453). Quantitative signals for the tokenized NVDA/META/AAPL/GOOGL basket so an agent can decide weights in one call instead of visiting four sites, then execute via the free /v1/set-weights + /v1/rebalance. Aggregated data, not investment advice.",
+                "description": "PAID: $0.005 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Quantitative signals for the tokenized NVDA/META/AAPL/GOOGL basket so an agent can decide weights in one call instead of visiting four sites, then execute via the free /v1/set-weights + /v1/rebalance. Aggregated data, not investment advice.",
                 "security": [
                     {
                         "x402": []
@@ -617,7 +617,7 @@
                     }
                 ],
                 "x-payment": {
-                    "price": "0.04",
+                    "price": "0.005",
                     "currency": "USDC",
                     "network": "eip155:8453",
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -638,7 +638,7 @@
                     "price": {
                         "mode": "fixed",
                         "currency": "USD",
-                        "amount": "0.04"
+                        "amount": "0.005"
                     }
                 },
                 "responses": {
@@ -672,14 +672,14 @@
                 "tags": [
                     "Liquid Agent"
                 ],
-                "description": "PAID: $0.25 USDC flat per publish via x402 (exact scheme, EIP-3009, Base eip155:8453). Mints or extends a shareable page at /v/<slug> showing the vault's holdings, allocation, live prices and signals for 24 hours; re-publish to keep it alive. Returns {viewUrl, slug, expiresAt}; your user opens the viewUrl with no wallet.",
+                "description": "PAID: $0.01 USDC flat per publish via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Mints or extends a shareable page at /v/<slug> showing the vault's holdings, allocation, live prices and signals for 24 hours; re-publish to keep it alive. Returns {viewUrl, slug, expiresAt}; your user opens the viewUrl with no wallet.",
                 "security": [
                     {
                         "x402": []
                     }
                 ],
                 "x-payment": {
-                    "price": "0.25",
+                    "price": "0.01",
                     "currency": "USDC",
                     "network": "eip155:8453",
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -700,7 +700,7 @@
                     "price": {
                         "mode": "fixed",
                         "currency": "USD",
-                        "amount": "0.25"
+                        "amount": "0.01"
                     }
                 },
                 "requestBody": {
@@ -755,6 +755,469 @@
                 }
             }
         },
+        "/v1/bridge": {
+            "get": {
+                "operationId": "getV1Bridge",
+                "summary": "The one-signature USDC bridge for x402 agents. Arc -> Base, Base -> Arc. Pay on Base or Arc.",
+                "tags": [
+                    "Liquid Bridge"
+                ],
+                "description": "Move USDC from Arc to other chains with a single x402 payment. No transaction to build, no approvals, no gas token. You receive exactly the amount you ask for, at your own address, in about 12 seconds. Refer other agents and earn 20% of Liquid's fee on every bridge they make, credited on-chain in the same transaction. PAID, dynamic: the 402 is the exact price (Arc -> Base: about 1.077 USDC to receive 1; Base -> Arc: about 1.035 USDC to receive 1, payable on Base; minimum 1 USDC; Liquid's fee can never exceed max(3%, $0.05), enforced on-chain). Query: from=arc|base, to=base|arc, amount=<USDC to receive>, ref=<optional referrer address>. Pay once on the source chain (x402 exact, EIP-3009) to that chain's bridge contract: Arc 0xecdcd568c40975c1dfe7624265be4debfbd25862 (USDC domain \"USDC\" v2) or Base 0xf9330df3fe702c6b9a531bc1a1de2caa056361ea (USDC domain \"USD Coin\" v2). Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "arc",
+                                "base"
+                            ],
+                            "example": "base"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "base",
+                                "arc"
+                            ],
+                            "example": "arc"
+                        }
+                    },
+                    {
+                        "name": "amount",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "1"
+                        },
+                        "description": "USDC to RECEIVE (minimum 1)"
+                    },
+                    {
+                        "name": "ref",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "referrer EVM address: earns 20% of Liquid's fee"
+                    }
+                ],
+                "x-payment": {
+                    "price": "dynamic",
+                    "currency": "USDC",
+                    "network": "eip155:5042",
+                    "asset": "0x3600000000000000000000000000000000000000",
+                    "payTo": "0xecdcd568c40975c1dfe7624265be4debfbd25862",
+                    "scheme": "exact",
+                    "mode": "dynamic"
+                },
+                "x-payment-info": {
+                    "protocols": [
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:8453",
+                                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                                "payTo": "0xf9330df3fe702c6b9a531bc1a1de2caa056361ea"
+                            }
+                        },
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:5042",
+                                "asset": "0x3600000000000000000000000000000000000000",
+                                "payTo": "0xecdcd568c40975c1dfe7624265be4debfbd25862"
+                            }
+                        }
+                    ],
+                    "price": {
+                        "mode": "dynamic",
+                        "currency": "USD",
+                        "min": "1.02",
+                        "description": "amount to receive + Circle forwarding + Liquid fee + gas; exact USDC in the 402"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "{status, receive, to, recipient, burnTx, mintTx, statusUrl, referrer, referrerEarned}",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "202": {
+                        "description": "sent, still confirming: {burnTx, statusUrl}; do not pay again",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 payment required: the exact price",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/bridge/quote": {
+            "get": {
+                "operationId": "getV1BridgeQuote",
+                "summary": "Liquid Bridge: free quote for a route, the exact price without the 402.",
+                "tags": [
+                    "Liquid Bridge"
+                ],
+                "description": "Liquid Bridge: free quote for a route, the exact price without the 402. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "security": [
+                    {
+                        "siwx": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "arc",
+                                "base"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "base",
+                                "arc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "amount",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "USDC to RECEIVE (minimum 1)"
+                    },
+                    {
+                        "name": "ref",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "optional referrer address"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/bridge/routes": {
+            "get": {
+                "operationId": "getV1BridgeRoutes",
+                "summary": "Liquid Bridge: every route with its live price and whether it is open.",
+                "tags": [
+                    "Liquid Bridge"
+                ],
+                "description": "Liquid Bridge: every route with its live price and whether it is open. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "security": [
+                    {
+                        "siwx": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/bridge/status/{burnTx}": {
+            "get": {
+                "operationId": "getV1BridgeStatus",
+                "summary": "Liquid Bridge: Circle attestation and mint state for a bridge.",
+                "tags": [
+                    "Liquid Bridge"
+                ],
+                "description": "Liquid Bridge: Circle attestation and mint state for a bridge. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "security": [
+                    {
+                        "siwx": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "burnTx",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^0x[a-fA-F0-9]{64}$"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "arc",
+                                "base"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/bridge/referrer/{payer}": {
+            "get": {
+                "operationId": "getV1BridgeReferrer",
+                "summary": "Liquid Bridge: the sticky referrer of a payer (earns 20% of the fee on its unreferred bridges).",
+                "tags": [
+                    "Liquid Bridge"
+                ],
+                "description": "Liquid Bridge: the sticky referrer of a payer (earns 20% of the fee on its unreferred bridges). Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "security": [
+                    {
+                        "siwx": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "payer",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^0x[a-fA-F0-9]{40}$"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/bridge/earnings/{referrer}": {
+            "get": {
+                "operationId": "getV1BridgeEarnings",
+                "summary": "Liquid Bridge: a referrer's unclaimed earnings on each chain (Base, Arc) and how to claim them.",
+                "tags": [
+                    "Liquid Bridge"
+                ],
+                "description": "Liquid Bridge: a referrer's unclaimed earnings on each chain (Base, Arc) and how to claim them. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "security": [
+                    {
+                        "siwx": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "referrer",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^0x[a-fA-F0-9]{40}$"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/bridge/guide": {
+            "get": {
+                "operationId": "getV1BridgeGuide",
+                "summary": "Liquid Bridge: plain-English guide, positioning, three steps, referrals.",
+                "tags": [
+                    "Liquid Bridge"
+                ],
+                "description": "Liquid Bridge: plain-English guide, positioning, three steps, referrals. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "security": [
+                    {
+                        "siwx": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/gas/solana": {
+            "get": {
+                "operationId": "getV1GasSolana",
+                "summary": "Solana gas sponsor info: fee payer address, fee asset, and how to call it.",
+                "tags": [
+                    "Liquid Agent"
+                ],
+                "security": [],
+                "description": "Free. Returns the sponsor's fee-payer address (build your transaction with it as feePayer), the fee network/asset (USDC on Solana mainnet), limits and the flow.",
+                "responses": {
+                    "200": {
+                        "description": "lane info",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "operationId": "postV1GasSolana",
+                "summary": "GAS SPONSOR (Solana): POST your transaction with our sponsor as fee payer; pay the exact fee in Solana USDC over x402; get it back co-signed.",
+                "tags": [
+                    "Liquid Agent"
+                ],
+                "description": "PAID, dynamic (from $0.03 USDC, max $2.00; the 402 is the quote, issued only after a successful simulation). Body {transaction:<base64 v0 or legacy, signed by you, feePayer = the sponsor address from GET>, send?:true}. Without payment: 402 with the exact price = (network fee + priority fee + rent for token accounts it opens) x 1.3. Payment: one USDC TransferChecked of exactly `amount` from your token account to the sponsor's USDC account, sponsor as fee payer, signed by you, wrapped as {x402Version:2, scheme:'exact', network, accepted, payload:{transaction}} and base64d into PAYMENT-SIGNATURE (X-PAYMENT also works). The same POST then returns {transaction (co-signed), feePayer, priceUsd, lamports, feePaymentSig, settledBy, signature? when send:true, next}. Limits: sponsor only as fee payer and payer of <= 8 ATA creates; compute limit <= 1.4M units, price <= 50,000 micro-lamports/unit; 500 sponsorships per payer per day; 503 and no charge when the sponsor is low on SOL.",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "x-payment": {
+                    "price": "0.03+",
+                    "currency": "USDC",
+                    "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+                    "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "payTo": "BBcAL97dyJPGmsjQ7pPxCdUsFk1wgZ6jqYQ4DFvCVHkn",
+                    "scheme": "exact",
+                    "mode": "dynamic"
+                },
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "transaction"
+                                ],
+                                "properties": {
+                                    "transaction": {
+                                        "type": "string",
+                                        "description": "base64 Solana transaction (v0 or legacy), signed by you, with feePayer = the sponsor"
+                                    },
+                                    "send": {
+                                        "type": "boolean",
+                                        "description": "true = we broadcast the co-signed transaction and return its signature"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "co-signed transaction",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 Payment Required (the quote, in Solana USDC)"
+                    }
+                }
+            }
+        },
         "/v1/gas": {
             "get": {
                 "operationId": "getV1Gas",
@@ -763,7 +1226,7 @@
                     "Liquid Agent"
                 ],
                 "security": [],
-                "description": "Free. Describes the ERC-4337 paymaster paid over x402 (EntryPoint v0.8 on Base).",
+                "description": "Bare GET returns the 402 quote (how x402 indexers recognise a paid resource); GET /v1/gas?docs=1 returns the docs. Describes the ERC-4337 paymaster paid over x402 (EntryPoint v0.8 on Base).",
                 "responses": {
                     "200": {
                         "description": "info",
@@ -779,7 +1242,7 @@
             },
             "post": {
                 "operationId": "postV1Gas",
-                "summary": "GAS SPONSOR: pay per operation in USDC over x402 and we cover the gas on Base. One endpoint for plain wallets ({sender, calls}), any EntryPoint v0.8 smart account ({userOperation}, bring your own operation) and smart-wallet SDKs (ERC-7677 JSON-RPC). No ETH, no account, no API key.",
+                "summary": "GAS SPONSOR: pay per operation in USDC over x402 and we cover the gas on Base or Polygon (add chainId: 137 for Polygon). Pay the fee in USDC on Base or Polygon. One endpoint for plain wallets ({sender, calls}), any EntryPoint v0.8 smart account ({userOperation}, bring your own operation) and smart-wallet SDKs (ERC-7677 JSON-RPC). No ETH, no account, no API key.",
                 "tags": [
                     "Liquid Agent"
                 ],

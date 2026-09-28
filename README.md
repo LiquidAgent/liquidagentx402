@@ -4,6 +4,8 @@
 
 **Live API:** https://api.liquidagent.ai · **Agent guide:** https://api.liquidagent.ai/v1/guide · **Status:** https://api.liquidagent.ai/v1/status
 
+**Also here: [Liquid Bridge](#liquid-bridge-x402--move-usdc-between-base-and-arc-in-one-signature)**, the one-signature USDC bridge for x402 agents (Base <-> Arc). Refer other agents and earn 20% of the fee.
+
 `x402` · `AI agents` · `tokenized stocks` · `Base` · `ERC-4626` · `ERC-8004` · `agentic commerce` · `no oracle` · `self-custodial`
 
 ---
@@ -43,7 +45,7 @@ A ready-made skill that teaches an agent the whole flow lives in [`skills/liquid
 ```bash
 clawhub install liquid-agent-stocks          # OpenClaw / ClawHub — the stock index
 clawhub install liquid-gas-sponsor           # OpenClaw / ClawHub — the gas sponsor (transact with USDC only, no ETH)
-npx skills add LiquidAgent/liquidagentx402   # skills.sh (any agent that reads SKILL.md)
+npx skills add LiquidAgent/liquidagentx402   # skills.sh (any agent that reads SKILL.md): all three skills, incl. liquid-usdc-bridge
 ```
 
 ## Quickstart — create → buy → rebalance → exit
@@ -97,7 +99,7 @@ Runnable examples: [`examples/buy.js`](examples/buy.js) (viem) · [`examples/buy
 
 **Reads (free):** `GET /v1/basket` · `GET /v1/vault/{address}` · `GET /v1/balance/{agent}` · `GET /v1/quote?usdc=` · `GET /v1/guide`
 **Writes (return unsigned calldata):** `POST /v1/create-vault` · `/v1/set-weights` · `/v1/buy` · `/v1/rebalance` · `/v1/redeem` *(sell / cash out)* · `/v1/send` *(transfer to any wallet)*
-**Paid (x402):** `GET /v1/signals` *($0.04 — the basket's rebalancing signal in one call)* · `POST /v1/publish` *($0.25 — a live, shareable portfolio page)* · `POST /v1/gas` *(from $0.03 — the gas sponsor: transact with USDC only, no ETH)*
+**Paid (x402):** `GET /v1/signals` *($0.005 — the basket's rebalancing signal in one call)* · `POST /v1/publish` *($0.01 — a live, shareable portfolio page)* · `POST /v1/gas` *(from $0.03 — the gas sponsor: transact with USDC only, no ETH)* · `GET /v1/bridge` *(1% — the one-signature USDC bridge, Base <-> Arc)*
 
 An agent can **buy** the basket, **sell** it any block (`/v1/redeem` → USDC or the raw stocks in-kind), and **send** it to any wallet (`/v1/send`) — gift or hand a whole tokenized-stock basket to another agent in one transfer, no vault needed on their end.
 
@@ -105,19 +107,19 @@ Full spec in [`openapi.json`](openapi.json).
 
 ## Paid: basket signals (x402)
 
-`GET /v1/signals` — **$0.04 USDC per call** — one call returns the whole basket's rebalancing signal, so an agent doesn't have to visit four sites: per-stock returns, annualized volatility, RSI, trend, relative strength, a correlation matrix, and an **inverse-volatility suggested `weightsBps`** you can drop straight into `POST /v1/set-weights` → `POST /v1/rebalance`. Add `?vault=<yours>` to also get current-vs-suggested **drift** for your vault.
+`GET /v1/signals` — **$0.005 USDC per call** — one call returns the whole basket's rebalancing signal, so an agent doesn't have to visit four sites: per-stock returns, annualized volatility, RSI, trend, relative strength, a correlation matrix, and an **inverse-volatility suggested `weightsBps`** you can drop straight into `POST /v1/set-weights` → `POST /v1/rebalance`. Add `?vault=<yours>` to also get current-vs-suggested **drift** for your vault.
 
 Pay by signing a USDC authorization (x402 **exact** scheme, EIP-3009, on Base) — any x402-aware client handles the 402 automatically:
 
 ```bash
 curl -s https://api.liquidagent.ai/v1/signals            # -> 402 with the x402 payment challenge
-# an x402 client (AgentCash, x402-fetch, CDP) pays the $0.04, then receives:
+# an x402 client (AgentCash, x402-fetch, CDP) pays the $0.005, then receives:
 # { "basket":[{symbol,returns,volAnnualPct,rsi14,trend,relStrengthM1}, ...],
 #   "basketStats":{ "correlation": {...} },
 #   "signals":{ "riskParityWeightsBps":[...], "biasVsEqualWeightBps":[...], "momentumRankDesc":[...] } }
 ```
 
-Everything else stays **free**; the paid resources are signals, publish, and the gas sponsor below.
+Everything else stays **free**; the paid resources are signals, publish, the gas sponsor, and the bridge below.
 
 ## Paid: gas sponsor (x402) — transact with USDC only, no ETH
 
@@ -153,6 +155,26 @@ curl -s -X POST https://api.liquidagent.ai/v1/gas -H 'content-type: application/
 
 Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bring-your-own.js): swap the account constructor for your SDK's. `GET /v1/gas` describes the sponsor; `GET /v1/gas/stats` shows live usage.
 
+## Liquid Bridge (x402) — move USDC between Base and Arc in one signature
+
+**The one-signature USDC bridge for x402 agents.** `GET /v1/bridge?from=base&to=arc&amount=1` answers with a 402 that is the exact price. Sign one standard x402 payment, repeat the call, and exactly the amount you asked for arrives at **your own address** on the destination, usually in 10 to 20 seconds. No transaction to build, no approvals, no gas token. Non-custodial: the payment goes to the bridge contract, which burns it through Circle CCTP to you in the same transaction.
+
+| Route | Pay on | Example (receive 1 USDC) |
+|---|---|---|
+| Base -> Arc | Base (`eip155:8453`) | about **1.035 USDC** |
+| Arc -> Base | Arc (`eip155:5042`) | about **1.078 USDC** |
+
+**Price:** 1% of the amount, plus Circle's network fee and gas at cost, all in the quote. Minimum 1 USDC. Liquid's fee can never exceed max(3%, $0.05): the contract enforces it.
+
+**Earn by referring:** add `ref=<your address>` to any bridge URL. 20% of Liquid's fee is credited to you on-chain in the same transaction (self-referral works as a 20% discount). Check it at `GET /v1/bridge/earnings/<address>`.
+
+```bash
+node examples/bridge.js --quote                                      # free price check
+PRIVATE_KEY=0x... node examples/bridge.js --from base --to arc --amount 1 [--ref 0xYourReferrer]
+```
+
+Free: `GET /v1/bridge/quote` · `/v1/bridge/routes` · `/v1/bridge/status/{burnTx}` · `/v1/bridge/earnings/{referrer}` · `/v1/bridge/guide`. Skill: [`skills/liquid-usdc-bridge/SKILL.md`](skills/liquid-usdc-bridge/SKILL.md). Full guide: https://api.liquidagent.ai/v1/bridge/guide
+
 ## Addresses — Base mainnet (chainId 8453)
 
 | | |
@@ -168,6 +190,9 @@ Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bri
 | EntryPoint v0.8 | `0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108` |
 | Simple7702Account (EOA delegation target) | `0xe6Cae83BdE06E4c305530e199D7217f42808555B` |
 | ERC-8004 identity | `eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432/74094` |
+| Liquid Bridge contract, Base (x402 payTo) | `0xf9330df3fe702c6b9a531bc1a1de2caa056361ea` |
+| Liquid Bridge contract, Arc (`eip155:5042`, x402 payTo) | `0xecdcd568c40975c1dfe7624265be4debfbd25862` |
+| Circle CCTP MessageTransmitterV2 (Base and Arc) | `0x81D40F21F12A8F0E3252Bccb954D722d4c464B64` |
 
 ## Fees & mechanics
 
