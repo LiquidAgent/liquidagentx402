@@ -28,7 +28,9 @@ Instead of picking four stocks, sizing each, buying them separately, and rebalan
 
 ## MCP server (remote, no install)
 
-Connect any MCP client (Claude, Cursor, ChatGPT, agent frameworks) by URL: `https://api.liquidagent.ai/mcp` (Streamable HTTP, no auth). Listed in the official MCP Registry as `ai.liquidagent.api/liquid-agent`.
+[![smithery badge](https://smithery.ai/badge/chris-tv1s/liquidagent)](https://smithery.ai/servers/chris-tv1s/liquidagent)
+
+Connect any MCP client (Claude, Cursor, ChatGPT, agent frameworks) by URL: `https://api.liquidagent.ai/mcp` (Streamable HTTP, no auth). Listed in the official MCP Registry as `ai.liquidagent.api/liquid-agent` and on [Smithery](https://smithery.ai/servers/chris-tv1s/liquidagent).
 
 ```bash
 claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
