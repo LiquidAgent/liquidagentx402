@@ -140,7 +140,8 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "pattern": "^0x[a-fA-F0-9]{40}$"
+                            "pattern": "^0x[a-fA-F0-9]{40}$",
+                            "example": "0x21Fe5d76379763b57Ed5Dd8AC43166edd4fe0975"
                         }
                     }
                 ],
@@ -193,7 +194,8 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "pattern": "^0x[a-fA-F0-9]{40}$"
+                            "pattern": "^0x[a-fA-F0-9]{40}$",
+                            "example": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
                         }
                     }
                 ],
@@ -245,7 +247,9 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "pattern": "^[0-9]+$",
+                            "example": "2000000"
                         },
                         "description": "amount in USDC-6 (2000000 = $2)"
                     }
@@ -611,9 +615,10 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-                            "pattern": "^0x[a-fA-F0-9]{40}$"
+                            "pattern": "^0x[a-fA-F0-9]{40}$",
+                            "example": "0x21Fe5d76379763b57Ed5Dd8AC43166edd4fe0975"
                         },
-                        "description": "Optional. Your vault address. If provided, the response adds that vault's current weights and their drift vs the suggested (inverse-vol) weights, so you know exactly what to change."
+                        "description": "Optional. Your vault address (omit if you have none). If provided, the response adds that vault's current weights and their drift vs the suggested (inverse-vol) weights, so you know exactly what to change."
                     }
                 ],
                 "x-payment": {
@@ -644,6 +649,598 @@
                 "responses": {
                     "200": {
                         "description": "basket signals",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 payment required (returns the payment challenge)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/polymarket/btc-5m": {
+            "get": {
+                "operationId": "getV1PolymarketBtc5m",
+                "summary": "Polymarket BTC 5m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+                "tags": [
+                    "Polymarket"
+                ],
+                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 5m BTC window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. You are never charged when it cannot answer. Data, not financial advice.",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[0-9]+$"
+                        },
+                        "description": "Optional. Unix start of a past 5m window (multiple of 300) to get its official settle and outcome. Omit for the live window."
+                    }
+                ],
+                "x-payment": {
+                    "price": "0.002",
+                    "currency": "USDC",
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90",
+                    "scheme": "exact"
+                },
+                "x-payment-info": {
+                    "protocols": [
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:8453",
+                                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        }
+                    ],
+                    "price": {
+                        "mode": "fixed",
+                        "currency": "USD",
+                        "amount": "0.002"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "live window (or settled window with ?start=)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 payment required (returns the payment challenge)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/polymarket/btc-15m": {
+            "get": {
+                "operationId": "getV1PolymarketBtc15m",
+                "summary": "Polymarket BTC 15m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+                "tags": [
+                    "Polymarket"
+                ],
+                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 15m BTC window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. You are never charged when it cannot answer. Data, not financial advice.",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[0-9]+$"
+                        },
+                        "description": "Optional. Unix start of a past 15m window (multiple of 900) to get its official settle and outcome. Omit for the live window."
+                    }
+                ],
+                "x-payment": {
+                    "price": "0.002",
+                    "currency": "USDC",
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90",
+                    "scheme": "exact"
+                },
+                "x-payment-info": {
+                    "protocols": [
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:8453",
+                                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        }
+                    ],
+                    "price": {
+                        "mode": "fixed",
+                        "currency": "USD",
+                        "amount": "0.002"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "live window (or settled window with ?start=)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 payment required (returns the payment challenge)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/polymarket/eth-5m": {
+            "get": {
+                "operationId": "getV1PolymarketEth5m",
+                "summary": "Polymarket ETH 5m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+                "tags": [
+                    "Polymarket"
+                ],
+                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 5m ETH window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. You are never charged when it cannot answer. Data, not financial advice.",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[0-9]+$"
+                        },
+                        "description": "Optional. Unix start of a past 5m window (multiple of 300) to get its official settle and outcome. Omit for the live window."
+                    }
+                ],
+                "x-payment": {
+                    "price": "0.002",
+                    "currency": "USDC",
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90",
+                    "scheme": "exact"
+                },
+                "x-payment-info": {
+                    "protocols": [
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:8453",
+                                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        }
+                    ],
+                    "price": {
+                        "mode": "fixed",
+                        "currency": "USD",
+                        "amount": "0.002"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "live window (or settled window with ?start=)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 payment required (returns the payment challenge)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/polymarket/eth-15m": {
+            "get": {
+                "operationId": "getV1PolymarketEth15m",
+                "summary": "Polymarket ETH 15m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+                "tags": [
+                    "Polymarket"
+                ],
+                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 15m ETH window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. You are never charged when it cannot answer. Data, not financial advice.",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[0-9]+$"
+                        },
+                        "description": "Optional. Unix start of a past 15m window (multiple of 900) to get its official settle and outcome. Omit for the live window."
+                    }
+                ],
+                "x-payment": {
+                    "price": "0.002",
+                    "currency": "USDC",
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90",
+                    "scheme": "exact"
+                },
+                "x-payment-info": {
+                    "protocols": [
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:8453",
+                                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        }
+                    ],
+                    "price": {
+                        "mode": "fixed",
+                        "currency": "USD",
+                        "amount": "0.002"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "live window (or settled window with ?start=)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 payment required (returns the payment challenge)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/polymarket/sol-5m": {
+            "get": {
+                "operationId": "getV1PolymarketSol5m",
+                "summary": "Polymarket SOL 5m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+                "tags": [
+                    "Polymarket"
+                ],
+                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 5m SOL window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. You are never charged when it cannot answer. Data, not financial advice.",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[0-9]+$"
+                        },
+                        "description": "Optional. Unix start of a past 5m window (multiple of 300) to get its official settle and outcome. Omit for the live window."
+                    }
+                ],
+                "x-payment": {
+                    "price": "0.002",
+                    "currency": "USDC",
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90",
+                    "scheme": "exact"
+                },
+                "x-payment-info": {
+                    "protocols": [
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:8453",
+                                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        }
+                    ],
+                    "price": {
+                        "mode": "fixed",
+                        "currency": "USD",
+                        "amount": "0.002"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "live window (or settled window with ?start=)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 payment required (returns the payment challenge)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/polymarket/sol-15m": {
+            "get": {
+                "operationId": "getV1PolymarketSol15m",
+                "summary": "Polymarket SOL 15m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+                "tags": [
+                    "Polymarket"
+                ],
+                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 15m SOL window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. You are never charged when it cannot answer. Data, not financial advice.",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[0-9]+$"
+                        },
+                        "description": "Optional. Unix start of a past 15m window (multiple of 900) to get its official settle and outcome. Omit for the live window."
+                    }
+                ],
+                "x-payment": {
+                    "price": "0.002",
+                    "currency": "USDC",
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90",
+                    "scheme": "exact"
+                },
+                "x-payment-info": {
+                    "protocols": [
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:8453",
+                                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        }
+                    ],
+                    "price": {
+                        "mode": "fixed",
+                        "currency": "USD",
+                        "amount": "0.002"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "live window (or settled window with ?start=)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 payment required (returns the payment challenge)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/polymarket/xrp-5m": {
+            "get": {
+                "operationId": "getV1PolymarketXrp5m",
+                "summary": "Polymarket XRP 5m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+                "tags": [
+                    "Polymarket"
+                ],
+                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 5m XRP window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. You are never charged when it cannot answer. Data, not financial advice.",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[0-9]+$"
+                        },
+                        "description": "Optional. Unix start of a past 5m window (multiple of 300) to get its official settle and outcome. Omit for the live window."
+                    }
+                ],
+                "x-payment": {
+                    "price": "0.002",
+                    "currency": "USDC",
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90",
+                    "scheme": "exact"
+                },
+                "x-payment-info": {
+                    "protocols": [
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:8453",
+                                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        }
+                    ],
+                    "price": {
+                        "mode": "fixed",
+                        "currency": "USD",
+                        "amount": "0.002"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "live window (or settled window with ?start=)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 payment required (returns the payment challenge)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/polymarket/xrp-15m": {
+            "get": {
+                "operationId": "getV1PolymarketXrp15m",
+                "summary": "Polymarket XRP 15m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+                "tags": [
+                    "Polymarket"
+                ],
+                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 15m XRP window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. You are never charged when it cannot answer. Data, not financial advice.",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[0-9]+$"
+                        },
+                        "description": "Optional. Unix start of a past 15m window (multiple of 900) to get its official settle and outcome. Omit for the live window."
+                    }
+                ],
+                "x-payment": {
+                    "price": "0.002",
+                    "currency": "USDC",
+                    "network": "eip155:8453",
+                    "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                    "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90",
+                    "scheme": "exact"
+                },
+                "x-payment-info": {
+                    "protocols": [
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:8453",
+                                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        }
+                    ],
+                    "price": {
+                        "mode": "fixed",
+                        "currency": "USD",
+                        "amount": "0.002"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "live window (or settled window with ?start=)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -810,9 +1407,10 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "pattern": "^0x[a-fA-F0-9]{40}$"
                         },
-                        "description": "referrer EVM address: earns 20% of Liquid's fee"
+                        "description": "Optional referrer EVM address (earns 20% of Liquid's fee). Omit it unless you have one; an invalid value is ignored."
                     }
                 ],
                 "x-payment": {
@@ -927,7 +1525,8 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "1"
                         },
                         "description": "USDC to RECEIVE (minimum 1)"
                     },
@@ -936,9 +1535,10 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "pattern": "^0x[a-fA-F0-9]{40}$"
                         },
-                        "description": "optional referrer address"
+                        "description": "Optional referrer EVM address (earns 20% of Liquid's fee). Omit it unless you have one; an invalid value is ignored."
                     }
                 ],
                 "responses": {
@@ -1002,7 +1602,8 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "pattern": "^0x[a-fA-F0-9]{64}$"
+                            "pattern": "^0x[a-fA-F0-9]{64}$",
+                            "example": "0x2aa8430c29f0c95b9664ceb4cad2a5ee11f8edfb471263281f63938566aa91ae"
                         }
                     },
                     {
@@ -1052,7 +1653,8 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "pattern": "^0x[a-fA-F0-9]{40}$"
+                            "pattern": "^0x[a-fA-F0-9]{40}$",
+                            "example": "0xe1f811EcA59d9996Ff073311711264b4d1310b35"
                         }
                     }
                 ],
@@ -1090,8 +1692,114 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "pattern": "^0x[a-fA-F0-9]{40}$"
+                            "pattern": "^0x[a-fA-F0-9]{40}$",
+                            "example": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/bridge/balances/{address}": {
+            "get": {
+                "operationId": "getV1BridgeBalances",
+                "summary": "Free: USDC and gas balance of an address on every CCTP chain (Ethereum, Base, Arbitrum, OP, Polygon, Avalanche, Unichain, Linea, Sonic, World Chain, Arc).",
+                "tags": [
+                    "Liquid Bridge"
+                ],
+                "description": "Free: USDC and gas balance of an address on every CCTP chain (Ethereum, Base, Arbitrum, OP, Polygon, Avalanche, Unichain, Linea, Sonic, World Chain, Arc). Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "security": [
+                    {
+                        "siwx": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "address",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^0x[a-fA-F0-9]{40}$",
+                            "example": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/bridge/cctp/{txHash}": {
+            "get": {
+                "operationId": "getV1BridgeCctp",
+                "summary": "Free: status of ANY Circle CCTP v2 transfer by burn tx: attestation, mint check, and how to finish a stuck one.",
+                "tags": [
+                    "Liquid Bridge"
+                ],
+                "description": "Free: status of ANY Circle CCTP v2 transfer by burn tx: attestation, mint check, and how to finish a stuck one. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "security": [
+                    {
+                        "siwx": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "txHash",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^0x[a-fA-F0-9]{64}$",
+                            "example": "0x2aa8430c29f0c95b9664ceb4cad2a5ee11f8edfb471263281f63938566aa91ae"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "JSON",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/bridge/proof": {
+            "get": {
+                "operationId": "getV1BridgeProof",
+                "summary": "Proof of delivery: every Liquid Bridge transfer with burn tx, mint tx, fee, and the incident record.",
+                "tags": [
+                    "Liquid Bridge"
+                ],
+                "description": "Proof of delivery: every Liquid Bridge transfer with burn tx, mint tx, fee, and the incident record. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "security": [
+                    {
+                        "siwx": []
                     }
                 ],
                 "responses": {

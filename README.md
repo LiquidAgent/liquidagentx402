@@ -71,7 +71,8 @@ A ready-made skill that teaches an agent the whole flow lives in [`skills/liquid
 ```bash
 clawhub install liquid-agent-stocks          # OpenClaw / ClawHub — the stock index
 clawhub install liquid-gas-sponsor           # OpenClaw / ClawHub — the gas sponsor (transact with USDC only, no ETH)
-npx skills add LiquidAgent/liquidagentx402   # skills.sh (any agent that reads SKILL.md): all three skills, incl. liquid-usdc-bridge
+clawhub install liquid-polymarket            # OpenClaw / ClawHub: Polymarket official price to beat, live
+npx skills add LiquidAgent/liquidagentx402   # skills.sh (any agent that reads SKILL.md): all four skills, incl. liquid-usdc-bridge and liquid-polymarket
 ```
 
 ## Quickstart — create → buy → rebalance → exit
@@ -186,6 +187,8 @@ Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bri
 `GET https://api.liquidagent.ai/v1/polymarket/<asset>-<timeframe>` for **BTC, ETH, SOL and XRP** on **5m and 15m** (e.g. `btc-5m`, `eth-15m`, `sol-5m`, `xrp-15m`), $0.002 USDC per call on Base or Polygon. Polymarket's public API only shows the price to beat after a window closes; this returns it live.
 
 One call returns the **official price to beat** for the live window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's own published values on every resolved window tested), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's prices. `?start=<unix>` returns a past window's official settle and outcome. You are never charged when it cannot answer. Index: https://api.liquidagent.ai/v1/polymarket
+
+Example: [`examples/polymarket.js`](examples/polymarket.js). Skill: [`skills/liquid-polymarket/SKILL.md`](skills/liquid-polymarket/SKILL.md).
 
 ## Liquid Bridge (x402) — move USDC between Base and Arc in one signature
 
