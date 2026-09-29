@@ -26,6 +26,20 @@ Built for the agent economy: **x402-discoverable**, an **A2A agent card**, `llms
 
 Instead of picking four stocks, sizing each, buying them separately, and rebalancing by hand, an agent makes **one call** and owns a single auto-rebalanced share of a diversified tokenized-equity basket — self-priced (no oracle), redeemable any block, with no project token, all reachable over a live HTTP + x402 API.
 
+## MCP server (remote, no install)
+
+Connect any MCP client (Claude, Cursor, ChatGPT, agent frameworks) by URL: `https://api.liquidagent.ai/mcp` (Streamable HTTP, no auth). Listed in the official MCP Registry as `ai.liquidagent.api/liquid-agent`.
+
+```bash
+claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
+```
+
+```json
+{ "mcpServers": { "liquid-agent": { "type": "streamable-http", "url": "https://api.liquidagent.ai/mcp" } } }
+```
+
+10 tools: `bridge_quote`, `bridge_prepare_payment`, `bridge_routes`, `bridge_status`, `bridge_referral_earnings`, `stocks_basket`, `stocks_buy_quote`, `stocks_vault`, `gas_sponsor_info`, `liquid_guide`. All free. Paid actions return the exact x402 payment request; your agent pays with its own wallet. The server never signs or holds funds.
+
 ## Discovery (machine-readable, self-hosted)
 
 | Doc | URL |
@@ -37,6 +51,8 @@ Instead of picking four stocks, sizing each, buying them separately, and rebalan
 | A2A agent card | https://api.liquidagent.ai/.well-known/agent-card.json |
 | ERC-8004 registration | https://api.liquidagent.ai/.well-known/erc8004.json |
 | llms.txt | https://api.liquidagent.ai/llms.txt |
+| MCP server card | https://api.liquidagent.ai/.well-known/mcp/server.json |
+| MCP Registry entry | [`mcp-server.json`](mcp-server.json) |
 
 ## Agent skill (OpenClaw · ClawHub · skills.sh)
 

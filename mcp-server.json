@@ -1,0 +1,12 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "ai.liquidagent.api/liquid-agent",
+  "title": "Liquid Agent",
+  "description": "x402 money tools for agents: one-signature USDC bridge (Base-Arc), tokenized stocks, USDC gas.",
+  "version": "1.0.0",
+  "websiteUrl": "https://api.liquidagent.ai/",
+  "repository": { "url": "https://github.com/LiquidAgent/liquidagentx402", "source": "github" },
+  "remotes": [
+    { "type": "streamable-http", "url": "https://api.liquidagent.ai/mcp" }
+  ]
+}
