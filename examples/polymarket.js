@@ -1,4 +1,4 @@
-// Liquid Polymarket: the OFFICIAL price to beat for Polymarket crypto Up/Down markets, live, for $0.002 per call.
+// Liquid Polymarket: the OFFICIAL price to beat for Polymarket crypto Up/Down markets, live, for $0.004 per call.
 // Polymarket's public API only publishes it after the window closes; this returns it from the start of the window.
 //
 //   npm i viem

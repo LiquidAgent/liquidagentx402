@@ -602,7 +602,7 @@
                 "tags": [
                     "Liquid Agent"
                 ],
-                "description": "PAID: $0.005 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Quantitative signals for the tokenized NVDA/META/AAPL/GOOGL basket so an agent can decide weights in one call instead of visiting four sites, then execute via the free /v1/set-weights + /v1/rebalance. Aggregated data, not investment advice.",
+                "description": "PAID: $0.007 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Quantitative signals for the tokenized NVDA/META/AAPL/GOOGL basket so an agent can decide weights in one call instead of visiting four sites, then execute via the free /v1/set-weights + /v1/rebalance. Aggregated data, not investment advice.",
                 "security": [
                     {
                         "x402": []
@@ -622,7 +622,7 @@
                     }
                 ],
                 "x-payment": {
-                    "price": "0.005",
+                    "price": "0.007",
                     "currency": "USDC",
                     "network": "eip155:8453",
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -643,7 +643,7 @@
                     "price": {
                         "mode": "fixed",
                         "currency": "USD",
-                        "amount": "0.005"
+                        "amount": "0.007"
                     }
                 },
                 "responses": {
@@ -677,7 +677,7 @@
                 "tags": [
                     "Polymarket"
                 ],
-                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 5m BTC window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
+                "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 5m BTC window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
                 "security": [
                     {
                         "x402": []
@@ -696,7 +696,7 @@
                     }
                 ],
                 "x-payment": {
-                    "price": "0.002",
+                    "price": "0.004",
                     "currency": "USDC",
                     "network": "eip155:8453",
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -717,7 +717,7 @@
                     "price": {
                         "mode": "fixed",
                         "currency": "USD",
-                        "amount": "0.002"
+                        "amount": "0.004"
                     }
                 },
                 "responses": {
@@ -751,7 +751,7 @@
                 "tags": [
                     "Polymarket"
                 ],
-                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 15m BTC window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
+                "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 15m BTC window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
                 "security": [
                     {
                         "x402": []
@@ -770,7 +770,7 @@
                     }
                 ],
                 "x-payment": {
-                    "price": "0.002",
+                    "price": "0.004",
                     "currency": "USDC",
                     "network": "eip155:8453",
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -791,7 +791,7 @@
                     "price": {
                         "mode": "fixed",
                         "currency": "USD",
-                        "amount": "0.002"
+                        "amount": "0.004"
                     }
                 },
                 "responses": {
@@ -825,7 +825,7 @@
                 "tags": [
                     "Polymarket"
                 ],
-                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 5m ETH window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
+                "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 5m ETH window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
                 "security": [
                     {
                         "x402": []
@@ -844,7 +844,7 @@
                     }
                 ],
                 "x-payment": {
-                    "price": "0.002",
+                    "price": "0.004",
                     "currency": "USDC",
                     "network": "eip155:8453",
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -865,7 +865,7 @@
                     "price": {
                         "mode": "fixed",
                         "currency": "USD",
-                        "amount": "0.002"
+                        "amount": "0.004"
                     }
                 },
                 "responses": {
@@ -899,7 +899,7 @@
                 "tags": [
                     "Polymarket"
                 ],
-                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 15m ETH window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
+                "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 15m ETH window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
                 "security": [
                     {
                         "x402": []
@@ -918,7 +918,7 @@
                     }
                 ],
                 "x-payment": {
-                    "price": "0.002",
+                    "price": "0.004",
                     "currency": "USDC",
                     "network": "eip155:8453",
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -939,7 +939,7 @@
                     "price": {
                         "mode": "fixed",
                         "currency": "USD",
-                        "amount": "0.002"
+                        "amount": "0.004"
                     }
                 },
                 "responses": {
@@ -973,7 +973,7 @@
                 "tags": [
                     "Polymarket"
                 ],
-                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 5m SOL window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
+                "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 5m SOL window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
                 "security": [
                     {
                         "x402": []
@@ -992,7 +992,7 @@
                     }
                 ],
                 "x-payment": {
-                    "price": "0.002",
+                    "price": "0.004",
                     "currency": "USDC",
                     "network": "eip155:8453",
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -1013,7 +1013,7 @@
                     "price": {
                         "mode": "fixed",
                         "currency": "USD",
-                        "amount": "0.002"
+                        "amount": "0.004"
                     }
                 },
                 "responses": {
@@ -1047,7 +1047,7 @@
                 "tags": [
                     "Polymarket"
                 ],
-                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 15m SOL window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
+                "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 15m SOL window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
                 "security": [
                     {
                         "x402": []
@@ -1066,7 +1066,7 @@
                     }
                 ],
                 "x-payment": {
-                    "price": "0.002",
+                    "price": "0.004",
                     "currency": "USDC",
                     "network": "eip155:8453",
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -1087,7 +1087,7 @@
                     "price": {
                         "mode": "fixed",
                         "currency": "USD",
-                        "amount": "0.002"
+                        "amount": "0.004"
                     }
                 },
                 "responses": {
@@ -1121,7 +1121,7 @@
                 "tags": [
                     "Polymarket"
                 ],
-                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 5m XRP window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
+                "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 5m XRP window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
                 "security": [
                     {
                         "x402": []
@@ -1140,7 +1140,7 @@
                     }
                 ],
                 "x-payment": {
-                    "price": "0.002",
+                    "price": "0.004",
                     "currency": "USDC",
                     "network": "eip155:8453",
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -1161,7 +1161,7 @@
                     "price": {
                         "mode": "fixed",
                         "currency": "USD",
-                        "amount": "0.002"
+                        "amount": "0.004"
                     }
                 },
                 "responses": {
@@ -1195,7 +1195,7 @@
                 "tags": [
                     "Polymarket"
                 ],
-                "description": "PAID: $0.002 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Polygon eip155:137). Returns the OFFICIAL price to beat for the live 15m XRP window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
+                "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 15m XRP window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice.",
                 "security": [
                     {
                         "x402": []
@@ -1214,7 +1214,7 @@
                     }
                 ],
                 "x-payment": {
-                    "price": "0.002",
+                    "price": "0.004",
                     "currency": "USDC",
                     "network": "eip155:8453",
                     "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
@@ -1235,7 +1235,7 @@
                     "price": {
                         "mode": "fixed",
                         "currency": "USD",
-                        "amount": "0.002"
+                        "amount": "0.004"
                     }
                 },
                 "responses": {

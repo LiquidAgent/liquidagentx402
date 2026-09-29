@@ -7,8 +7,8 @@
 | Service | What it does | Price |
 |---|---|---|
 | **[Liquid Bridge](https://api.liquidagent.ai/v1/bridge/guide)** | USDC from Base to Arc, Arbitrum, OP, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume, Codex (or Arc to Base), one x402 signature, exact delivery. Referrers earn 20% of the fee. [Proof of delivery](https://api.liquidagent.ai/v1/bridge/proof) | 1% + network fee |
-| **[Polymarket price to beat](https://api.liquidagent.ai/v1/polymarket)** | The official price to beat for BTC, ETH, SOL, XRP Up/Down on 5m and 15m, live during the window. First call free with `?free=1` | $0.002 / call |
-| **Tokenized stocks** | Your own vault of Coinbase's tokenized NVDA, META, AAPL, GOOGL on Base from $1. Unsigned transactions you sign | free reads, signals $0.005 |
+| **[Polymarket price to beat](https://api.liquidagent.ai/v1/polymarket)** | The official price to beat for BTC, ETH, SOL, XRP Up/Down on 5m and 15m, live during the window. First call free with `?free=1` | $0.004 / call |
+| **Tokenized stocks** | Your own vault of Coinbase's tokenized NVDA, META, AAPL, GOOGL on Base from $1. Unsigned transactions you sign | free reads, signals $0.007 |
 | **Gas sponsor** | Transact on Base, Polygon or Solana holding only USDC | from $0.03 |
 | **Free tools** | USDC balances on 11 chains, status of any CCTP transfer, x402 debugger, payment readiness check | free |
 
@@ -49,7 +49,7 @@ claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
 24 tools:
 - **Bridge:** `bridge_quote`, `bridge_prepare_payment`, `bridge_routes`, `bridge_status`, `bridge_referral_earnings`
 - **Stocks:** `stocks_basket`, `stocks_portfolio`, `stocks_buy_quote`, `stocks_vault`, `stocks_create_vault`, `stocks_set_weights`, `stocks_buy`, `stocks_sell`, `stocks_rebalance`, `stocks_send` (write tools return an unsigned transaction you sign yourself)
-- **Paid prep:** `polymarket_prepare` ($0.002), `stocks_signals_prepare` ($0.005), `stocks_publish_prepare` ($0.01)
+- **Paid prep:** `polymarket_prepare` ($0.004), `stocks_signals_prepare` ($0.007), `stocks_publish_prepare` ($0.01)
 - **Utilities:** `usdc_balances` (every CCTP chain), `cctp_status` (any Circle CCTP transfer, and how to finish a stuck one), `x402_check` (decode a 402, verify a signed payment, get the fix), `payment_readiness` (can this wallet pay this endpoint)
 - **Other:** `gas_sponsor_info`, `liquid_guide`
 
@@ -132,7 +132,7 @@ Runnable examples: [`examples/buy.js`](examples/buy.js) (viem) · [`examples/buy
 
 **Reads (free):** `GET /v1/basket` · `GET /v1/vault/{address}` · `GET /v1/balance/{agent}` · `GET /v1/quote?usdc=` · `GET /v1/guide`
 **Writes (return unsigned calldata):** `POST /v1/create-vault` · `/v1/set-weights` · `/v1/buy` · `/v1/rebalance` · `/v1/redeem` *(sell / cash out)* · `/v1/send` *(transfer to any wallet)*
-**Paid (x402):** `GET /v1/signals` *($0.005 — the basket's rebalancing signal in one call)* · `POST /v1/publish` *($0.01 — a live, shareable portfolio page)* · `POST /v1/gas` *(from $0.03 — the gas sponsor: transact with USDC only, no ETH)* · `GET /v1/bridge` *(1% — the one-signature USDC bridge, Base <-> Arc)*
+**Paid (x402):** `GET /v1/signals` *($0.007 — the basket's rebalancing signal in one call)* · `POST /v1/publish` *($0.01 — a live, shareable portfolio page)* · `POST /v1/gas` *(from $0.03 — the gas sponsor: transact with USDC only, no ETH)* · `GET /v1/bridge` *(1% — the one-signature USDC bridge, Base <-> Arc)*
 
 An agent can **buy** the basket, **sell** it any block (`/v1/redeem` → USDC or the raw stocks in-kind), and **send** it to any wallet (`/v1/send`) — gift or hand a whole tokenized-stock basket to another agent in one transfer, no vault needed on their end.
 
@@ -140,13 +140,13 @@ Full spec in [`openapi.json`](openapi.json).
 
 ## Paid: basket signals (x402)
 
-`GET /v1/signals` — **$0.005 USDC per call** — one call returns the whole basket's rebalancing signal, so an agent doesn't have to visit four sites: per-stock returns, annualized volatility, RSI, trend, relative strength, a correlation matrix, and an **inverse-volatility suggested `weightsBps`** you can drop straight into `POST /v1/set-weights` → `POST /v1/rebalance`. Add `?vault=<yours>` to also get current-vs-suggested **drift** for your vault.
+`GET /v1/signals` — **$0.007 USDC per call** — one call returns the whole basket's rebalancing signal, so an agent doesn't have to visit four sites: per-stock returns, annualized volatility, RSI, trend, relative strength, a correlation matrix, and an **inverse-volatility suggested `weightsBps`** you can drop straight into `POST /v1/set-weights` → `POST /v1/rebalance`. Add `?vault=<yours>` to also get current-vs-suggested **drift** for your vault.
 
 Pay by signing a USDC authorization (x402 **exact** scheme, EIP-3009, on Base) — any x402-aware client handles the 402 automatically:
 
 ```bash
 curl -s https://api.liquidagent.ai/v1/signals            # -> 402 with the x402 payment challenge
-# an x402 client (AgentCash, x402-fetch, CDP) pays the $0.005, then receives:
+# an x402 client (AgentCash, x402-fetch, CDP) pays the $0.007, then receives:
 # { "basket":[{symbol,returns,volAnnualPct,rsi14,trend,relStrengthM1}, ...],
 #   "basketStats":{ "correlation": {...} },
 #   "signals":{ "riskParityWeightsBps":[...], "biasVsEqualWeightBps":[...], "momentumRankDesc":[...] } }
@@ -190,7 +190,7 @@ Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bri
 
 ## Paid: Polymarket price to beat (x402)
 
-`GET https://api.liquidagent.ai/v1/polymarket/<asset>-<timeframe>` for **BTC, ETH, SOL and XRP** on **5m and 15m** (e.g. `btc-5m`, `eth-15m`, `sol-5m`, `xrp-15m`), $0.002 USDC per call on Base or Polygon. Polymarket's public API only shows the price to beat after a window closes; this returns it live.
+`GET https://api.liquidagent.ai/v1/polymarket/<asset>-<timeframe>` for **BTC, ETH, SOL and XRP** on **5m and 15m** (e.g. `btc-5m`, `eth-15m`, `sol-5m`, `xrp-15m`), $0.004 USDC per call on Base or Polygon. Polymarket's public API only shows the price to beat after a window closes; this returns it live.
 
 One call returns the **official price to beat** for the live window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's own published values on every resolved window tested), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's prices. `?start=<unix>` returns a past window's official settle and outcome. **First call free:** add `?free=1` for one live answer at no charge (one per agent). You are never charged when it cannot answer. Index: https://api.liquidagent.ai/v1/polymarket
 

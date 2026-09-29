@@ -1,6 +1,6 @@
 ---
 name: liquid-polymarket
-description: The official price to beat for Polymarket's crypto Up/Down markets (BTC, ETH, SOL, XRP on 5m and 15m), live from the start of each window, plus the live Chainlink price, seconds left, token ids and market prices. Polymarket's public API only publishes the price to beat after the window closes. $0.002 per call over x402, no account, no API key.
+description: The official price to beat for Polymarket's crypto Up/Down markets (BTC, ETH, SOL, XRP on 5m and 15m), live from the start of each window, plus the live Chainlink price, seconds left, token ids and market prices. Polymarket's public API only publishes the price to beat after the window closes. $0.004 per call over x402, no account, no API key.
 homepage: "https://api.liquidagent.ai/v1/polymarket"
 
 metadata:
@@ -17,7 +17,7 @@ that number after the window closes. **GET `https://api.liquidagent.ai/v1/polyma
 it live, from the first seconds of the window.
 
 - Markets: `btc-5m`, `btc-15m`, `eth-5m`, `eth-15m`, `sol-5m`, `sol-15m`, `xrp-5m`, `xrp-15m`
-- Price: **$0.002 USDC per call**, x402 exact (EIP-3009), USDC on Base or Polygon. Never charged if it cannot answer.
+- Price: **$0.004 USDC per call**, x402 exact (EIP-3009), USDC on Base or Polygon. Never charged if it cannot answer.
 - **First call free:** add `?free=1` for one live answer at no charge (one per agent), no wallet needed.
 - Accuracy: matched Polymarket's published price to beat to every decimal, and the outcome, on every resolved window
   tested, including live paid calls checked against the value Polymarket published after close.
@@ -35,7 +35,7 @@ it live, from the first seconds of the window.
 # Free: list markets and prices
 curl -s https://api.liquidagent.ai/v1/polymarket
 
-# Paid ($0.002): any x402 client pays the 402 and repeats the call
+# Paid ($0.004): any x402 client pays the 402 and repeats the call
 npx agentcash fetch https://api.liquidagent.ai/v1/polymarket/btc-5m
 ```
 

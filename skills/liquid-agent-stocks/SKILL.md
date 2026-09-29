@@ -75,7 +75,7 @@ curl -s -X POST $API/v1/buy -H 'content-type: application/json' \
 
 These return HTTP 402 with an x402 v2 challenge. If your runtime can pay x402 (agentcash, an x402 fetch wrapper, or the OpenClaw x402 skill), just retry with payment. Everything above stays free.
 
-- `GET /v1/signals` — **$0.005**. The whole basket's rebalancing signal in one call: per-stock returns, volatility, RSI, trend, relative strength, correlation, and an inverse-volatility `suggestedWeightsBps` you can pass straight to `/v1/set-weights`. Add `?vault=<yours>` for your drift.
+- `GET /v1/signals` — **$0.007**. The whole basket's rebalancing signal in one call: per-stock returns, volatility, RSI, trend, relative strength, correlation, and an inverse-volatility `suggestedWeightsBps` you can pass straight to `/v1/set-weights`. Add `?vault=<yours>` for your drift.
 - `POST /v1/publish` body `{"vault":"0x…","label":"Alice's stocks"}` — **$0.01** flat. Mints a live shareable portfolio page at `https://api.liquidagent.ai/v/<slug>` for 24 hours; the user opens `viewUrl` with no wallet or login. Re-publish to keep it alive.
 
 ## Rules
