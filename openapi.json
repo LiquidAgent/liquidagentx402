@@ -1359,7 +1359,7 @@
                 "tags": [
                     "Liquid Bridge"
                 ],
-                "description": "Move USDC from Base to 16 chains (Arc, Arbitrum, OP Mainnet, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume and Codex), or from Arc to Base, with a single x402 payment. No transaction to build, no approvals, no gas token. You receive exactly the amount you ask for, at your own address, in about 12 seconds. Refer other agents and earn 20% of Liquid's fee on every bridge they make, credited on-chain in the same transaction. PAID, dynamic: the 402 is the exact price (Arc -> Base: about 1.077 USDC to receive 1; Base -> Arc: about 1.035 USDC to receive 1, payable on Base; minimum 1 USDC; Liquid's fee can never exceed max(3%, $0.05), enforced on-chain). Query: from=arc|base, to=base|arc, amount=<USDC to receive>, ref=<optional referrer address>. Pay once on the source chain (x402 exact, EIP-3009) to that chain's bridge contract: Arc 0xecdcd568c40975c1dfe7624265be4debfbd25862 (USDC domain \"USDC\" v2) or Base 0xf9330df3fe702c6b9a531bc1a1de2caa056361ea (USDC domain \"USD Coin\" v2). Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "description": "Move USDC from Base to 16 chains (Arc, Arbitrum, OP Mainnet, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume and Codex), or from Arc to Base, with a single x402 payment. No transaction to build, no approvals, no gas token. You receive exactly the amount you ask for, at your own address, in about 12 seconds. Refer other agents and earn 20% of Liquid's fee on every bridge they make, credited on-chain in the same transaction. PAID, dynamic: the 402 is the exact price (Arc -> Base: about 1.077 USDC to receive 1; Base -> Arc: about 1.035 USDC to receive 1, payable on Base; minimum 1 USDC; Liquid's fee can never exceed max(3%, $0.05), enforced on-chain). Query: from=arc|base, to=base|arc, amount=<USDC to receive>, ref=<optional referrer address>. Pay once on the source chain (x402 exact, EIP-3009) to that chain's bridge contract: Arc 0x3bc7bf1afc96c1de35ac48e1a0a3cc3d617a77b1 (USDC domain \"USDC\" v2) or Base 0xbf43e09b91c4d4aa55e033a3487f345ce4ed7557 (USDC domain \"USD Coin\" v2). Guide: https://api.liquidagent.ai/v1/bridge/guide",
                 "security": [
                     {
                         "x402": []
@@ -1434,7 +1434,7 @@
                     "currency": "USDC",
                     "network": "eip155:5042",
                     "asset": "0x3600000000000000000000000000000000000000",
-                    "payTo": "0xecdcd568c40975c1dfe7624265be4debfbd25862",
+                    "payTo": "0x3bc7bf1afc96c1de35ac48e1a0a3cc3d617a77b1",
                     "scheme": "exact",
                     "mode": "dynamic"
                 },
@@ -1445,7 +1445,7 @@
                                 "scheme": "exact",
                                 "network": "eip155:8453",
                                 "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-                                "payTo": "0xf9330df3fe702c6b9a531bc1a1de2caa056361ea"
+                                "payTo": "0xbf43e09b91c4d4aa55e033a3487f345ce4ed7557"
                             }
                         },
                         {
@@ -1453,7 +1453,7 @@
                                 "scheme": "exact",
                                 "network": "eip155:5042",
                                 "asset": "0x3600000000000000000000000000000000000000",
-                                "payTo": "0xecdcd568c40975c1dfe7624265be4debfbd25862"
+                                "payTo": "0x3bc7bf1afc96c1de35ac48e1a0a3cc3d617a77b1"
                             }
                         }
                     ],

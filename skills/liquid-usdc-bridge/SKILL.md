@@ -68,7 +68,7 @@ An x402 client does steps 1 to 3 for you. Runnable example: [`examples/bridge.js
 
 | Chain | Bridge contract (x402 payTo) | USDC |
 |---|---|---|
-| Base `eip155:8453` | `0xf9330df3fe702c6b9a531bc1a1de2caa056361ea` | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
-| Arc `eip155:5042` | `0xecdcd568c40975c1dfe7624265be4debfbd25862` | `0x3600000000000000000000000000000000000000` |
+| Base `eip155:8453` | `0xbf43e09b91c4d4aa55e033a3487f345ce4ed7557` | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
+| Arc `eip155:5042` | `0x3bc7bf1afc96c1de35ac48e1a0a3cc3d617a77b1` | `0x3600000000000000000000000000000000000000` |
 
 Full guide: https://api.liquidagent.ai/v1/bridge/guide · OpenAPI: https://api.liquidagent.ai/v1/bridge/openapi.json · llms.txt: https://api.liquidagent.ai/v1/bridge/llms.txt

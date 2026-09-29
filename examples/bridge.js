@@ -22,8 +22,8 @@ const MAX_OVER = Number(arg("max-fee-pct", "12")); // refuse to pay if all-in co
 
 // The only addresses this script will ever pay (the public bridge contracts, one per source chain).
 const CONTRACTS = {
-  "eip155:8453": { chainId: 8453, contract: "0xf9330df3fe702c6b9a531bc1a1de2caa056361ea", usdc: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" }, // Base
-  "eip155:5042": { chainId: 5042, contract: "0xecdcd568c40975c1dfe7624265be4debfbd25862", usdc: "0x3600000000000000000000000000000000000000" }, // Arc
+  "eip155:8453": { chainId: 8453, contract: "0xbf43e09b91c4d4aa55e033a3487f345ce4ed7557", usdc: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" }, // Base
+  "eip155:5042": { chainId: 5042, contract: "0x3bc7bf1afc96c1de35ac48e1a0a3cc3d617a77b1", usdc: "0x3600000000000000000000000000000000000000" }, // Arc
 };
 const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a);
 const url = `${API}/v1/bridge?from=${FROM}&to=${TO}&amount=${AMOUNT}${REF ? `&ref=${REF}` : ""}`;

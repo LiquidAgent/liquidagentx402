@@ -231,8 +231,8 @@ Free: `GET /v1/bridge/quote` · `/v1/bridge/routes` · `/v1/bridge/status/{burnT
 | EntryPoint v0.8 | `0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108` |
 | Simple7702Account (EOA delegation target) | `0xe6Cae83BdE06E4c305530e199D7217f42808555B` |
 | ERC-8004 identity | `eip155:8453:0x8004A169FB4a3325136EB29fA0ceB6D2e539a432/74094` |
-| Liquid Bridge contract, Base (x402 payTo) | `0xf9330df3fe702c6b9a531bc1a1de2caa056361ea` |
-| Liquid Bridge contract, Arc (`eip155:5042`, x402 payTo) | `0xecdcd568c40975c1dfe7624265be4debfbd25862` |
+| Liquid Bridge contract, Base (x402 payTo) | `0xbf43e09b91c4d4aa55e033a3487f345ce4ed7557` |
+| Liquid Bridge contract, Arc (`eip155:5042`, x402 payTo) | `0x3bc7bf1afc96c1de35ac48e1a0a3cc3d617a77b1` |
 | Circle CCTP MessageTransmitterV2 (Base and Arc) | `0x81D40F21F12A8F0E3252Bccb954D722d4c464B64` |
 
 ## Fees & mechanics
