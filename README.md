@@ -1,18 +1,24 @@
-# Liquid Agent — Tokenized Stock Index for AI Agents (x402 · Base)
+# Liquid Agent: money tools for AI agents (x402)
 
-> **Buy tokenized US stocks on-chain, from an AI agent.** Mint your own vault holding a basket of Coinbase's tokenized **NVDA, META, AAPL, GOOGL** on Base — buy from **$1**, rebalance anytime, cash out any block. No oracle, no project token, fully self-custodial. Reads are free; every transaction is returned as **unsigned calldata** your agent signs and broadcasts with its own gas. The server holds no key.
+> **x402 money tools for AI agents.** A one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat, a tokenized US stock basket from $1, and gas paid in USDC, plus free USDC and x402 debugging tools and a remote MCP server. No account, no API key, and the server never holds your keys.
 
-**Live API:** https://api.liquidagent.ai · **Agent guide:** https://api.liquidagent.ai/v1/guide · **Status:** https://api.liquidagent.ai/v1/status
+**Live API:** https://api.liquidagent.ai · **MCP:** https://api.liquidagent.ai/mcp · **Agent guide:** https://api.liquidagent.ai/v1/guide · **Status:** https://api.liquidagent.ai/v1/status
 
-**Also here: [Liquid Bridge](#liquid-bridge-x402--move-usdc-between-base-and-arc-in-one-signature)**, the one-signature USDC bridge for x402 agents (Base <-> Arc). Refer other agents and earn 20% of the fee.
+| Service | What it does | Price |
+|---|---|---|
+| **[Liquid Bridge](https://api.liquidagent.ai/v1/bridge/guide)** | USDC from Base to Arc, Arbitrum, OP, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume, Codex (or Arc to Base), one x402 signature, exact delivery. Referrers earn 20% of the fee. [Proof of delivery](https://api.liquidagent.ai/v1/bridge/proof) | 1% + network fee |
+| **[Polymarket price to beat](https://api.liquidagent.ai/v1/polymarket)** | The official price to beat for BTC, ETH, SOL, XRP Up/Down on 5m and 15m, live during the window. First call free with `?free=1` | $0.002 / call |
+| **Tokenized stocks** | Your own vault of Coinbase's tokenized NVDA, META, AAPL, GOOGL on Base from $1. Unsigned transactions you sign | free reads, signals $0.005 |
+| **Gas sponsor** | Transact on Base, Polygon or Solana holding only USDC | from $0.03 |
+| **Free tools** | USDC balances on 11 chains, status of any CCTP transfer, x402 debugger, payment readiness check | free |
 
-`x402` · `AI agents` · `tokenized stocks` · `Base` · `ERC-4626` · `ERC-8004` · `agentic commerce` · `no oracle` · `self-custodial`
+`x402` · `AI agents` · `USDC bridge` · `CCTP` · `Polymarket` · `MCP` · `tokenized stocks` · `Base` · `ERC-4626` · `ERC-8004` · `agentic commerce` · `no oracle` · `self-custodial`
 
 ---
 
 ## What is this?
 
-**Liquid Agent** is an **agent-native tokenized-stock index** on Base. An autonomous agent (or a human) can:
+The **stock index** part of Liquid Agent is an **agent-native tokenized-stock index** on Base. An autonomous agent (or a human) can:
 
 - **Discover** the index and live prices over plain HTTP — no API key, no account, no allowlist.
 - **Mint its own vault** (ERC-4626) holding a band-rebalanced basket of Coinbase's tokenized **NVDA / META / AAPL / GOOGL**.
