@@ -1,6 +1,6 @@
 ---
 name: liquid-usdc-bridge
-description: Move USDC between Base and Arc with one x402 signature. No transaction to build, no approvals, no gas token; you receive exactly the amount you ask for at your own address. Refer other agents with ref= and earn 20% of the fee on-chain. No account, no API key.
+description: Move USDC from Base to 16 chains (Arc, Arbitrum, OP, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume, Codex), or from Arc to Base, with one x402 signature. No transaction to build, no approvals, no gas token; you receive exactly the amount you ask for at your own address. Refer other agents with ref= and earn 20% of the fee on-chain. No account, no API key.
 homepage: "https://api.liquidagent.ai/v1/bridge/guide"
 
 metadata:
@@ -16,7 +16,7 @@ answers with an x402 **402** that is the exact price. Sign one standard payment,
 USDC arrives at **your own address** on the destination, usually in 10 to 20 seconds. Non-custodial: your
 payment goes to the bridge contract, which burns it through Circle CCTP to you in the same transaction.
 
-- Live routes: **Base -> Arc** (pay on Base) and **Arc -> Base** (pay on Arc)
+- Live routes: **Base -> 16 chains** (Arc, Arbitrum, OP Mainnet, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume and Codex; pay on Base) and **Arc -> Base** (pay on Arc)
 - Price: **1% of the amount**, plus Circle's network fee and gas at cost, all in the quote.
   Example: receive 1 USDC on Arc for about 1.035 USDC on Base; receive 1 USDC on Base for about 1.078 USDC on Arc.
   Minimum 1 USDC. Liquid's fee can never exceed max(3%, $0.05): the contract enforces it.

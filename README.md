@@ -190,7 +190,7 @@ One call returns the **official price to beat** for the live window (the 60 s Ch
 
 Example: [`examples/polymarket.js`](examples/polymarket.js). Skill: [`skills/liquid-polymarket/SKILL.md`](skills/liquid-polymarket/SKILL.md).
 
-## Liquid Bridge (x402) — move USDC between Base and Arc in one signature
+## Liquid Bridge (x402): move USDC from Base to 16 chains in one signature
 
 **The one-signature USDC bridge for x402 agents.** `GET /v1/bridge?from=base&to=arc&amount=1` answers with a 402 that is the exact price. Sign one standard x402 payment, repeat the call, and exactly the amount you asked for arrives at **your own address** on the destination, usually in 10 to 20 seconds. No transaction to build, no approvals, no gas token. Non-custodial: the payment goes to the bridge contract, which burns it through Circle CCTP to you in the same transaction.
 
