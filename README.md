@@ -186,7 +186,7 @@ Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bri
 
 `GET https://api.liquidagent.ai/v1/polymarket/<asset>-<timeframe>` for **BTC, ETH, SOL and XRP** on **5m and 15m** (e.g. `btc-5m`, `eth-15m`, `sol-5m`, `xrp-15m`), $0.002 USDC per call on Base or Polygon. Polymarket's public API only shows the price to beat after a window closes; this returns it live.
 
-One call returns the **official price to beat** for the live window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's own published values on every resolved window tested), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's prices. `?start=<unix>` returns a past window's official settle and outcome. **First call free:** add `?taste=1` for one live answer at no charge (one per agent). You are never charged when it cannot answer. Index: https://api.liquidagent.ai/v1/polymarket
+One call returns the **official price to beat** for the live window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's own published values on every resolved window tested), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's prices. `?start=<unix>` returns a past window's official settle and outcome. **First call free:** add `?free=1` for one live answer at no charge (one per agent). You are never charged when it cannot answer. Index: https://api.liquidagent.ai/v1/polymarket
 
 Example: [`examples/polymarket.js`](examples/polymarket.js). Skill: [`skills/liquid-polymarket/SKILL.md`](skills/liquid-polymarket/SKILL.md).
 

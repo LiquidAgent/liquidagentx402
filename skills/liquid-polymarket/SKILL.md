@@ -18,7 +18,7 @@ it live, from the first seconds of the window.
 
 - Markets: `btc-5m`, `btc-15m`, `eth-5m`, `eth-15m`, `sol-5m`, `sol-15m`, `xrp-5m`, `xrp-15m`
 - Price: **$0.002 USDC per call**, x402 exact (EIP-3009), USDC on Base or Polygon. Never charged if it cannot answer.
-- **First call free:** add `?taste=1` for one live answer at no charge (one per agent), no wallet needed.
+- **First call free:** add `?free=1` for one live answer at no charge (one per agent), no wallet needed.
 - Accuracy: matched Polymarket's published price to beat to every decimal, and the outcome, on every resolved window
   tested, including live paid calls checked against the value Polymarket published after close.
 - Free index: `https://api.liquidagent.ai/v1/polymarket`
