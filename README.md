@@ -40,10 +40,11 @@ claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
 { "mcpServers": { "liquid-agent": { "type": "streamable-http", "url": "https://api.liquidagent.ai/mcp" } } }
 ```
 
-19 tools:
+23 tools:
 - **Bridge:** `bridge_quote`, `bridge_prepare_payment`, `bridge_routes`, `bridge_status`, `bridge_referral_earnings`
 - **Stocks:** `stocks_basket`, `stocks_portfolio`, `stocks_buy_quote`, `stocks_vault`, `stocks_create_vault`, `stocks_set_weights`, `stocks_buy`, `stocks_sell`, `stocks_rebalance`, `stocks_send` (write tools return an unsigned transaction you sign yourself)
 - **Paid prep:** `stocks_signals_prepare` ($0.005), `stocks_publish_prepare` ($0.01)
+- **Utilities:** `usdc_balances` (every CCTP chain), `cctp_status` (any Circle CCTP transfer, and how to finish a stuck one), `x402_check` (decode a 402, verify a signed payment, get the fix), `payment_readiness` (can this wallet pay this endpoint)
 - **Other:** `gas_sponsor_info`, `liquid_guide`
 
 Plus 4 doc resources and 3 prompts (bridge USDC, earn referrals, buy the basket). All free. Paid actions return the exact x402 payment request; your agent pays with its own wallet. The server never signs or holds funds.
@@ -60,6 +61,7 @@ Plus 4 doc resources and 3 prompts (bridge USDC, earn referrals, buy the basket)
 | ERC-8004 registration | https://api.liquidagent.ai/.well-known/erc8004.json |
 | llms.txt | https://api.liquidagent.ai/llms.txt |
 | MCP server card | https://api.liquidagent.ai/.well-known/mcp/server.json |
+| Bridge proof of delivery | https://api.liquidagent.ai/v1/bridge/proof |
 | MCP Registry entry | [`mcp-server.json`](mcp-server.json) |
 
 ## Agent skill (OpenClaw · ClawHub · skills.sh)
