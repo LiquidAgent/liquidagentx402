@@ -40,10 +40,10 @@ claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
 { "mcpServers": { "liquid-agent": { "type": "streamable-http", "url": "https://api.liquidagent.ai/mcp" } } }
 ```
 
-23 tools:
+24 tools:
 - **Bridge:** `bridge_quote`, `bridge_prepare_payment`, `bridge_routes`, `bridge_status`, `bridge_referral_earnings`
 - **Stocks:** `stocks_basket`, `stocks_portfolio`, `stocks_buy_quote`, `stocks_vault`, `stocks_create_vault`, `stocks_set_weights`, `stocks_buy`, `stocks_sell`, `stocks_rebalance`, `stocks_send` (write tools return an unsigned transaction you sign yourself)
-- **Paid prep:** `stocks_signals_prepare` ($0.005), `stocks_publish_prepare` ($0.01)
+- **Paid prep:** `polymarket_btc_prepare` ($0.002), `stocks_signals_prepare` ($0.005), `stocks_publish_prepare` ($0.01)
 - **Utilities:** `usdc_balances` (every CCTP chain), `cctp_status` (any Circle CCTP transfer, and how to finish a stuck one), `x402_check` (decode a 402, verify a signed payment, get the fix), `payment_readiness` (can this wallet pay this endpoint)
 - **Other:** `gas_sponsor_info`, `liquid_guide`
 
@@ -180,6 +180,12 @@ curl -s -X POST https://api.liquidagent.ai/v1/gas -H 'content-type: application/
 ```
 
 Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bring-your-own.js): swap the account constructor for your SDK's. `GET /v1/gas` describes the sponsor; `GET /v1/gas/stats` shows live usage.
+
+## Paid: Polymarket BTC price to beat (x402)
+
+`GET https://api.liquidagent.ai/v1/polymarket/btc-5m` and `/v1/polymarket/btc-15m`, $0.002 USDC per call on Base or Polygon.
+
+One call returns the **official price to beat** for the live window (the 60 s Chainlink TWAP before it starts, matched to the cent against Polymarket's own results on 23/23 BTC 5m and 12/12 BTC 15m windows), the live Chainlink price, the projected settlement (mean of the last 60 s), how much of it is already locked, a model probability of Up, token ids and the market's prices. `?start=<unix>` returns a past window's official settle and outcome. You are never charged when it cannot answer. Index: https://api.liquidagent.ai/v1/polymarket
 
 ## Liquid Bridge (x402) — move USDC between Base and Arc in one signature
 
