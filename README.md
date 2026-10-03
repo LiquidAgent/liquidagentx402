@@ -1,6 +1,6 @@
 # Liquid Agent: money tools for AI agents (x402)
 
-> **x402 money tools for AI agents.** A one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat, a tokenized US stock basket from $1, and gas paid in USDC, plus free USDC and x402 debugging tools and a remote MCP server. No account, no API key, and the server never holds your keys.
+> **x402 money tools for AI agents.** A one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat, a tokenized US stock basket from $1, gas paid in USDC, and gift search in partner shops, plus free USDC and x402 debugging tools and a remote MCP server. No account, no API key, and the server never holds your keys.
 
 **Live API:** https://api.liquidagent.ai · **MCP:** https://api.liquidagent.ai/mcp · **Agent guide:** https://api.liquidagent.ai/v1/guide · **Status:** https://api.liquidagent.ai/v1/status
 
@@ -10,9 +10,10 @@
 | **[Polymarket price to beat](https://api.liquidagent.ai/v1/polymarket)** | The official price to beat for BTC, ETH, SOL, XRP Up/Down on 5m and 15m, live during the window. First call free with `?free=1` | $0.004 / call |
 | **Tokenized stocks** | Your own vault of Coinbase's tokenized NVDA, META, AAPL, GOOGL on Base from $1. Unsigned transactions you sign | free reads, signals $0.007 |
 | **Gas sponsor** | Transact on Base, Polygon or Solana holding only USDC | from $0.03 |
+| **[Gift search](https://api.liquidagent.ai/v1/shop/mintandmarquee)** | Search the Mint & Marquee partner shop (custom 3D printed figurines, statues, keychains, bag tags) and get products with price, photo and a link to buy | $0.001 / search |
 | **Free tools** | USDC balances on 11 chains, status of any CCTP transfer, x402 debugger, payment readiness check | free |
 
-`x402` · `AI agents` · `USDC bridge` · `CCTP` · `Polymarket` · `MCP` · `tokenized stocks` · `Base` · `ERC-4626` · `ERC-8004` · `agentic commerce` · `no oracle` · `self-custodial`
+`x402` · `AI agents` · `USDC bridge` · `CCTP` · `Polymarket` · `MCP` · `tokenized stocks` · `Base` · `ERC-4626` · `ERC-8004` · `agentic commerce` · `agentic shopping` · `no oracle` · `self-custodial`
 
 ---
 
@@ -46,13 +47,13 @@ claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
 { "mcpServers": { "liquid-agent": { "type": "streamable-http", "url": "https://api.liquidagent.ai/mcp" } } }
 ```
 
-26 tools:
+28 tools:
 - **Bridge:** `bridge_quote`, `bridge_prepare_payment`, `bridge_routes`, `bridge_status`, `bridge_referral_earnings`
 - **Stocks:** `stocks_basket`, `stocks_portfolio`, `stocks_buy_quote`, `stocks_vault`, `stocks_create_vault`, `stocks_set_weights`, `stocks_buy`, `stocks_sell`, `stocks_rebalance`, `stocks_send` (write tools return an unsigned transaction you sign yourself)
-- **Paid inside the tool call (x402 over MCP):** `polymarket_price_to_beat` ($0.004), `stocks_signals` ($0.007). Call once without payment to get the x402 `PaymentRequired`, then call again with the signed payment in `_meta["x402/payment"]`; the data comes back with the receipt in `_meta["x402/payment-response"]` ([x402 MCP transport spec](https://github.com/x402-foundation/x402/blob/main/specs/transports-v2/mcp.md)). Pay on Base, Polygon or Arc.
+- **Paid inside the tool call (x402 over MCP):** `polymarket_price_to_beat` ($0.004), `stocks_signals` ($0.007), `shop_search` ($0.001). Call once without payment to get the x402 `PaymentRequired`, then call again with the signed payment in `_meta["x402/payment"]`; the data comes back with the receipt in `_meta["x402/payment-response"]` ([x402 MCP transport spec](https://github.com/x402-foundation/x402/blob/main/specs/transports-v2/mcp.md)). Pay on Base, Polygon or Arc.
 - **Paid prep (returns the HTTP 402 to pay yourself):** `polymarket_prepare` ($0.004), `stocks_signals_prepare` ($0.007), `stocks_publish_prepare` ($0.01)
 - **Utilities:** `usdc_balances` (every CCTP chain), `cctp_status` (any Circle CCTP transfer, and how to finish a stuck one), `x402_check` (decode a 402, verify a signed payment, get the fix), `payment_readiness` (can this wallet pay this endpoint)
-- **Other:** `gas_sponsor_info`, `liquid_guide`
+- **Other:** `gas_sponsor_info`, `shop_info`, `liquid_guide`
 
 Plus 4 doc resources and 3 prompts (bridge USDC, earn referrals, buy the basket). Free to connect. Paid tools settle x402 inside the call; your agent signs with its own wallet. The server never signs or holds funds.
 
@@ -196,6 +197,14 @@ Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bri
 One call returns the **official price to beat** for the live window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's own published values on every resolved window tested), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's prices. `?start=<unix>` returns a past window's official settle and outcome. **First call free:** add `?free=1` for one live answer at no charge (one per agent). You are never charged when it cannot answer. Index: https://api.liquidagent.ai/v1/polymarket
 
 Example: [`examples/polymarket.js`](examples/polymarket.js). Skill: [`skills/liquid-polymarket/SKILL.md`](skills/liquid-polymarket/SKILL.md).
+
+## Paid: gift search in partner shops (x402)
+
+`GET https://api.liquidagent.ai/v1/shop/mintandmarquee/search?q=<what>&max=<usd>` searches the **Mint & Marquee** partner shop (custom 3D printed figurines, statues, keychains and bag tags; soccer, anime and crypto collections) for **$0.001 USDC per search**, x402 exact (EIP-3009), USDC on **Arc, Base or Polygon**. You are never charged when it cannot answer.
+
+It returns up to 10 products with name, price, photo, a short description and a link to buy. Each answer ends with a `foundWith` line (Liquid Agent, with 10% off the first month for people who join through the link) for your agent to show once. Free shop info: https://api.liquidagent.ai/v1/shop/mintandmarquee
+
+Example: [`examples/shop.js`](examples/shop.js). Skill: [`skills/liquid-gift-search/SKILL.md`](skills/liquid-gift-search/SKILL.md). MCP: `shop_search` (paid in the call), `shop_info` (free).
 
 ## Liquid Bridge (x402): move USDC from Base to 16 chains in one signature
 
