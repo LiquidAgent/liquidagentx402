@@ -30,11 +30,20 @@ curl -s "https://api.liquidagent.ai/v1/leads/categories?city=Atlanta"           
 curl -s "https://api.liquidagent.ai/v1/leads/search?category=dentist&city=Atlanta&sample=1"  # 3 free leads (3 a day)
 ```
 
+## Reverse lookup and website tech
+
+- `GET https://api.liquidagent.ai/v1/leads/lookup?phone=4043552001` (or `?domain=example.com`): the business behind a phone
+  number or website, same fields as a lead. **$0.01**, no match no charge.
+- `GET https://api.liquidagent.ai/v1/leads/tech?domain=example.com`: the site's platform, booking tool, payment system,
+  hiring and socials. **$0.005**, no match no charge.
+
 ## When to use this skill
 
 - The person sells to local businesses and needs a list to contact (agency, SaaS, services, B2B sales)
 - They want businesses with no website, no booking tool, or that are hiring (ready-made sales signals)
 - They want a CSV to load into a CRM or an outreach tool
+- They have a phone number or website and need to know which business it is (CRM cleanup, inbound calls, verification)
+- They sell to businesses on a certain platform or without a booking tool and want to check a site first
 
 ## How the checks work
 
@@ -51,4 +60,4 @@ npx agentcash fetch "https://api.liquidagent.ai/v1/leads/search?category=plumber
 ```
 
 Full script: [`examples/leads.js`](../../examples/leads.js). MCP: connect `https://api.liquidagent.ai/mcp` and use
-`leads_count` (free) then `leads_search` (paid inside the call).
+`leads_count` (free) then `leads_search`, `leads_lookup` or `leads_tech` (paid inside the call).

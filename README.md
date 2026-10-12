@@ -6,7 +6,7 @@
 
 | Service | What it does | Price |
 |---|---|---|
-| **[Liquid Leads](https://api.liquidagent.ai/v1/leads)** | US local businesses by category and place (10 states, 3.9M businesses): a checked email graded A/B/C, contact name, phone, a website proven by the business's own phone number, socials and buying signals. Free count and 3 free samples a day | $0.03 / lead |
+| **[Liquid Leads](https://api.liquidagent.ai/v1/leads)** | US local businesses by category and place (10 states, 3.9M businesses): a checked email graded A/B/C, contact name, phone, a website proven by the business's own phone number, socials and buying signals. Free count and 3 free samples a day. Plus reverse lookup by phone or website ($0.01) and website tech ($0.005) | $0.03 / lead |
 | **[Liquid Bridge](https://api.liquidagent.ai/v1/bridge/guide)** | USDC from Base to Arc, Arbitrum, OP, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume, Codex (or Arc to Base), one x402 signature, exact delivery. Referrers earn 20% of the fee. [Proof of delivery](https://api.liquidagent.ai/v1/bridge/proof) | 1% + network fee |
 | **[Polymarket price to beat](https://api.liquidagent.ai/v1/polymarket)** | The official price to beat for BTC, ETH, SOL, XRP Up/Down on 5m and 15m, live during the window. First call free with `?free=1` | $0.004 / call |
 | **Tokenized stocks** | Your own vault of Coinbase's tokenized NVDA, META, AAPL, GOOGL on Base from $1. Unsigned transactions you sign | free reads, signals $0.007 |
@@ -48,8 +48,8 @@ claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
 { "mcpServers": { "liquid-agent": { "type": "streamable-http", "url": "https://api.liquidagent.ai/mcp" } } }
 ```
 
-29 tools:
-- **Leads:** `leads_count` (free: matches and the exact price), `leads_search` ($0.03 a lead, paid inside the tool call)
+31 tools:
+- **Leads:** `leads_count` (free: matches and the exact price), `leads_search` ($0.03 a lead), `leads_lookup` ($0.01: the business behind a phone number or website), `leads_tech` ($0.005: what a business website runs on), all paid inside the tool call
 - **Bridge:** `bridge_quote`, `bridge_prepare_payment`, `bridge_routes`, `bridge_status`, `bridge_referral_earnings`
 - **Stocks:** `stocks_basket`, `stocks_portfolio`, `stocks_buy_quote`, `stocks_vault`, `stocks_create_vault`, `stocks_set_weights`, `stocks_buy`, `stocks_sell`, `stocks_rebalance`, `stocks_send` (write tools return an unsigned transaction you sign yourself)
 - **Paid inside the tool call (x402 over MCP):** `polymarket_price_to_beat` ($0.004), `stocks_signals` ($0.007), `shop_search` ($0.001). Call once without payment to get the x402 `PaymentRequired`, then call again with the signed payment in `_meta["x402/payment"]`; the data comes back with the receipt in `_meta["x402/payment-response"]` ([x402 MCP transport spec](https://github.com/x402-foundation/x402/blob/main/specs/transports-v2/mcp.md)). Pay on Base, Polygon or Arc.
@@ -200,7 +200,9 @@ Each lead: name, address, phone, the best email with its grade (A = own domain a
 
 **Free first:** [`/v1/leads`](https://api.liquidagent.ai/v1/leads) (coverage by state, every filter), `/v1/leads/count` (how many match, by grade, and the exact price), `/v1/leads/categories`, and `sample=1` for 3 free leads (3 a day). Coverage: CA, TX, FL, NY, PA, IL, OH, GA, NC, DE, with more states being added. Data: Overture Maps Places (CDLA-Permissive-2.0) plus our own crawl of each business's website.
 
-Example: [`examples/leads.js`](examples/leads.js). Skill: [`skills/liquid-local-leads/SKILL.md`](skills/liquid-local-leads/SKILL.md). MCP: `leads_count` (free), `leads_search` (paid in the call).
+**Reverse lookup ($0.01):** `GET https://api.liquidagent.ai/v1/leads/lookup?phone=<US number>` or `?domain=<website>` returns the business behind it, in the same shape as a lead. A website only matches when it carries the business's own phone number, and placeholder numbers (555-01xx, 999-9999) are refused. **Website tech ($0.005):** `GET https://api.liquidagent.ai/v1/leads/tech?domain=<website>` returns the site platform, online booking tool, payment system, hiring and socials, read from the business's own verified site. Both are no match, no charge.
+
+Example: [`examples/leads.js`](examples/leads.js). Skill: [`skills/liquid-local-leads/SKILL.md`](skills/liquid-local-leads/SKILL.md). MCP: `leads_count` (free), `leads_search`, `leads_lookup`, `leads_tech` (paid in the call).
 
 ## Paid: Polymarket price to beat (x402)
 

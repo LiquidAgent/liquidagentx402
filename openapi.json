@@ -3,7 +3,7 @@
     "info": {
         "title": "Liquid Agent: Money Tools for AI Agents",
         "version": "1.0.0",
-        "description": "x402 money tools for AI agents: verified local business leads (3.9M businesses in 10 US states, websites proven by the business's own phone, graded emails, buying signals, $0.03 a lead), a one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat (BTC, ETH, SOL, XRP on 5m and 15m), a tokenized US stock basket from $1, and gas paid in USDC, plus free USDC and x402 debugging tools and a remote MCP server (29 tools). No account, no API key. Part of Liquid Agent, the money layer for humans and their agents: one USDC balance for yield, payments, and tokenized stocks, for people through the app and for agents over x402. This API lets you buy and invest in tokenized US stocks on-chain from $1: NVIDIA, Apple, Meta and Alphabet. Mint your own vault holding a band-rebalanced stock basket, equal-weight or your custom portfolio, and rebalance or cash out any block. Self-priced NAV (no oracle), in-kind exit, no brokerage account, no project token. Reads are free; transactions return unsigned calldata the agent signs and broadcasts with its own gas.",
+        "description": "x402 money tools for AI agents: verified local business leads (3.9M businesses in 11 US states, websites proven by the business's own phone, graded emails, buying signals, $0.03 a lead), a one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat (BTC, ETH, SOL, XRP on 5m and 15m), a tokenized US stock basket from $1, and gas paid in USDC, plus free USDC and x402 debugging tools and a remote MCP server (31 tools). No account, no API key. Part of Liquid Agent, the money layer for humans and their agents: one USDC balance for yield, payments, and tokenized stocks, for people through the app and for agents over x402. This API lets you buy and invest in tokenized US stocks on-chain from $1: NVIDIA, Apple, Meta and Alphabet. Mint your own vault holding a band-rebalanced stock basket, equal-weight or your custom portfolio, and rebalance or cash out any block. Self-priced NAV (no oracle), in-kind exit, no brokerage account, no project token. Reads are free; transactions return unsigned calldata the agent signs and broadcasts with its own gas.",
         "contact": {
             "name": "Liquid Agent",
             "url": "https://api.liquidagent.ai",
@@ -1558,7 +1558,7 @@
                         "siwx": []
                     }
                 ],
-                "description": "Free. Local business leads by category and place, with a checked email (graded A/B/C), a contact name when the email shows one, phone, website, socials and buying signals (no website, online booking tool, payment system, hiring).",
+                "description": "Free. Local business leads by category and place for B2B prospecting and cold outreach: a lead list of US small businesses (dentists, plumbers, salons, contractors...) with verified emails (graded A/B/C), a contact name when the email shows one, phone, a website proven by the business's own phone number, socials and buying signals (no website, online booking tool, payment system, hiring).",
                 "responses": {
                     "200": {
                         "description": "service info",
@@ -1857,7 +1857,7 @@
                 "tags": [
                     "Leads"
                 ],
-                "description": "PAID: USDC, $0.03 per lead, flat (with or without an email); 1 to 1000 leads per call (default 10 = $0.30); the 402 quotes the exact total; empty answers are free. x402 exact scheme, EIP-3009 USDC on Base eip155:8453 or Arc eip155:5042. Local business leads by category and place, with a checked email (graded A/B/C), a contact name when the email shows one, phone, website, socials and buying signals (no website, online booking tool, payment system, hiring).",
+                "description": "PAID: USDC, $0.03 per lead, flat (with or without an email); 1 to 1000 leads per call (default 10 = $0.30); the 402 quotes the exact total; empty answers are free. x402 exact scheme, EIP-3009 USDC on Base eip155:8453 or Arc eip155:5042. Local business leads by category and place for B2B prospecting and cold outreach: a lead list of US small businesses (dentists, plumbers, salons, contractors...) with verified emails (graded A/B/C), a contact name when the email shows one, phone, a website proven by the business's own phone number, socials and buying signals (no website, online booking tool, payment system, hiring).",
                 "security": [
                     {
                         "x402": []
@@ -2111,6 +2111,174 @@
                 }
             }
         },
+        "/v1/leads/lookup": {
+            "get": {
+                "operationId": "getV1LeadsLookup",
+                "summary": "Reverse phone or website lookup: the US local business behind a phone number or website.",
+                "tags": [
+                    "Leads"
+                ],
+                "description": "PAID: $0.01 per lookup that finds a business, no match no charge. x402 exact scheme, EIP-3009 USDC on Base eip155:8453 or Arc eip155:5042. Reverse phone and website lookup for US local businesses: give a phone number or a website, get the business behind it (name, address, category, graded email, contact name, socials, buying signals). Websites only match when they carry the business's own phone number.",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "4043552001"
+                        },
+                        "description": "A US phone number, any format: 4043552001, (404) 355-2001, +14043552001. Give phone or domain."
+                    },
+                    {
+                        "name": "domain",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "atlantadentistrybydesign.com"
+                        },
+                        "description": "Or a website: example.com or https://www.example.com/contact."
+                    }
+                ],
+                "x-payment-info": {
+                    "protocols": [
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:8453",
+                                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        },
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:5042",
+                                "asset": "0x3600000000000000000000000000000000000000",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        }
+                    ],
+                    "price": {
+                        "mode": "fixed",
+                        "currency": "USD",
+                        "amount": "0.01"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "the match (found=false and no charge when nothing matches)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 payment required",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/leads/tech": {
+            "get": {
+                "operationId": "getV1LeadsTech",
+                "summary": "Website technology lookup: platform, booking tool, payment system and socials of a local business site.",
+                "tags": [
+                    "Leads"
+                ],
+                "description": "PAID: $0.005 per lookup that finds a verified site, no match no charge. x402 exact scheme, EIP-3009 USDC on Base eip155:8453 or Arc eip155:5042. Website technology lookup (technographics) for US local businesses: give a website or phone number, get the site platform (WordPress, Wix, Squarespace, Shopify), online booking tool (Square Appointments, Vagaro, Calendly, Zocdoc), payment system (Square, Toast, Clover, Stripe), hiring and socials, read from the business's own verified website.",
+                "security": [
+                    {
+                        "x402": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "phone",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "4043552001"
+                        },
+                        "description": "A US phone number, any format: 4043552001, (404) 355-2001, +14043552001. Give phone or domain."
+                    },
+                    {
+                        "name": "domain",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "atlantadentistrybydesign.com"
+                        },
+                        "description": "Or a website: example.com or https://www.example.com/contact."
+                    }
+                ],
+                "x-payment-info": {
+                    "protocols": [
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:8453",
+                                "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        },
+                        {
+                            "x402": {
+                                "scheme": "exact",
+                                "network": "eip155:5042",
+                                "asset": "0x3600000000000000000000000000000000000000",
+                                "payTo": "0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90"
+                            }
+                        }
+                    ],
+                    "price": {
+                        "mode": "fixed",
+                        "currency": "USD",
+                        "amount": "0.005"
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "the match (found=false and no charge when nothing matches)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "x402 payment required",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/publish": {
             "post": {
                 "operationId": "postV1Publish",
@@ -2208,7 +2376,7 @@
                 "tags": [
                     "Liquid Bridge"
                 ],
-                "description": "Move USDC from Base to 16 chains (Arc, Arbitrum, OP Mainnet, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume and Codex), or from Arc to Base, with a single x402 payment. No transaction to build, no approvals, no gas token. You receive exactly the amount you ask for, at your own address, in about 12 seconds. Refer other agents and earn 20% of Liquid's fee on every bridge they make, credited on-chain in the same transaction. PAID, dynamic: the 402 is the exact price (Arc -> Base: about 1.077 USDC to receive 1; Base -> Arc: about 1.037 USDC to receive 1, payable on Base; minimum 1 USDC; Liquid's fee can never exceed max(3%, $0.05), enforced on-chain). Query: from=arc|base, to=base|arc, amount=<USDC to receive>, ref=<optional referrer address>. Pay once on the source chain (x402 exact, EIP-3009) to that chain's bridge contract: Arc 0x3bc7bf1afc96c1de35ac48e1a0a3cc3d617a77b1 (USDC domain \"USDC\" v2) or Base 0xbf43e09b91c4d4aa55e033a3487f345ce4ed7557 (USDC domain \"USD Coin\" v2). Guide: https://api.liquidagent.ai/v1/bridge/guide",
+                "description": "Move USDC from Base to 16 chains (Arc, Arbitrum, OP Mainnet, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume and Codex), or from Arc to Base, with a single x402 payment. No transaction to build, no approvals, no gas token. You receive exactly the amount you ask for, at your own address, in about 12 seconds. Refer other agents and earn 20% of Liquid's fee on every bridge they make, credited on-chain in the same transaction. PAID, dynamic: the 402 is the exact price (Arc -> Base: about 1.077 USDC to receive 1; Base -> Arc: about 1.035 USDC to receive 1, payable on Base; minimum 1 USDC; Liquid's fee can never exceed max(3%, $0.05), enforced on-chain). Query: from=arc|base, to=base|arc, amount=<USDC to receive>, ref=<optional referrer address>. Pay once on the source chain (x402 exact, EIP-3009) to that chain's bridge contract: Arc 0x3bc7bf1afc96c1de35ac48e1a0a3cc3d617a77b1 (USDC domain \"USDC\" v2) or Base 0xbf43e09b91c4d4aa55e033a3487f345ce4ed7557 (USDC domain \"USD Coin\" v2). Guide: https://api.liquidagent.ai/v1/bridge/guide",
                 "security": [
                     {
                         "x402": []
