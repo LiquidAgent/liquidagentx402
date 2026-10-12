@@ -194,7 +194,7 @@ Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bri
 
 ## Paid: Liquid Leads, US local business leads (x402)
 
-`GET https://api.liquidagent.ai/v1/leads/search?category=<what>&city=<where>&limit=<n>` returns local businesses (dentists, plumbers, HVAC, salons, law firms and hundreds more) for **$0.03 USDC per lead**, flat, x402 exact (EIP-3009), USDC on **Base or Arc**. 1 to 1,000 leads per call (default 10 = $0.30); the 402 quotes the exact total and you are never charged for an empty answer.
+`GET https://api.liquidagent.ai/v1/leads/search?category=<what>&city=<where>&limit=<n>` returns local businesses (dentists, plumbers, HVAC, salons, law firms and hundreds more) for **$0.03 USDC per lead**, flat, x402 exact (EIP-3009), USDC on **Base or Arc**. 1 to 1,000 leads per call (default 3 = $0.09, or sample=1 for 3 free leads); the 402 quotes the exact total and you are never charged for an empty answer.
 
 Each lead: name, address, phone, the best email with its grade (A = own domain and a named person, B = own domain shared inbox or a published free-mail address, C = a live domain not tied to their site), a contact name when the email shows one, socials, and buying signals (no website, online booking tool, payment system, hiring). A website is only returned when it carries the business's own phone number; a site we cannot prove is theirs is dropped and nothing from it is used. Place by `city`, `county`, `zip` or `near=<lat>,<lng>`; `format=csv` for a CRM.
 
