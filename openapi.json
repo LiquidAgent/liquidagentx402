@@ -3,7 +3,7 @@
     "info": {
         "title": "Liquid Agent: Money Tools for AI Agents",
         "version": "1.0.0",
-        "description": "x402 money tools for AI agents: verified local business leads (3.9M businesses in 11 US states, websites proven by the business's own phone, graded emails, buying signals, $0.03 a lead), a one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat (BTC, ETH, SOL, XRP on 5m and 15m), a tokenized US stock basket from $1, and gas paid in USDC, plus free USDC and x402 debugging tools and a remote MCP server (31 tools). No account, no API key. Part of Liquid Agent, the money layer for humans and their agents: one USDC balance for yield, payments, and tokenized stocks, for people through the app and for agents over x402. This API lets you buy and invest in tokenized US stocks on-chain from $1: NVIDIA, Apple, Meta and Alphabet. Mint your own vault holding a band-rebalanced stock basket, equal-weight or your custom portfolio, and rebalance or cash out any block. Self-priced NAV (no oracle), in-kind exit, no brokerage account, no project token. Reads are free; transactions return unsigned calldata the agent signs and broadcasts with its own gas.",
+        "description": "x402 money tools for AI agents: verified local business leads (4.2M businesses in 20 US states, websites proven by the business's own phone, graded emails, buying signals, $0.03 a lead), a one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat (BTC, ETH, SOL, XRP on 5m and 15m), a tokenized US stock basket from $1, and gas paid in USDC, plus free USDC and x402 debugging tools and a remote MCP server (31 tools). No account, no API key. Part of Liquid Agent, the money layer for humans and their agents: one USDC balance for yield, payments, and tokenized stocks, for people through the app and for agents over x402. This API lets you buy and invest in tokenized US stocks on-chain from $1: NVIDIA, Apple, Meta and Alphabet. Mint your own vault holding a band-rebalanced stock basket, equal-weight or your custom portfolio, and rebalance or cash out any block. Self-priced NAV (no oracle), in-kind exit, no brokerage account, no project token. Reads are free; transactions return unsigned calldata the agent signs and broadcasts with its own gas.",
         "contact": {
             "name": "Liquid Agent",
             "url": "https://api.liquidagent.ai",
@@ -1808,9 +1808,9 @@
                             "type": "integer",
                             "minimum": 1,
                             "maximum": 1000,
-                            "example": 10
+                            "example": 3
                         },
-                        "description": "How many leads, 1-1000 (default 10); $0.03 per lead."
+                        "description": "How many leads, 1-1000 (default 3); $0.03 per lead."
                     },
                     {
                         "name": "offset",
@@ -1857,7 +1857,7 @@
                 "tags": [
                     "Leads"
                 ],
-                "description": "PAID: USDC, $0.03 per lead, flat (with or without an email); 1 to 1000 leads per call (default 10 = $0.30); the 402 quotes the exact total; empty answers are free. x402 exact scheme, EIP-3009 USDC on Base eip155:8453 or Arc eip155:5042. Local business leads by category and place for B2B prospecting and cold outreach: a lead list of US small businesses (dentists, plumbers, salons, contractors...) with verified emails (graded A/B/C), a contact name when the email shows one, phone, a website proven by the business's own phone number, socials and buying signals (no website, online booking tool, payment system, hiring).",
+                "description": "PAID: USDC, $0.03 per lead, flat (with or without an email); 1 to 1000 leads per call (default 3 = $0.09); free first: sample=1 returns 3 leads; the 402 quotes the exact total; empty answers are free. x402 exact scheme, EIP-3009 USDC on Base eip155:8453 or Arc eip155:5042. Local business leads by category and place for B2B prospecting and cold outreach: a lead list of US small businesses (dentists, plumbers, salons, contractors...) with verified emails (graded A/B/C), a contact name when the email shows one, phone, a website proven by the business's own phone number, socials and buying signals (no website, online booking tool, payment system, hiring).",
                 "security": [
                     {
                         "x402": []
@@ -2027,9 +2027,9 @@
                             "type": "integer",
                             "minimum": 1,
                             "maximum": 1000,
-                            "example": 10
+                            "example": 3
                         },
-                        "description": "How many leads, 1-1000 (default 10); $0.03 per lead."
+                        "description": "How many leads, 1-1000 (default 3); $0.03 per lead."
                     },
                     {
                         "name": "offset",
@@ -2079,7 +2079,7 @@
                         "currency": "USD",
                         "min": "0.03",
                         "max": "30.00",
-                        "description": "flat $0.03 per lead returned, with or without an email; default 10 leads = $0.30; exact total in the 402"
+                        "description": "flat $0.03 per lead returned, with or without an email; default 3 leads = $0.09; sample=1 is free (3 leads); exact total in the 402"
                     }
                 },
                 "responses": {
