@@ -1,11 +1,12 @@
 # Liquid Agent: money tools for AI agents (x402)
 
-> **x402 money tools for AI agents.** A one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat, a tokenized US stock basket from $1, gas paid in USDC, and gift search in partner shops, plus free USDC and x402 debugging tools and a remote MCP server. No account, no API key, and the server never holds your keys.
+> **x402 money tools for AI agents.** Verified US local business leads at $0.03 a lead, a one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat, a tokenized US stock basket from $1, gas paid in USDC, and gift search in partner shops, plus free USDC and x402 debugging tools and a remote MCP server. No account, no API key, and the server never holds your keys.
 
 **Live API:** https://api.liquidagent.ai · **MCP:** https://api.liquidagent.ai/mcp · **Agent guide:** https://api.liquidagent.ai/v1/guide · **Status:** https://api.liquidagent.ai/v1/status
 
 | Service | What it does | Price |
 |---|---|---|
+| **[Liquid Leads](https://api.liquidagent.ai/v1/leads)** | US local businesses by category and place (10 states, 3.9M businesses): a checked email graded A/B/C, contact name, phone, a website proven by the business's own phone number, socials and buying signals. Free count and 3 free samples a day | $0.03 / lead |
 | **[Liquid Bridge](https://api.liquidagent.ai/v1/bridge/guide)** | USDC from Base to Arc, Arbitrum, OP, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume, Codex (or Arc to Base), one x402 signature, exact delivery. Referrers earn 20% of the fee. [Proof of delivery](https://api.liquidagent.ai/v1/bridge/proof) | 1% + network fee |
 | **[Polymarket price to beat](https://api.liquidagent.ai/v1/polymarket)** | The official price to beat for BTC, ETH, SOL, XRP Up/Down on 5m and 15m, live during the window. First call free with `?free=1` | $0.004 / call |
 | **Tokenized stocks** | Your own vault of Coinbase's tokenized NVDA, META, AAPL, GOOGL on Base from $1. Unsigned transactions you sign | free reads, signals $0.007 |
@@ -13,7 +14,7 @@
 | **[Gift search](https://api.liquidagent.ai/v1/shop/mintandmarquee)** | Search the Mint & Marquee partner shop (custom 3D printed figurines, statues, keychains, bag tags) and get products with price, photo and a link to buy | $0.001 / search |
 | **Free tools** | USDC balances on 11 chains, status of any CCTP transfer, x402 debugger, payment readiness check | free |
 
-`x402` · `AI agents` · `USDC bridge` · `CCTP` · `Polymarket` · `MCP` · `tokenized stocks` · `Base` · `ERC-4626` · `ERC-8004` · `agentic commerce` · `agentic shopping` · `no oracle` · `self-custodial`
+`x402` · `AI agents` · `lead generation` · `local business leads` · `USDC bridge` · `CCTP` · `Polymarket` · `MCP` · `tokenized stocks` · `Base` · `ERC-4626` · `ERC-8004` · `agentic commerce` · `agentic shopping` · `no oracle` · `self-custodial`
 
 ---
 
@@ -47,7 +48,8 @@ claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
 { "mcpServers": { "liquid-agent": { "type": "streamable-http", "url": "https://api.liquidagent.ai/mcp" } } }
 ```
 
-28 tools:
+29 tools:
+- **Leads:** `leads_count` (free: matches and the exact price), `leads_search` ($0.03 a lead, paid inside the tool call)
 - **Bridge:** `bridge_quote`, `bridge_prepare_payment`, `bridge_routes`, `bridge_status`, `bridge_referral_earnings`
 - **Stocks:** `stocks_basket`, `stocks_portfolio`, `stocks_buy_quote`, `stocks_vault`, `stocks_create_vault`, `stocks_set_weights`, `stocks_buy`, `stocks_sell`, `stocks_rebalance`, `stocks_send` (write tools return an unsigned transaction you sign yourself)
 - **Paid inside the tool call (x402 over MCP):** `polymarket_price_to_beat` ($0.004), `stocks_signals` ($0.007), `shop_search` ($0.001). Call once without payment to get the x402 `PaymentRequired`, then call again with the signed payment in `_meta["x402/payment"]`; the data comes back with the receipt in `_meta["x402/payment-response"]` ([x402 MCP transport spec](https://github.com/x402-foundation/x402/blob/main/specs/transports-v2/mcp.md)). Pay on Base, Polygon or Arc.
@@ -80,7 +82,7 @@ A ready-made skill that teaches an agent the whole flow lives in [`skills/liquid
 clawhub install liquid-agent-stocks          # OpenClaw / ClawHub — the stock index
 clawhub install liquid-gas-sponsor           # OpenClaw / ClawHub — the gas sponsor (transact with USDC only, no ETH)
 clawhub install liquid-polymarket            # OpenClaw / ClawHub: Polymarket official price to beat, live
-npx skills add LiquidAgent/liquidagentx402   # skills.sh (any agent that reads SKILL.md): all four skills, incl. liquid-usdc-bridge and liquid-polymarket
+npx skills add LiquidAgent/liquidagentx402   # skills.sh (any agent that reads SKILL.md): every skill in skills/
 ```
 
 ## Quickstart — create → buy → rebalance → exit
@@ -189,6 +191,16 @@ curl -s -X POST https://api.liquidagent.ai/v1/gas -H 'content-type: application/
 ```
 
 Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bring-your-own.js): swap the account constructor for your SDK's. `GET /v1/gas` describes the sponsor; `GET /v1/gas/stats` shows live usage.
+
+## Paid: Liquid Leads, US local business leads (x402)
+
+`GET https://api.liquidagent.ai/v1/leads/search?category=<what>&city=<where>&limit=<n>` returns local businesses (dentists, plumbers, HVAC, salons, law firms and hundreds more) for **$0.03 USDC per lead**, flat, x402 exact (EIP-3009), USDC on **Base or Arc**. 1 to 1,000 leads per call (default 10 = $0.30); the 402 quotes the exact total and you are never charged for an empty answer.
+
+Each lead: name, address, phone, the best email with its grade (A = own domain and a named person, B = own domain shared inbox or a published free-mail address, C = a live domain not tied to their site), a contact name when the email shows one, socials, and buying signals (no website, online booking tool, payment system, hiring). A website is only returned when it carries the business's own phone number; a site we cannot prove is theirs is dropped and nothing from it is used. Place by `city`, `county`, `zip` or `near=<lat>,<lng>`; `format=csv` for a CRM.
+
+**Free first:** [`/v1/leads`](https://api.liquidagent.ai/v1/leads) (coverage by state, every filter), `/v1/leads/count` (how many match, by grade, and the exact price), `/v1/leads/categories`, and `sample=1` for 3 free leads (3 a day). Coverage: CA, TX, FL, NY, PA, IL, OH, GA, NC, DE, with more states being added. Data: Overture Maps Places (CDLA-Permissive-2.0) plus our own crawl of each business's website.
+
+Example: [`examples/leads.js`](examples/leads.js). Skill: [`skills/liquid-local-leads/SKILL.md`](skills/liquid-local-leads/SKILL.md). MCP: `leads_count` (free), `leads_search` (paid in the call).
 
 ## Paid: Polymarket price to beat (x402)
 
