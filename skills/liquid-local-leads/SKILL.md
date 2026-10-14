@@ -17,7 +17,7 @@ shows one, socials and buying signals.
 
 - Price: **$0.03 USDC per lead returned**, flat, x402 exact (EIP-3009), USDC on Base or Arc. 1 to 1,000 leads per call
   (default 3 = $0.09, or sample=1 for 3 free leads). The 402 quotes the exact total; no leads, no charge.
-- Coverage: 10 US states live (CA, TX, FL, NY, PA, IL, OH, GA, NC, DE), more being added. `GET /v1/leads` lists them.
+- Coverage: 30 US states live, more being added. `GET /v1/leads` lists them.
 - Place: `city`, `county`, `zip`, or `near=<lat>,<lng>` with `radiusKm`.
 - Filters: `email` (required by default, `any`, or `none` for phone-only businesses), `minGrade` (A, B, C),
   `website` (`needs` = no working website), `booking`, `payments`, `hiring=1`, `format=csv`.
