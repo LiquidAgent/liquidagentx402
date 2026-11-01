@@ -6,11 +6,12 @@
 
 | Service | What it does | Price |
 |---|---|---|
-| **[Liquid Leads](https://api.liquidagent.ai/v1/leads)** | US local businesses by category and place (30 states, 4.7M businesses): a checked email graded A/B/C, contact name, phone, a website proven by the business's own phone number, socials and buying signals. Free count and 3 free samples a day. Plus reverse lookup by phone or website ($0.01) and website tech ($0.005) | $0.03 / lead |
+| **[Liquid Leads](https://api.liquidagent.ai/v1/leads)** | US local businesses by category and place (50 states + D.C., 7.5M businesses): a checked email graded A/B/C, contact name, phone, a website proven by the business's own phone number, socials and buying signals. Free count and 3 free samples a day. Plus reverse lookup by phone or website ($0.01), website tech ($0.005), and bulk enrichment ($0.01 per match) | $0.03 / lead |
 | **[Liquid Bridge](https://api.liquidagent.ai/v1/bridge/guide)** | USDC from Base to Arc, Arbitrum, OP, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume, Codex (or Arc to Base), one x402 signature, exact delivery. Referrers earn 20% of the fee. [Proof of delivery](https://api.liquidagent.ai/v1/bridge/proof) | 1% + network fee |
 | **[Polymarket price to beat](https://api.liquidagent.ai/v1/polymarket)** | The official price to beat for BTC, ETH, SOL, XRP Up/Down on 5m and 15m, live during the window. First call free with `?free=1` | $0.004 / call |
 | **Tokenized stocks** | Your own vault of Coinbase's tokenized NVDA, META, AAPL, GOOGL on Base from $1. Unsigned transactions you sign | free reads, signals $0.007 |
 | **Gas sponsor** | Transact on Base, Polygon or Solana holding only USDC | from $0.03 |
+| **Chain tools** | Transaction decode on five EVM chains ($0.003), Base batch preflight ($0.005 + $0.002/call), decoded event logs ($0.005 per 1,000 blocks) | from $0.003 |
 | **[Gift search](https://api.liquidagent.ai/v1/shop/mintandmarquee)** | Search the Mint & Marquee partner shop (custom 3D printed figurines, statues, keychains, bag tags) and get products with price, photo and a link to buy | $0.001 / search |
 | **Free tools** | USDC balances on 11 chains, status of any CCTP transfer, x402 debugger, payment readiness check | free |
 
@@ -48,13 +49,14 @@ claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
 { "mcpServers": { "liquid-agent": { "type": "streamable-http", "url": "https://api.liquidagent.ai/mcp" } } }
 ```
 
-31 tools:
+37 tools:
 - **Leads:** `leads_count` (free: matches and the exact price), `leads_search` ($0.03 a lead), `leads_lookup` ($0.01: the business behind a phone number or website), `leads_tech` ($0.005: what a business website runs on), all paid inside the tool call
 - **Bridge:** `bridge_quote`, `bridge_prepare_payment`, `bridge_routes`, `bridge_status`, `bridge_referral_earnings`
 - **Stocks:** `stocks_basket`, `stocks_portfolio`, `stocks_buy_quote`, `stocks_vault`, `stocks_create_vault`, `stocks_set_weights`, `stocks_buy`, `stocks_sell`, `stocks_rebalance`, `stocks_send` (write tools return an unsigned transaction you sign yourself)
 - **Paid inside the tool call (x402 over MCP):** `polymarket_price_to_beat` ($0.004), `stocks_signals` ($0.007), `shop_search` ($0.001). Call once without payment to get the x402 `PaymentRequired`, then call again with the signed payment in `_meta["x402/payment"]`; the data comes back with the receipt in `_meta["x402/payment-response"]` ([x402 MCP transport spec](https://github.com/x402-foundation/x402/blob/main/specs/transports-v2/mcp.md)). Pay on Base, Polygon or Arc.
 - **Paid prep (returns the HTTP 402 to pay yourself):** `polymarket_prepare` ($0.004), `stocks_signals_prepare` ($0.007), `stocks_publish_prepare` ($0.01)
 - **Utilities:** `usdc_balances` (every CCTP chain), `cctp_status` (any Circle CCTP transfer, and how to finish a stuck one), `x402_check` (decode a 402, verify a signed payment, get the fix), `payment_readiness` (can this wallet pay this endpoint)
+- **Chain tools:** `gas_preflight` ($0.005 Base simulation), `gas_batch_preflight` ($0.005 + $0.002 per additional call), `gas_decode` ($0.003 multi-chain transaction and event-log decode), `chain_logs` ($0.005 per started 1,000 blocks), `leads_enrich` ($0.01 per input that finds a business; misses free)
 - **Other:** `gas_sponsor_info`, `shop_info`, `liquid_guide`
 
 Plus 4 doc resources and 3 prompts (bridge USDC, earn referrals, buy the basket). Free to connect. Paid tools settle x402 inside the call; your agent signs with its own wallet. The server never signs or holds funds.
@@ -192,13 +194,23 @@ curl -s -X POST https://api.liquidagent.ai/v1/gas -H 'content-type: application/
 
 Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bring-your-own.js): swap the account constructor for your SDK's. `GET /v1/gas` describes the sponsor; `GET /v1/gas/stats` shows live usage.
 
+## Chain tools and bulk enrichment
+
+- `POST /v1/gas/preflight` ($0.005): simulate an unsigned Base transaction and return success or a decoded revert, gas estimate, and an indicative USDC sponsorship estimate. No signing or broadcast.
+- `POST /v1/gas/preflight/batch` ($0.005 + $0.002 per additional call, 20 calls for $0.043): one block, one fee snapshot, and one settlement for 1-20 Base calls. Per-call success or revert and aggregate gas.
+- `POST /v1/gas/decode` ($0.003): decode a transaction and ordered event logs with your ABI on Base, Polygon, Arbitrum, Optimism, or Avalanche. Unknown selectors and events retain raw data with `decoded:false`.
+- `POST /v1/chain/logs` ($0.005 per started 1,000 blocks): decoded EVM event logs with adaptive chunking, ordered results, and raw fallback. Maximum 10,000 blocks, 100 logs, or 1 MiB output.
+- `POST /v1/leads/enrich` ($0.01 per input that finds a business; misses free): enrich 1-100 websites or US phone numbers with full business details, graded email, contact, socials, and website tech.
+
+All five are available as MCP tools and are listed in `llms.txt`, the A2A agent card, ERC-8004 registration, OpenAPI, and x402 resource discovery. Example: [`examples/chain-tools.sh`](examples/chain-tools.sh). Skill: [`skills/liquid-chain-tools/SKILL.md`](skills/liquid-chain-tools/SKILL.md).
+
 ## Paid: Liquid Leads, US local business leads (x402)
 
 `GET https://api.liquidagent.ai/v1/leads/search?category=<what>&city=<where>&limit=<n>` returns local businesses (dentists, plumbers, HVAC, salons, law firms and hundreds more) for **$0.03 USDC per lead**, flat, x402 exact (EIP-3009), USDC on **Base or Arc**. 1 to 1,000 leads per call (default 3 = $0.09, or sample=1 for 3 free leads); the 402 quotes the exact total and you are never charged for an empty answer.
 
 Each lead: name, address, phone, the best email with its grade (A = own domain and a named person, B = own domain shared inbox or a published free-mail address, C = a live domain not tied to their site), a contact name when the email shows one, socials, and buying signals (no website, online booking tool, payment system, hiring). A website is only returned when it carries the business's own phone number; a site we cannot prove is theirs is dropped and nothing from it is used. Place by `city`, `county`, `zip` or `near=<lat>,<lng>`; `format=csv` for a CRM.
 
-**Free first:** [`/v1/leads`](https://api.liquidagent.ai/v1/leads) (coverage by state, every filter), `/v1/leads/count` (how many match, by grade, and the exact price), `/v1/leads/categories`, and `sample=1` for 3 free leads (3 a day). Coverage: 30 states and growing; GET /v1/leads lists them. Data: Overture Maps Places (CDLA-Permissive-2.0) plus our own crawl of each business's website.
+**Free first:** [`/v1/leads`](https://api.liquidagent.ai/v1/leads) (coverage by state, every filter), `/v1/leads/count` (how many match, by grade, and the exact price), `/v1/leads/categories`, and `sample=1` for 3 free leads (3 a day). Coverage: 50 states + D.C. and growing; GET /v1/leads lists them. Data: Overture Maps Places (CDLA-Permissive-2.0) plus our own crawl of each business's website.
 
 **Reverse lookup ($0.01):** `GET https://api.liquidagent.ai/v1/leads/lookup?phone=<US number>` or `?domain=<website>` returns the business behind it, in the same shape as a lead. A website only matches when it carries the business's own phone number, and placeholder numbers (555-01xx, 999-9999) are refused. **Website tech ($0.005):** `GET https://api.liquidagent.ai/v1/leads/tech?domain=<website>` returns the site platform, online booking tool, payment system, hiring and socials, read from the business's own verified site. Both are no match, no charge.
 

@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "ai.liquidagent.api/liquid-agent",
   "title": "Liquid Agent",
-  "description": "x402 tools for agents: verified US business leads, USDC bridge, stocks, gas.",
-  "version": "1.8.0",
+  "description": "x402 tools for agents: verified US business leads, USDC bridge, stocks, gas, multi-chain transaction decode, batch preflight, decoded event logs, and bulk lead enrichment.",
+  "version": "1.9.0",
   "websiteUrl": "https://api.liquidagent.ai/",
   "repository": {
     "url": "https://github.com/LiquidAgent/liquidagentx402",
