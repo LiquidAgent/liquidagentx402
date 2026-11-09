@@ -2,7 +2,7 @@
 
 > **x402 money tools for AI agents.** Verified US local business leads at $0.03 a lead, a one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat, a tokenized US stock basket from $1, gas paid in USDC, and gift search in partner shops, plus free USDC and x402 debugging tools and a remote MCP server. No account, no API key, and the server never holds your keys.
 
-**Live API:** https://api.liquidagent.ai · **MCP:** https://api.liquidagent.ai/mcp · **Agent guide:** https://api.liquidagent.ai/v1/guide · **Status:** https://api.liquidagent.ai/v1/status
+**Homepage:** https://liquidagent.ai · **Live API:** https://api.liquidagent.ai · **MCP:** https://api.liquidagent.ai/mcp · **Agent guide:** https://api.liquidagent.ai/v1/guide · **Status:** https://api.liquidagent.ai/v1/status
 
 | Service | What it does | Price |
 |---|---|---|
@@ -49,7 +49,8 @@ claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
 { "mcpServers": { "liquid-agent": { "type": "streamable-http", "url": "https://api.liquidagent.ai/mcp" } } }
 ```
 
-37 tools:
+38 tools:
+- **Website Watcher:** `link_check` ($0.01 quick / $0.05 full: is this link safe to click? phishing, typosquat and scam check with a fixed-schema verdict)
 - **Leads:** `leads_count` (free: matches and the exact price), `leads_search` ($0.03 a lead), `leads_lookup` ($0.01: the business behind a phone number or website), `leads_tech` ($0.005: what a business website runs on), all paid inside the tool call
 - **Bridge:** `bridge_quote`, `bridge_prepare_payment`, `bridge_routes`, `bridge_status`, `bridge_referral_earnings`
 - **Stocks:** `stocks_basket`, `stocks_portfolio`, `stocks_buy_quote`, `stocks_vault`, `stocks_create_vault`, `stocks_set_weights`, `stocks_buy`, `stocks_sell`, `stocks_rebalance`, `stocks_send` (write tools return an unsigned transaction you sign yourself)

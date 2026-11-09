@@ -1,0 +1,1196 @@
+{
+  "identifier": "liquid-agent",
+  "name": "Liquid Agent",
+  "version": "1.10.0",
+  "author": "Liquid Agent",
+  "authorUrl": "https://github.com/LiquidAgent",
+  "category": "developer",
+  "cloudEndpoint": "https://api.liquidagent.ai/mcp",
+  "description": "x402 money tools for agents: Website Watcher URL safety checks, verified US business leads, USDC bridge, tokenized US stocks, gas sponsorship, and multi-chain transaction tools. No account, no API key.",
+  "homepage": "https://github.com/LiquidAgent/liquidagentx402",
+  "icon": "https://api.liquidagent.ai/icon.png",
+  "tags": [
+    "x402",
+    "usdc",
+    "mcp",
+    "leads",
+    "bridge",
+    "stocks",
+    "security",
+    "ai-agents"
+  ],
+  "tools": [
+    {
+      "name": "bridge_quote",
+      "description": "Free. Exact price to move USDC with the Liquid Bridge (Base to Arc, Arbitrum, OP, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume, Codex; or Arc to Base): what you pay, what you receive (exactly `amount`), the fee breakdown and the ETA. No payment, no wallet needed.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "from": {
+            "description": "Chain you pay on. Omit to pick the live route to `to` (Base to any listed chain; Arc to Base).",
+            "type": "string",
+            "enum": [
+              "base",
+              "arc"
+            ]
+          },
+          "to": {
+            "type": "string",
+            "enum": [
+              "base",
+              "arc",
+              "optimism",
+              "unichain",
+              "sonic",
+              "world",
+              "monad",
+              "sei",
+              "xdc",
+              "ink",
+              "plume",
+              "polygon",
+              "avalanche",
+              "arbitrum",
+              "codex",
+              "hyperevm",
+              "linea"
+            ],
+            "description": "Chain you receive on: arc, arbitrum, optimism, polygon, avalanche, unichain, linea, world, sonic, monad, sei, ink, hyperevm, xdc, plume, codex (from Base) or base (from Arc)."
+          },
+          "amount": {
+            "type": "string",
+            "pattern": "^\\d+(\\.\\d{1,6})?$",
+            "description": "USDC to RECEIVE on the destination, e.g. \"1\" or \"25.5\". Minimum 1."
+          },
+          "ref": {
+            "description": "Optional referrer address: earns 20% of Liquid's fee. Omit if you have none.",
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$"
+          }
+        },
+        "required": [
+          "to",
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "bridge_prepare_payment",
+      "description": "Returns the exact x402 payment request for a bridge (network, asset, payTo contract, amount, EIP-712 domain) and the URL to call. Pay it with your own x402 client: sign one EIP-3009 authorization and repeat the GET with the PAYMENT-SIGNATURE header. You receive exactly `amount` at your own address on the destination. This tool does not pay or sign anything.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "from": {
+            "description": "Chain you pay on. Omit to pick the live route to `to` (Base to any listed chain; Arc to Base).",
+            "type": "string",
+            "enum": [
+              "base",
+              "arc"
+            ]
+          },
+          "to": {
+            "type": "string",
+            "enum": [
+              "base",
+              "arc",
+              "optimism",
+              "unichain",
+              "sonic",
+              "world",
+              "monad",
+              "sei",
+              "xdc",
+              "ink",
+              "plume",
+              "polygon",
+              "avalanche",
+              "arbitrum",
+              "codex",
+              "hyperevm",
+              "linea"
+            ],
+            "description": "Chain you receive on: arc, arbitrum, optimism, polygon, avalanche, unichain, linea, world, sonic, monad, sei, ink, hyperevm, xdc, plume, codex (from Base) or base (from Arc)."
+          },
+          "amount": {
+            "type": "string",
+            "pattern": "^\\d+(\\.\\d{1,6})?$",
+            "description": "USDC to RECEIVE on the destination, e.g. \"1\" or \"25.5\". Minimum 1."
+          },
+          "ref": {
+            "description": "Optional referrer address: earns 20% of Liquid's fee. Omit if you have none.",
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$"
+          }
+        },
+        "required": [
+          "to",
+          "amount"
+        ]
+      }
+    },
+    {
+      "name": "bridge_routes",
+      "description": "Free. Every Liquid Bridge route with its live price for 1 USDC and whether it is open.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "bridge_status",
+      "description": "Free. Circle attestation and mint state for a bridge, by its burn transaction hash (returned by the bridge call).",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "burnTx": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "description": "Burn transaction hash from the bridge response."
+          },
+          "from": {
+            "description": "Source chain, if known.",
+            "type": "string",
+            "enum": [
+              "base",
+              "arc"
+            ]
+          }
+        },
+        "required": [
+          "burnTx"
+        ]
+      }
+    },
+    {
+      "name": "bridge_referral_earnings",
+      "description": "Free. Unclaimed Liquid Bridge referral earnings for an address on each chain, and how they are paid out. Earn by adding ref=<your address> to bridge calls: 20% of Liquid's fee.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Referrer address."
+          }
+        },
+        "required": [
+          "address"
+        ]
+      }
+    },
+    {
+      "name": "stocks_basket",
+      "description": "Free. The on-chain tokenized US stock index on Base (NVDA, META, AAPL, GOOGL): live prices, fees, how to buy from $1.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "stocks_buy_quote",
+      "description": "Free. Preview buying the tokenized stock basket: shares you would get and the fee for a USDC amount (USDC 6 decimals: \"2000000\" = $2).",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "usdc": {
+            "type": "string",
+            "pattern": "^\\d+$",
+            "description": "Amount in USDC-6, e.g. \"2000000\" for $2."
+          }
+        },
+        "required": [
+          "usdc"
+        ]
+      }
+    },
+    {
+      "name": "stocks_vault",
+      "description": "Free. A basket vault's value (NAV), holdings, current vs target weights and whether it needs rebalancing.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Vault address."
+          }
+        },
+        "required": [
+          "address"
+        ]
+      }
+    },
+    {
+      "name": "stocks_portfolio",
+      "description": "Free. Everything an address owns in the tokenized stock basket: each vault, its shares and current USD value.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Wallet address to look up."
+          }
+        },
+        "required": [
+          "address"
+        ]
+      }
+    },
+    {
+      "name": "stocks_create_vault",
+      "description": "Free. Opens your own vault for the tokenized US stock basket (NVDA, META, AAPL, GOOGL), controlled only by you. Returns an UNSIGNED transaction {to, data, value, chainId} on Base; nothing happens until you sign it with your own wallet and broadcast it. Liquid never holds keys or funds. After it confirms, find the vault with stocks_portfolio.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "stocks_set_weights",
+      "description": "Free. Sets your vault's target allocation across the 4 stocks in basis points (sum 10000), e.g. [4000, 3000, 2000, 1000]. Default is equal weight. Returns an UNSIGNED transaction {to, data, value, chainId} on Base; nothing happens until you sign it with your own wallet and broadcast it. Liquid never holds keys or funds.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Your vault address."
+          },
+          "weightsBps": {
+            "minItems": 4,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "description": "4 weights in basis points summing to 10000, in the basket's constituent order (see stocks_basket)."
+          }
+        },
+        "required": [
+          "vault",
+          "weightsBps"
+        ]
+      }
+    },
+    {
+      "name": "stocks_buy",
+      "description": "Free. Invest USDC into your vault from $1 (USDC 6 decimals: \"1000000\" = $1). Easiest: set usePermit=true with owner, sign the returned typedData off-chain (free), then call again with permitDeadline + permitSignature to get ONE deposit transaction. Without a permit you get two transactions (approve, then deposit). Returns an UNSIGNED transaction {to, data, value, chainId} on Base; nothing happens ",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Your vault address."
+          },
+          "usdc": {
+            "type": "string",
+            "pattern": "^\\d+$",
+            "description": "USDC to invest, 6 decimals, minimum \"1000000\" ($1)."
+          },
+          "owner": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Your wallet address (required with usePermit)."
+          },
+          "minShares": {
+            "type": "string",
+            "pattern": "^\\d+$",
+            "description": "Optional slippage floor: minimum shares to receive."
+          },
+          "usePermit": {
+            "description": "true = return an EIP-2612 permit to sign first (no approve transaction).",
+            "type": "boolean"
+          },
+          "permitDeadline": {
+            "description": "Deadline from the permit you signed (second call).",
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          },
+          "permitSignature": {
+            "description": "Your signature of the permit typedData (second call).",
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]+$"
+          }
+        },
+        "required": [
+          "vault",
+          "usdc"
+        ]
+      }
+    },
+    {
+      "name": "stocks_sell",
+      "description": "Free. Cash out: redeem basket shares to USDC, or take the raw stock tokens in-kind (works any block, no vault needed, anyone holding shares can sell). Returns an UNSIGNED transaction {to, data, value, chainId} on Base; nothing happens until you sign it with your own wallet and broadcast it. Liquid never holds keys or funds.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Vault whose shares you hold."
+          },
+          "shares": {
+            "type": "string",
+            "pattern": "^\\d+$",
+            "description": "Shares to redeem (18 decimals; see stocks_portfolio)."
+          },
+          "minUsdcOut": {
+            "type": "string",
+            "pattern": "^\\d+$",
+            "description": "Optional slippage floor in USDC-6."
+          },
+          "inKind": {
+            "description": "true = receive the 4 stock tokens instead of USDC.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "vault",
+          "shares"
+        ]
+      }
+    },
+    {
+      "name": "stocks_rebalance",
+      "description": "Free. Brings your vault back to its target weights (check stocks_vault: rebalanceNeeded). Returns an UNSIGNED transaction {to, data, value, chainId} on Base; nothing happens until you sign it with your own wallet and broadcast it. Liquid never holds keys or funds.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Your vault address."
+          }
+        },
+        "required": [
+          "vault"
+        ]
+      }
+    },
+    {
+      "name": "stocks_send",
+      "description": "Free. Transfer your tokenized stock basket shares to any wallet or another agent; they can hold, sell or forward them, no vault needed. Returns an UNSIGNED transaction {to, data, value, chainId} on Base; nothing happens until you sign it with your own wallet and broadcast it. Liquid never holds keys or funds.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Vault whose shares you hold."
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Recipient address."
+          },
+          "shares": {
+            "type": "string",
+            "pattern": "^\\d+$",
+            "description": "Shares to send (18 decimals)."
+          }
+        },
+        "required": [
+          "vault",
+          "to",
+          "shares"
+        ]
+      }
+    },
+    {
+      "name": "stocks_signals_prepare",
+      "description": "Returns the x402 payment request for basket signals ($0.007 USDC on Base, Polygon or Arc): rebalancing signal, momentum and suggested weights for NVDA/META/AAPL/GOOGL in one call. Pay it with your own x402 client. This tool does not pay.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Optional vault to tailor the signal to."
+          }
+        }
+      }
+    },
+    {
+      "name": "polymarket_prepare",
+      "description": "Returns the x402 payment request for Polymarket crypto Up/Down data (BTC, ETH, SOL, XRP; 5m and 15m; $0.004 USDC on Base, Polygon or Arc): the OFFICIAL price to beat for the live 5m or 15m window (matched to the cent against Polymarket's results), the live Chainlink price and its distance from the price to beat, seconds left, token ids and market prices. Pass start (unix) for a past window's offic",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "market": {
+            "type": "string",
+            "enum": [
+              "btc-5m",
+              "btc-15m",
+              "eth-5m",
+              "eth-15m",
+              "sol-5m",
+              "sol-15m",
+              "xrp-5m",
+              "xrp-15m"
+            ],
+            "description": "Which market: <asset>-<timeframe>."
+          },
+          "start": {
+            "description": "Optional unix start of a past window.",
+            "type": "string",
+            "pattern": "^\\d+$"
+          }
+        },
+        "required": [
+          "market"
+        ]
+      }
+    },
+    {
+      "name": "polymarket_price_to_beat",
+      "description": "PAID over x402 inside this tool call ($0.004 USDC on Base, Polygon or Arc): the OFFICIAL Polymarket price to beat for the live BTC, ETH, SOL or XRP 5m/15m Up/Down window (matched to every decimal against Polymarket), the live Chainlink price and its distance, seconds left, token ids and market prices. Call it once without payment to get the x402 PaymentRequired; your x402 wallet signs it and you c",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "market": {
+            "type": "string",
+            "enum": [
+              "btc-5m",
+              "btc-15m",
+              "eth-5m",
+              "eth-15m",
+              "sol-5m",
+              "sol-15m",
+              "xrp-5m",
+              "xrp-15m"
+            ],
+            "description": "Which market: <asset>-<timeframe>."
+          },
+          "start": {
+            "description": "Optional unix start of a past window (official outcome).",
+            "type": "string",
+            "pattern": "^\\d+$"
+          },
+          "free": {
+            "description": "Use your one free call (per agent) instead of paying.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "market"
+        ]
+      }
+    },
+    {
+      "name": "shop_info",
+      "description": "Free. What the Mint & Marquee partner shop sells (custom 3D printed figurines, statues, keychains, bag tags; soccer, anime, crypto collections), its product count and price range, and how to search it.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "shop": {
+            "default": "mintandmarquee",
+            "description": "Which partner shop.",
+            "type": "string",
+            "enum": [
+              "mintandmarquee"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "shop_search",
+      "description": "PAID over x402 inside this tool call ($0.001 USDC on Arc, Base or Polygon): search the Mint & Marquee partner shop for gifts and collectibles. Returns products with price, photo, a short description and a link to buy. Show the person each product with its link, then the foundWith line once. Call once without payment to get the x402 PaymentRequired, then call again with the signed payment in _meta[",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "q": {
+            "description": "What to find, in words (e.g. soccer gift).",
+            "type": "string",
+            "maxLength": 120
+          },
+          "max": {
+            "description": "Optional price ceiling in USD.",
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 100000
+          },
+          "limit": {
+            "description": "How many products, 1 to 10 (default 5).",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        }
+      }
+    },
+    {
+      "name": "link_check",
+      "description": "Phishing, typosquat, scam \u2014 is this link safe to click? PAID over x402 inside this tool call (quick $0.01, full $0.05 USDC on Base or Arc): check a URL before you click it. Returns a fixed-schema security assessment \u2014 verdict (safe / suspicious / dangerous / unknown), score 0-100, action (allow / review / block / retry), one-sentence summary, top 5 findings, category scores and facts. Quick (quick",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2048,
+            "format": "uri",
+            "description": "The URL to check."
+          },
+          "quick": {
+            "description": "true (default) for the $0.01 quick check, false for the $0.05 full report.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    },
+    {
+      "name": "leads_count",
+      "description": "Free. How many local businesses match a category and place, how many have an email at each grade (A/B/C), the top cities, and the exact price of the next page. Run this before leads_search.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 60,
+            "description": "Business type in plain words: dentist, plumber, hvac, roofing, hair salon, law firm, med spa, restaurant."
+          },
+          "city": {
+            "description": "City, e.g. Atlanta, Savannah, Macon. Give city, county, zip or near.",
+            "type": "string",
+            "maxLength": 60
+          },
+          "county": {
+            "description": "County, e.g. Gwinnett, Chatham.",
+            "type": "string",
+            "maxLength": 40
+          },
+          "email": {
+            "description": "required (default), any, or none (phone-only businesses).",
+            "type": "string",
+            "enum": [
+              "required",
+              "any",
+              "none"
+            ]
+          },
+          "zip": {
+            "description": "5-digit ZIP (a prefix works).",
+            "type": "string",
+            "pattern": "^\\d{3,5}$"
+          },
+          "near": {
+            "description": "lat,lng to search around.",
+            "type": "string",
+            "pattern": "^-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?$"
+          },
+          "radiusKm": {
+            "description": "Radius for near, default 5.",
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 50
+          },
+          "minGrade": {
+            "description": "Email grade floor (A best). Default C.",
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "website": {
+            "description": "needs = no working website (a sales signal).",
+            "type": "string",
+            "enum": [
+              "any",
+              "has",
+              "none",
+              "dead",
+              "needs"
+            ]
+          },
+          "booking": {
+            "description": "Online booking tool: yes, none, vagaro, square_appointments, calendly, booksy, mindbody, acuity, opentable, housecall_pro, jobber, servicetitan, zocdoc.",
+            "type": "string",
+            "maxLength": 30
+          },
+          "payments": {
+            "description": "Payment system on their site: yes, none, square, toast, clover, stripe, paypal.",
+            "type": "string",
+            "maxLength": 30
+          },
+          "hiring": {
+            "description": "Only businesses whose site says they are hiring.",
+            "type": "boolean"
+          },
+          "limit": {
+            "description": "How many leads, 1-1,000 (default 3 = $0.09); $0.03 per lead.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "offset": {
+            "description": "Skip this many, for the next page.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "sample": {
+            "description": "true = 3 free leads to judge quality (3 a day), no payment.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "category"
+        ]
+      }
+    },
+    {
+      "name": "leads_search",
+      "description": "PAID over x402 inside this tool call (USDC on Base or Arc, $0.03 per lead returned, flat, with or without an email; default 3 leads = $0.09; set sample=true for 3 free leads first; the PaymentRequired quotes the exact total; no leads, no charge): local businesses by category and place with a graded email (A/B/C), a contact name when the email shows one, phone, website, socials and buying signals (",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 60,
+            "description": "Business type in plain words: dentist, plumber, hvac, roofing, hair salon, law firm, med spa, restaurant."
+          },
+          "city": {
+            "description": "City, e.g. Atlanta, Savannah, Macon. Give city, county, zip or near.",
+            "type": "string",
+            "maxLength": 60
+          },
+          "county": {
+            "description": "County, e.g. Gwinnett, Chatham.",
+            "type": "string",
+            "maxLength": 40
+          },
+          "email": {
+            "description": "required (default), any, or none (phone-only businesses).",
+            "type": "string",
+            "enum": [
+              "required",
+              "any",
+              "none"
+            ]
+          },
+          "zip": {
+            "description": "5-digit ZIP (a prefix works).",
+            "type": "string",
+            "pattern": "^\\d{3,5}$"
+          },
+          "near": {
+            "description": "lat,lng to search around.",
+            "type": "string",
+            "pattern": "^-?\\d+(\\.\\d+)?,-?\\d+(\\.\\d+)?$"
+          },
+          "radiusKm": {
+            "description": "Radius for near, default 5.",
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 50
+          },
+          "minGrade": {
+            "description": "Email grade floor (A best). Default C.",
+            "type": "string",
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "website": {
+            "description": "needs = no working website (a sales signal).",
+            "type": "string",
+            "enum": [
+              "any",
+              "has",
+              "none",
+              "dead",
+              "needs"
+            ]
+          },
+          "booking": {
+            "description": "Online booking tool: yes, none, vagaro, square_appointments, calendly, booksy, mindbody, acuity, opentable, housecall_pro, jobber, servicetitan, zocdoc.",
+            "type": "string",
+            "maxLength": 30
+          },
+          "payments": {
+            "description": "Payment system on their site: yes, none, square, toast, clover, stripe, paypal.",
+            "type": "string",
+            "maxLength": 30
+          },
+          "hiring": {
+            "description": "Only businesses whose site says they are hiring.",
+            "type": "boolean"
+          },
+          "limit": {
+            "description": "How many leads, 1-1,000 (default 3 = $0.09); $0.03 per lead.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "offset": {
+            "description": "Skip this many, for the next page.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "sample": {
+            "description": "true = 3 free leads to judge quality (3 a day), no payment.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "category"
+        ]
+      }
+    },
+    {
+      "name": "leads_lookup",
+      "description": "PAID over x402 inside this tool call ($0.01 USDC on Base or Arc per lookup that finds a business; no match, no charge): give a US phone number or a website and get the local business behind it: name, address, category, the best email graded A/B/C, a contact name when the email shows one, socials and buying signals. A website only matches when it carries the business's own phone number. Call once w",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "phone": {
+            "description": "A US phone number, any format: 4043552001, (404) 355-2001, +14043552001. Give phone or domain.",
+            "type": "string",
+            "maxLength": 30
+          },
+          "domain": {
+            "description": "Or a website: example.com or https://www.example.com/contact.",
+            "type": "string",
+            "maxLength": 300
+          }
+        }
+      }
+    },
+    {
+      "name": "leads_tech",
+      "description": "PAID over x402 inside this tool call ($0.005 USDC on Base or Arc per lookup that finds a verified site; no match, no charge): give a website or a US phone number and get the site platform (WordPress, Wix, Squarespace, Shopify...), online booking tool (Square Appointments, Vagaro, Calendly, Zocdoc...), payment system (Square, Toast, Clover, Stripe...), hiring and socials, read from the business's o",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "phone": {
+            "description": "A US phone number, any format: 4043552001, (404) 355-2001, +14043552001. Give phone or domain.",
+            "type": "string",
+            "maxLength": 30
+          },
+          "domain": {
+            "description": "Or a website: example.com or https://www.example.com/contact.",
+            "type": "string",
+            "maxLength": 300
+          }
+        }
+      }
+    },
+    {
+      "name": "stocks_signals",
+      "description": "PAID over x402 inside this tool call ($0.007 USDC on Base, Polygon or Arc): the whole stock basket's rebalancing signal in one call (returns, volatility, RSI, trend, relative strength and inverse-volatility target weights for NVDA, META, AAPL, GOOGL). Call once without payment to get the x402 PaymentRequired, then call again with the signed payment in _meta[\"x402/payment\"].",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Optional vault to tailor the signal to."
+          }
+        }
+      }
+    },
+    {
+      "name": "stocks_publish_prepare",
+      "description": "Returns the x402 payment request to publish a live, shareable portfolio page for a vault for 24 hours ($0.01 USDC on Base or Polygon). Pay it with your own x402 client. This tool does not pay.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "vault": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Vault to publish."
+          },
+          "label": {
+            "description": "Optional page title.",
+            "type": "string",
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "vault"
+        ]
+      }
+    },
+    {
+      "name": "usdc_balances",
+      "description": "Free. USDC balance (and native gas balance) of an address on every CCTP chain at once: Ethereum, Avalanche, OP Mainnet, Arbitrum, Base, Polygon PoS, Unichain, Linea, Sonic, World Chain, Arc. Use it before paying or bridging to see where your money is.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "EVM address."
+          }
+        },
+        "required": [
+          "address"
+        ]
+      }
+    },
+    {
+      "name": "cctp_status",
+      "description": "Free. Status of ANY Circle CCTP v2 USDC transfer (not only Liquid's) by its burn transaction hash: attestation, whether it was minted on the destination, and exactly how to finish a stuck one (receiveMessage with the message and attestation). Chains: Ethereum, Avalanche, OP Mainnet, Arbitrum, Base, Polygon PoS, Unichain, Linea, Sonic, World Chain, Arc.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "txHash": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "description": "Burn transaction hash on the source chain."
+          },
+          "from": {
+            "description": "Source chain, if known (faster).",
+            "type": "string",
+            "enum": [
+              "ethereum",
+              "avalanche",
+              "optimism",
+              "arbitrum",
+              "base",
+              "polygon",
+              "unichain",
+              "linea",
+              "sonic",
+              "worldchain",
+              "arc"
+            ]
+          }
+        },
+        "required": [
+          "txHash"
+        ]
+      }
+    },
+    {
+      "name": "x402_check",
+      "description": "Free. Decode any x402 payment request (from a URL, a PAYMENT-REQUIRED header or a 402 body) into plain English with warnings, and optionally verify a signed payment (PAYMENT-SIGNATURE / X-PAYMENT header) the way a facilitator would: recipient, amount, time window, EIP-712 signature against the token's real domain, nonce reuse and balance. Every failed check comes with the fix.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "url": {
+            "description": "The paid endpoint URL (https). It is called once, without payment, to read its 402.",
+            "type": "string",
+            "format": "uri"
+          },
+          "method": {
+            "description": "HTTP method for url (default GET).",
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "body": {
+            "description": "JSON body for a POST url.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "requirement": {
+            "description": "Instead of url: the PAYMENT-REQUIRED header value (base64) or the 402 JSON body.",
+            "type": "string",
+            "maxLength": 20000
+          },
+          "payment": {
+            "description": "Optional signed payment header value to verify.",
+            "type": "string",
+            "maxLength": 20000
+          }
+        }
+      }
+    },
+    {
+      "name": "payment_readiness",
+      "description": "Free. One call to know if a wallet can pay an x402 endpoint right now: reads the endpoint's 402, checks the wallet's balance on each accepted network, and if it cannot pay, returns the cheapest fix (e.g. move USDC from the chain where it sits, with the exact bridge_quote arguments).",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "The paying wallet."
+          },
+          "url": {
+            "description": "The paid endpoint URL (https). It is called once, without payment, to read its 402.",
+            "type": "string",
+            "format": "uri"
+          },
+          "method": {
+            "description": "HTTP method for url (default GET).",
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST"
+            ]
+          },
+          "body": {
+            "description": "JSON body for a POST url.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "requirement": {
+            "description": "Instead of url: the PAYMENT-REQUIRED header value (base64) or the 402 JSON body.",
+            "type": "string",
+            "maxLength": 20000
+          }
+        },
+        "required": [
+          "address"
+        ]
+      }
+    },
+    {
+      "name": "gas_sponsor_info",
+      "description": "Free. How to send a transaction on Base, Polygon or Solana with a wallet that holds USDC but no ETH/POL/SOL: the x402-paid gas sponsor, its price rule (from $0.03) and lanes.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "gas_preflight",
+      "description": "PAID $0.005: simulate an unsigned Base transaction with optional msg.sender. Returns success or a decoded revert, gas estimate and an indicative USDC sponsorship estimate. No signing or broadcast; provider failures are not charged.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Contract or wallet to call"
+          },
+          "from": {
+            "description": "Optional msg.sender",
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$"
+          },
+          "data": {
+            "description": "0x calldata, up to 16 KiB",
+            "type": "string"
+          },
+          "value": {
+            "description": "Native value in wei",
+            "type": "string"
+          }
+        },
+        "required": [
+          "to"
+        ]
+      }
+    },
+    {
+      "name": "gas_batch_preflight",
+      "description": "PAID $0.005 + $0.002 per additional call (1-20, $0.043 maximum): one block and one settlement for a batch of Base calls. Ordered per-call success or revert, aggregate gas and indicative sponsorship estimate.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "calls": {
+            "minItems": 1,
+            "maxItems": 20,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "to": {
+                  "type": "string",
+                  "pattern": "^0x[0-9a-fA-F]{40}$"
+                },
+                "from": {
+                  "type": "string",
+                  "pattern": "^0x[0-9a-fA-F]{40}$"
+                },
+                "data": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "to"
+              ]
+            },
+            "description": "1-20 calls to simulate"
+          }
+        },
+        "required": [
+          "calls"
+        ]
+      }
+    },
+    {
+      "name": "gas_decode",
+      "description": "PAID $0.003: decode a transaction and ordered event logs with your ABI on Base, Polygon, Arbitrum, Optimism or Avalanche. Unknown selectors/events retain raw data with decoded:false. Provider failures are not charged.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "chain": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "EVM chain ID: 8453, 137, 42161, 10 or 43114"
+          },
+          "txHash": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{64}$",
+            "description": "Transaction hash"
+          },
+          "abi": {
+            "minItems": 1,
+            "maxItems": 250,
+            "type": "array",
+            "items": {},
+            "description": "Contract ABI, max 250 entries and 128 KiB"
+          }
+        },
+        "required": [
+          "chain",
+          "txHash",
+          "abi"
+        ]
+      }
+    },
+    {
+      "name": "chain_logs",
+      "description": "PAID $0.005 per started 1,000 blocks: retrieve and decode EVM event logs on Base, Polygon, Arbitrum, Optimism or Avalanche. Adaptive chunking, ordered results and raw fallback. Max 10,000 blocks, 100 logs or 1 MiB output.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "chain": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991,
+            "description": "EVM chain ID: 8453, 137, 42161, 10 or 43114"
+          },
+          "address": {
+            "type": "string",
+            "pattern": "^0x[0-9a-fA-F]{40}$",
+            "description": "Contract address"
+          },
+          "topics": {
+            "description": "Optional topic filters",
+            "maxItems": 4,
+            "type": "array",
+            "items": {}
+          },
+          "fromBlock": {
+            "type": "string",
+            "description": "First block, inclusive"
+          },
+          "toBlock": {
+            "type": "string",
+            "description": "Last block, inclusive; at most 10,000 total"
+          },
+          "abi": {
+            "description": "Optional event ABI for decoding",
+            "maxItems": 250,
+            "type": "array",
+            "items": {}
+          }
+        },
+        "required": [
+          "chain",
+          "address",
+          "fromBlock",
+          "toBlock"
+        ]
+      }
+    },
+    {
+      "name": "leads_enrich",
+      "description": "PAID $0.01 per input that finds a business; misses are free. Send 1-100 websites or US phone numbers. Each match includes full business details, graded email, contact, socials and website tech. One x402 settlement for the exact hit count.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "records": {
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "domain": {
+                  "description": "Website or URL",
+                  "type": "string"
+                },
+                "phone": {
+                  "description": "US phone number",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "1-100 records, exactly one domain or phone per record, no duplicates"
+          }
+        },
+        "required": [
+          "records"
+        ]
+      }
+    },
+    {
+      "name": "liquid_guide",
+      "description": "Free. Overview of every Liquid Agent service for agents (bridge, stocks, signals, gas sponsor), prices and where the full docs are.",
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ]
+}
