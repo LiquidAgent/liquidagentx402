@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "ai.liquidagent.api/liquid-agent",
   "title": "Liquid Agent",
-  "description": "x402 tools for agents: verified US business leads, USDC bridge, stocks, gas, multi-chain transaction decode, batch preflight, decoded event logs, and bulk lead enrichment.",
-  "version": "1.9.0",
+  "description": "Website Watcher security checks for any URL — phishing, typosquat and scam detection ($0.01 quick / $0.05 full) — plus money tools for AI agents over x402: web search ($0.005) and page Markdown ($0.002), on-chain reads on Base or Arc ($0.002 flat), verified US local business leads ($0.03 a lead), one-signature USDC bridge (Base to 16 chains, Arc to Base, 20% referral), tokenized US stocks from $1, gas paid in USDC. No account, no API key, no custody.",
+  "version": "1.11.0",
   "websiteUrl": "https://api.liquidagent.ai/",
   "repository": {
     "url": "https://github.com/LiquidAgent/liquidagentx402",
@@ -14,5 +14,6 @@
       "type": "streamable-http",
       "url": "https://api.liquidagent.ai/mcp"
     }
-  ]
+  ],
+  "tools": ["bridge_quote", "bridge_prepare_payment", "bridge_routes", "bridge_status", "bridge_referral_earnings", "stocks_basket", "stocks_buy_quote", "stocks_vault", "stocks_portfolio", "stocks_create_vault", "stocks_set_weights", "stocks_buy", "stocks_sell", "stocks_rebalance", "stocks_send", "stocks_signals_prepare", "stocks_publish_prepare", "polymarket_prepare", "polymarket_price_to_beat", "stocks_signals", "usdc_balances", "cctp_status", "x402_check", "payment_readiness", "gas_sponsor_info", "shop_info", "shop_search", "leads_count", "leads_search", "leads_lookup", "leads_tech", "gas_preflight", "gas_batch_preflight", "gas_decode", "chain_logs", "leads_enrich", "link_check", "web_search", "web_extract", "rpc_read", "liquid_guide"]
 }
