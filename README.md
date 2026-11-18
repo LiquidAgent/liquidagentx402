@@ -50,7 +50,7 @@ claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
 { "mcpServers": { "liquid-agent": { "type": "streamable-http", "url": "https://api.liquidagent.ai/mcp" } } }
 ```
 
-44 tools:
+47 tools:
 - **Website Watcher:** `link_check` ($0.01 quick / $0.05 full: is this link safe to click? phishing, typosquat and scam check with a fixed-schema verdict)
 - **Malware scanner:** `malware_scan` / `malware_scan_batch` / `malware_scan_repo` ($0.05 each: static PolinRider / Contagious Interview scan for a file, a folder of up to 100 files, or a public GitHub repo before installing, building, or running it; verdict, score 0–100, action)
 - **Leads:** `leads_count` (free: matches and the exact price), `leads_search` ($0.03 a lead), `leads_lookup` ($0.01: the business behind a phone number or website), `leads_tech` ($0.005: what a business website runs on), all paid inside the tool call
@@ -226,6 +226,16 @@ GitHub Action: scan changed files in CI, free, no API key. It runs the engine lo
 ```
 
 Engine, server, and Action source: [`scanner/`](scanner/). MCP: `malware_scan`, `malware_scan_batch`, `malware_scan_repo` (paid in the call).
+
+## Paid: API Doctor (x402)
+
+`POST https://api.liquidagent.ai/v1/api/diagnose` — **$0.50 USDC per diagnosis** — diagnose one API endpoint live. Actually calls it, classifies the failure (auth, not found, wrong method, bad request, server error, timeout, schema mismatch), and returns a verdict, auth diagnostics, schema validation, deterministic corrections, and a working example request. Public endpoints only in v1.
+
+- `POST /v1/api/diagnose` `{"url": "https://api.example.com/endpoint"}` — one endpoint, $0.50.
+- `POST /v1/api/test-spec` `{"specUrl": "https://api.example.com/openapi.json"}` — validate an OpenAPI spec and probe every endpoint, $2.00 per spec.
+- `POST /v1/api/audit` `{"specUrl": "https://api.example.com/openapi.json"}` — test-spec plus auth diagnostics, full schema validation, and a corrected request per endpoint, $5.00 per audit.
+
+Specs can be given as a URL or inline JSON. Endpoints that need a sample request body are reported as needs_samples, never faked. All three accept USDC on Base, Polygon or Arc. MCP: `api_diagnose`, `api_test_spec`, `api_audit` (paid in the call).
 
 ## Paid: Liquid Leads, US local business leads (x402)
 
