@@ -1,0 +1,8 @@
+{
+  "name": "good-starter",
+  "version": "1.0.0",
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc"
+  }
+}

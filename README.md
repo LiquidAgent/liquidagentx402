@@ -1,6 +1,6 @@
 # Liquid Agent: money tools for AI agents (x402)
 
-> **x402 money tools for AI agents.** Verified US local business leads at $0.03 a lead, a one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat, a tokenized US stock basket from $1, gas paid in USDC, and gift search in partner shops, plus free USDC and x402 debugging tools and a remote MCP server. No account, no API key, and the server never holds your keys.
+> **x402 money tools for AI agents.** Verified US local business leads at $0.03 a lead, a one-signature USDC bridge from Base to 16 chains, the live Polymarket price to beat, a tokenized US stock basket from $1, gas paid in USDC, a $0.05 static malware scan for code before you install or run it, web search, page-to-Markdown and on-chain reads, and gift search in partner shops, plus free USDC and x402 debugging tools and a remote MCP server. No account, no API key, and the server never holds your keys.
 
 **Homepage:** https://liquidagent.ai · **Live API:** https://api.liquidagent.ai · **MCP:** https://api.liquidagent.ai/mcp · **Agent guide:** https://api.liquidagent.ai/v1/guide · **Status:** https://api.liquidagent.ai/v1/status
 
@@ -12,6 +12,9 @@
 | **Tokenized stocks** | Your own vault of Coinbase's tokenized NVDA, META, AAPL, GOOGL on Base from $1. Unsigned transactions you sign | free reads, signals $0.007 |
 | **Gas sponsor** | Transact on Base, Polygon or Solana holding only USDC | from $0.03 |
 | **Chain tools** | Transaction decode on five EVM chains ($0.003), Base batch preflight ($0.005 + $0.002/call), decoded event logs ($0.005 per 1,000 blocks) | from $0.003 |
+| **[Malware scanner](https://api.liquidagent.ai/v1/malware/scan)** | Static scan for a file, a folder of up to 100 files, or a public GitHub repo (working tree + history) before installing, building, or running it. Verdict, score 0–100, action. Calibrated on the Contagious Interview attack: blocked 7/7 trojanized build configs and 12/12 Shai-Hulud packages | $0.05 / scan |
+| **[Website Watcher](https://api.liquidagent.ai/v1/link/check/agent)** | Is this link safe to click? Phishing, typosquat and scam check with a fixed-schema verdict, score and action | $0.01 quick / $0.05 full |
+| **Web search, extract, on-chain reads** | Ranked web search with LLM-ready excerpts, any public page as clean Markdown, latest block / balance / transaction on Base or Arc | $0.005 search, $0.002 extract, $0.002 read |
 | **[Gift search](https://api.liquidagent.ai/v1/shop/mintandmarquee)** | Search the Mint & Marquee partner shop (custom 3D printed figurines, statues, keychains, bag tags) and get products with price, photo and a link to buy | $0.001 / search |
 | **Free tools** | USDC balances on 11 chains, status of any CCTP transfer, x402 debugger, payment readiness check | free |
 
@@ -37,9 +40,7 @@ Instead of picking four stocks, sizing each, buying them separately, and rebalan
 
 ## MCP server (remote, no install)
 
-[![smithery badge](https://smithery.ai/badge/chris-tv1s/liquidagent)](https://smithery.ai/servers/chris-tv1s/liquidagent)
-
-Connect any MCP client (Claude, Cursor, ChatGPT, agent frameworks) by URL: `https://api.liquidagent.ai/mcp` (Streamable HTTP, no auth). Listed in the official MCP Registry as `ai.liquidagent.api/liquid-agent` and on [Smithery](https://smithery.ai/servers/chris-tv1s/liquidagent).
+Connect any MCP client (Claude, Cursor, ChatGPT, agent frameworks) by URL: `https://api.liquidagent.ai/mcp` (Streamable HTTP, no auth). Listed in the official MCP Registry as `ai.liquidagent.api/liquid-agent`.
 
 ```bash
 claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
@@ -49,12 +50,13 @@ claude mcp add --transport http liquid-agent https://api.liquidagent.ai/mcp
 { "mcpServers": { "liquid-agent": { "type": "streamable-http", "url": "https://api.liquidagent.ai/mcp" } } }
 ```
 
-38 tools:
+44 tools:
 - **Website Watcher:** `link_check` ($0.01 quick / $0.05 full: is this link safe to click? phishing, typosquat and scam check with a fixed-schema verdict)
+- **Malware scanner:** `malware_scan` / `malware_scan_batch` / `malware_scan_repo` ($0.05 each: static PolinRider / Contagious Interview scan for a file, a folder of up to 100 files, or a public GitHub repo before installing, building, or running it; verdict, score 0–100, action)
 - **Leads:** `leads_count` (free: matches and the exact price), `leads_search` ($0.03 a lead), `leads_lookup` ($0.01: the business behind a phone number or website), `leads_tech` ($0.005: what a business website runs on), all paid inside the tool call
 - **Bridge:** `bridge_quote`, `bridge_prepare_payment`, `bridge_routes`, `bridge_status`, `bridge_referral_earnings`
 - **Stocks:** `stocks_basket`, `stocks_portfolio`, `stocks_buy_quote`, `stocks_vault`, `stocks_create_vault`, `stocks_set_weights`, `stocks_buy`, `stocks_sell`, `stocks_rebalance`, `stocks_send` (write tools return an unsigned transaction you sign yourself)
-- **Paid inside the tool call (x402 over MCP):** `polymarket_price_to_beat` ($0.004), `stocks_signals` ($0.007), `shop_search` ($0.001). Call once without payment to get the x402 `PaymentRequired`, then call again with the signed payment in `_meta["x402/payment"]`; the data comes back with the receipt in `_meta["x402/payment-response"]` ([x402 MCP transport spec](https://github.com/x402-foundation/x402/blob/main/specs/transports-v2/mcp.md)). Pay on Base, Polygon or Arc.
+- **Paid inside the tool call (x402 over MCP):** `polymarket_price_to_beat` ($0.004), `stocks_signals` ($0.007), `shop_search` ($0.001), `web_search` ($0.005), `web_extract` ($0.002), `rpc_read` ($0.002). Call once without payment to get the x402 `PaymentRequired`, then call again with the signed payment in `_meta["x402/payment"]`; the data comes back with the receipt in `_meta["x402/payment-response"]` ([x402 MCP transport spec](https://github.com/x402-foundation/x402/blob/main/specs/transports-v2/mcp.md)). Pay on Base, Polygon or Arc.
 - **Paid prep (returns the HTTP 402 to pay yourself):** `polymarket_prepare` ($0.004), `stocks_signals_prepare` ($0.007), `stocks_publish_prepare` ($0.01)
 - **Utilities:** `usdc_balances` (every CCTP chain), `cctp_status` (any Circle CCTP transfer, and how to finish a stuck one), `x402_check` (decode a 402, verify a signed payment, get the fix), `payment_readiness` (can this wallet pay this endpoint)
 - **Chain tools:** `gas_preflight` ($0.005 Base simulation), `gas_batch_preflight` ($0.005 + $0.002 per additional call), `gas_decode` ($0.003 multi-chain transaction and event-log decode), `chain_logs` ($0.005 per started 1,000 blocks), `leads_enrich` ($0.01 per input that finds a business; misses free)
@@ -205,6 +207,26 @@ Working reference in [`examples/gasless-bring-your-own.js`](examples/gasless-bri
 
 All five are available as MCP tools and are listed in `llms.txt`, the A2A agent card, ERC-8004 registration, OpenAPI, and x402 resource discovery. Example: [`examples/chain-tools.sh`](examples/chain-tools.sh). Skill: [`skills/liquid-chain-tools/SKILL.md`](skills/liquid-chain-tools/SKILL.md).
 
+## Paid: malware scanner (x402)
+
+`POST https://api.liquidagent.ai/v1/malware/scan` — **$0.05 USDC per scan** — a static scan for code before installing, building, or running it. Returns verdict (clean / suspicious / dangerous), score 0–100, action (allow / review / block), summary, top findings and facts. Static only: the file is never executed, scanned in memory, never stored.
+
+- `POST /v1/malware/scan` `{"filename": "...", "content": "..."}` — one file, max 2 MB.
+- `POST /v1/malware/scan-batch` `{"files": [{"filename": "...", "content": "..."}]}` — up to 100 files, 2 MB each, 10 MB total, one verdict for the folder.
+- `POST /v1/malware/scan-repo` `{"repoUrl": "https://github.com/owner/repo"}` — a public GitHub repo, working tree plus history, before cloning it for use.
+
+The engine is calibrated on the Contagious Interview attack: it blocked 7/7 trojanized build configs from the BlackChain audit and 12/12 Shai-Hulud packages, with a 0.009% block rate on 55,171 clean files. The scanner runs on an isolated VPS; the API fronts it over x402 on Base or Arc. A slow repo scan can exceed the payment's validity window; then you are not charged and you retry with a fresh payment.
+
+GitHub Action: scan changed files in CI, free, no API key. It runs the engine locally (Node 20) and fails the step on a block verdict:
+
+```yaml
+- uses: LiquidAgent/liquidagentx402/scanner/github-action@main
+  with:
+    path: .
+```
+
+Engine, server, and Action source: [`scanner/`](scanner/). MCP: `malware_scan`, `malware_scan_batch`, `malware_scan_repo` (paid in the call).
+
 ## Paid: Liquid Leads, US local business leads (x402)
 
 `GET https://api.liquidagent.ai/v1/leads/search?category=<what>&city=<where>&limit=<n>` returns local businesses (dentists, plumbers, HVAC, salons, law firms and hundreds more) for **$0.03 USDC per lead**, flat, x402 exact (EIP-3009), USDC on **Base or Arc**. 1 to 1,000 leads per call (default 3 = $0.09, or sample=1 for 3 free leads); the 402 quotes the exact total and you are never charged for an empty answer.
@@ -263,7 +285,7 @@ Free: `GET /v1/bridge/quote` · `/v1/bridge/routes` · `/v1/bridge/status/{burnT
 | METAc (Meta) | `0xb2000000000000000000008bC8786B856E61707C` |
 | AAPLc (Apple) | `0xb200000000000000000000C2e324d24d7eEcd1fb` |
 | GOOGLc (Alphabet) | `0xb2000000000000000000002D0BA3164cc74f58B7` |
-| Fee sink / treasury (x402 payTo) | `0x487b28A4FbbA8Cf46eb6E1d72e6959202Bb75e90` |
+| Fee sink / treasury (x402 payTo) | `0x7475e9e0ee7c0d9f1abcaffb74f5f4e195ef3703` |
 | Gas sponsor paymaster (EntryPoint v0.8) | `0x9676897c3bf08977cdbe78213f84e72a29b844ec` |
 | EntryPoint v0.8 | `0x4337084D9E255Ff0702461CF8895CE9E3b5Ff108` |
 | Simple7702Account (EOA delegation target) | `0xe6Cae83BdE06E4c305530e199D7217f42808555B` |
