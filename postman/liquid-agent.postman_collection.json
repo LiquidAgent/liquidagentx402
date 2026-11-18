@@ -1,0 +1,1982 @@
+{
+  "info": {
+    "name": "Liquid Agent",
+    "_postman_id": "liquid-agent-x402",
+    "description": "The x402 marketplace for agents. Every call paid in USDC, on the spot.\n\nMoney tools for AI agents, paid per call over x402 (USDC). No account, no API key. Free reads need no auth; paid endpoints return HTTP 402 with the price \u2014 pay in USDC and retry. Docs: https://api.liquidagent.ai/agents.md and https://api.liquidagent.ai/llms.txt. MCP server (47 tools, no auth): https://api.liquidagent.ai/mcp.",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.liquidagent.ai"
+    }
+  ],
+  "item": [
+    {
+      "name": "API Doctor",
+      "description": "API Doctor endpoints",
+      "item": [
+        {
+          "name": "Diagnose one API endpoint live: verdict, failure class, auth diagnostics, schema validation, corrections, working example request. $0.50 per diagnosis.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/diagnose",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "diagnose"
+              ]
+            },
+            "description": "API Doctor diagnose: actually call one endpoint and tell the agent exactly what is wrong, with a request that works. PAID via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). $0.50 per diagnosis. Returns verdict (working / working_but_slow / broken), failure class (auth, not_found, wrong_method, bad_request, server_error, timeout, schema_mismatch), status, latency, auth diagnostics, response-schema validation against the declared spec, deterministic corrections, and a working example request (curl + JSON). Public endpoints only in v1: no credentials are accepted, sent, stored, or logged. No payment returns HTTP 402 \u2014 sign an EIP-3009 USDC authorization and send it in the X-PAYMENT header.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://api.example.com/v1/users\",\n  \"method\": \"GET\",\n  \"headers\": {},\n  \"query\": {},\n  \"body\": {},\n  \"spec\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Test a full OpenAPI spec: validate it, probe every endpoint, report which work and which are broken. $2.00 per spec.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/test-spec",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "test-spec"
+              ]
+            },
+            "description": "API Doctor test-spec: validate an OpenAPI spec (including broken $refs) and probe every endpoint. PAID via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). $2.00 per spec. Returns spec validity, version, total/working/broken/needs-samples counts, and per-endpoint results. Endpoints without sample values are reported as needs-sample-values, not faked. Public endpoints only in v1. No payment returns HTTP 402.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specUrl\": \"https://api.example.com/openapi.json\",\n  \"spec\": {},\n  \"samples\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Audit a full OpenAPI spec: test-spec plus auth diagnostics, full schema validation, corrected request per endpoint. $5.00 per audit.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/api/audit",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "api",
+                "audit"
+              ]
+            },
+            "description": "API Doctor audit: everything in test-spec, plus auth diagnostics across all endpoints, full response-schema validation, and a corrected working request per endpoint. PAID via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). $5.00 per audit. Public endpoints only in v1. No payment returns HTTP 402.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"specUrl\": \"https://api.example.com/openapi.json\",\n  \"spec\": {},\n  \"samples\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Leads",
+      "description": "Leads endpoints",
+      "item": [
+        {
+          "name": "Liquid Leads: coverage, parameters, grades and pricing (free).",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/leads",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "leads"
+              ]
+            },
+            "description": "Free. Local business leads by category and place for B2B prospecting and cold outreach: a lead list of US small businesses (dentists, plumbers, salons, contractors...) with verified emails (graded A/B/C), a contact name when the email shows one, phone, a website proven by the business's own phone number, socials and buying signals (no website, online booking tool, payment system, hiring)."
+          }
+        },
+        {
+          "name": "Which business categories exist in a place, with counts (free).",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/leads/categories?state=ga&city=Atlanta&county=Gwinnett",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "leads",
+                "categories"
+              ],
+              "query": [
+                {
+                  "key": "state",
+                  "value": "ga",
+                  "description": "2-letter state",
+                  "disabled": false
+                },
+                {
+                  "key": "city",
+                  "value": "Atlanta",
+                  "description": "City",
+                  "disabled": false
+                },
+                {
+                  "key": "county",
+                  "value": "Gwinnett",
+                  "description": "County",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Which business categories exist in a place, with counts (free)."
+          }
+        },
+        {
+          "name": "How many leads match, by email grade, and the exact price of the next page (free).",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/leads/count?category=dentist&city=Atlanta&sample=1&zip=30309&near=33.7812,-84.3831&radiusKm=5&minGrade=A&email=required&website=any&hiring=1&limit=3&offset=0&format=json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "leads",
+                "count"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "dentist",
+                  "description": "Business type in plain words: dentist, plumber, hvac, roofing, hair salon, law firm, med spa, restaurant.",
+                  "disabled": false
+                },
+                {
+                  "key": "city",
+                  "value": "Atlanta",
+                  "description": "City, e.g. Atlanta, Savannah, Macon. Or county, zip, or near.",
+                  "disabled": false
+                },
+                {
+                  "key": "county",
+                  "value": "",
+                  "description": "County, e.g. Gwinnett, Chatham.",
+                  "disabled": true
+                },
+                {
+                  "key": "sample",
+                  "value": "1",
+                  "description": "1 = 3 free leads (3 a day) to judge quality.",
+                  "disabled": false
+                },
+                {
+                  "key": "zip",
+                  "value": "30309",
+                  "description": "5-digit ZIP (a prefix works).",
+                  "disabled": false
+                },
+                {
+                  "key": "near",
+                  "value": "33.7812,-84.3831",
+                  "description": "lat,lng to search around (with radiusKm).",
+                  "disabled": false
+                },
+                {
+                  "key": "radiusKm",
+                  "value": "5",
+                  "description": "Radius for near, 0.5-50 (default 5).",
+                  "disabled": false
+                },
+                {
+                  "key": "minGrade",
+                  "value": "A",
+                  "description": "Email grade floor: A, B or C (default C).",
+                  "disabled": false
+                },
+                {
+                  "key": "email",
+                  "value": "required",
+                  "description": "required (default), any, or none.",
+                  "disabled": false
+                },
+                {
+                  "key": "website",
+                  "value": "any",
+                  "description": "any, has, none, dead, or needs (no working website).",
+                  "disabled": false
+                },
+                {
+                  "key": "booking",
+                  "value": "",
+                  "description": "Online booking tool: yes, none, vagaro, square_appointments, calendly, booksy, mindbody, acuity, opentable, housecall_pro, jobber, servicetitan, zocdoc.",
+                  "disabled": true
+                },
+                {
+                  "key": "payments",
+                  "value": "",
+                  "description": "Payment system seen on the site: yes, none, square, toast, clover, stripe, paypal.",
+                  "disabled": true
+                },
+                {
+                  "key": "platform",
+                  "value": "",
+                  "description": "Website platform: wordpress, wix, squarespace, shopify, godaddy, webflow, none.",
+                  "disabled": true
+                },
+                {
+                  "key": "hiring",
+                  "value": "1",
+                  "description": "1 = their site says they are hiring.",
+                  "disabled": false
+                },
+                {
+                  "key": "limit",
+                  "value": "3",
+                  "description": "How many leads, 1-1000 (default 3); $0.03 per lead.",
+                  "disabled": false
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip this many, for the next page.",
+                  "disabled": false
+                },
+                {
+                  "key": "format",
+                  "value": "json",
+                  "description": "json (default) or csv.",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Free. Same parameters as /v1/leads/search."
+          }
+        },
+        {
+          "name": "Local business leads with checked emails, contact names and buying signals.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/leads/search?category=dentist&city=Atlanta&sample=1&zip=30309&near=33.7812,-84.3831&radiusKm=5&minGrade=A&email=required&website=any&hiring=1&limit=3&offset=0&format=json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "leads",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "dentist",
+                  "description": "Business type in plain words: dentist, plumber, hvac, roofing, hair salon, law firm, med spa, restaurant.",
+                  "disabled": false
+                },
+                {
+                  "key": "city",
+                  "value": "Atlanta",
+                  "description": "City, e.g. Atlanta, Savannah, Macon. Or county, zip, or near.",
+                  "disabled": false
+                },
+                {
+                  "key": "county",
+                  "value": "",
+                  "description": "County, e.g. Gwinnett, Chatham.",
+                  "disabled": true
+                },
+                {
+                  "key": "sample",
+                  "value": "1",
+                  "description": "1 = 3 free leads (3 a day) to judge quality.",
+                  "disabled": false
+                },
+                {
+                  "key": "zip",
+                  "value": "30309",
+                  "description": "5-digit ZIP (a prefix works).",
+                  "disabled": false
+                },
+                {
+                  "key": "near",
+                  "value": "33.7812,-84.3831",
+                  "description": "lat,lng to search around (with radiusKm).",
+                  "disabled": false
+                },
+                {
+                  "key": "radiusKm",
+                  "value": "5",
+                  "description": "Radius for near, 0.5-50 (default 5).",
+                  "disabled": false
+                },
+                {
+                  "key": "minGrade",
+                  "value": "A",
+                  "description": "Email grade floor: A, B or C (default C).",
+                  "disabled": false
+                },
+                {
+                  "key": "email",
+                  "value": "required",
+                  "description": "required (default), any, or none.",
+                  "disabled": false
+                },
+                {
+                  "key": "website",
+                  "value": "any",
+                  "description": "any, has, none, dead, or needs (no working website).",
+                  "disabled": false
+                },
+                {
+                  "key": "booking",
+                  "value": "",
+                  "description": "Online booking tool: yes, none, vagaro, square_appointments, calendly, booksy, mindbody, acuity, opentable, housecall_pro, jobber, servicetitan, zocdoc.",
+                  "disabled": true
+                },
+                {
+                  "key": "payments",
+                  "value": "",
+                  "description": "Payment system seen on the site: yes, none, square, toast, clover, stripe, paypal.",
+                  "disabled": true
+                },
+                {
+                  "key": "platform",
+                  "value": "",
+                  "description": "Website platform: wordpress, wix, squarespace, shopify, godaddy, webflow, none.",
+                  "disabled": true
+                },
+                {
+                  "key": "hiring",
+                  "value": "1",
+                  "description": "1 = their site says they are hiring.",
+                  "disabled": false
+                },
+                {
+                  "key": "limit",
+                  "value": "3",
+                  "description": "How many leads, 1-1000 (default 3); $0.03 per lead.",
+                  "disabled": false
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Skip this many, for the next page.",
+                  "disabled": false
+                },
+                {
+                  "key": "format",
+                  "value": "json",
+                  "description": "json (default) or csv.",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "PAID: USDC, $0.03 per lead, flat (with or without an email); 1 to 1000 leads per call (default 3 = $0.09); free first: sample=1 returns 3 leads; the 402 quotes the exact total; empty answers are free. x402 exact scheme, EIP-3009 USDC on Base eip155:8453 or Arc eip155:5042. Local business leads by category and place for B2B prospecting and cold outreach: a lead list of US small businesses (dentists, plumbers, salons, contractors...) with verified emails (graded A/B/C), a contact name when the email shows one, phone, a website proven by the business's own phone number, socials and buying signals (no website, online booking tool, payment system, hiring)."
+          }
+        },
+        {
+          "name": "Reverse phone or website lookup: the US local business behind a phone number or website.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/leads/lookup?phone=4043552001&domain=atlantadentistrybydesign.com",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "leads",
+                "lookup"
+              ],
+              "query": [
+                {
+                  "key": "phone",
+                  "value": "4043552001",
+                  "description": "A US phone number, any format: 4043552001, (404) 355-2001, +14043552001. Give phone or domain.",
+                  "disabled": false
+                },
+                {
+                  "key": "domain",
+                  "value": "atlantadentistrybydesign.com",
+                  "description": "Or a website: example.com or https://www.example.com/contact.",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "PAID: $0.01 per lookup that finds a business, no match no charge. x402 exact scheme, EIP-3009 USDC on Base eip155:8453 or Arc eip155:5042. Reverse phone and website lookup for US local businesses: give a phone number or a website, get the business behind it (name, address, category, graded email, contact name, socials, buying signals). Websites only match when they carry the business's own phone number."
+          }
+        },
+        {
+          "name": "Website technology lookup: platform, booking tool, payment system and socials of a local business site.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/leads/tech?phone=4043552001&domain=atlantadentistrybydesign.com",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "leads",
+                "tech"
+              ],
+              "query": [
+                {
+                  "key": "phone",
+                  "value": "4043552001",
+                  "description": "A US phone number, any format: 4043552001, (404) 355-2001, +14043552001. Give phone or domain.",
+                  "disabled": false
+                },
+                {
+                  "key": "domain",
+                  "value": "atlantadentistrybydesign.com",
+                  "description": "Or a website: example.com or https://www.example.com/contact.",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "PAID: $0.005 per lookup that finds a verified site, no match no charge. x402 exact scheme, EIP-3009 USDC on Base eip155:8453 or Arc eip155:5042. Website technology lookup (technographics) for US local businesses: give a website or phone number, get the site platform (WordPress, Wix, Squarespace, Shopify), online booking tool (Square Appointments, Vagaro, Calendly, Zocdoc), payment system (Square, Toast, Clover, Stripe), hiring and socials, read from the business's own verified website."
+          }
+        },
+        {
+          "name": "Bulk business enrichment with graded emails, contacts, socials and website tech.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/leads/enrich",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "leads",
+                "enrich"
+              ]
+            },
+            "description": "PAID: $0.01 per input that finds a business; misses are free. 1-100 records per call. Bulk business enrichment: 1-100 websites or US phone numbers per call. Each match includes the full business, graded email, contact, socials and website tech. $0.01 per input that finds a business; misses are free.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"records\": [\n    {}\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Liquid Agent",
+      "description": "Liquid Agent endpoints",
+      "item": [
+        {
+          "name": "START HERE. Plain-English guide: how to open your account, buy the tokenized-stock index from $1, check it, rebalance, and cash out. One call explains every other endpoint.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/guide",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "guide"
+              ]
+            },
+            "description": "START HERE. Plain-English guide: how to open your account, buy the tokenized-stock index from $1, check it, rebalance, and cash out. One call explains every other endpoint. Returns: {service,what,howItWorks,steps:[{step,do,call,why}],amounts,signing,network,fees,fullSpec}. Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first."
+          }
+        },
+        {
+          "name": "Discover the tokenized stock index: invest in NVIDIA, Apple, Meta and Alphabet, with live prices and fees.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/basket",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "basket"
+              ]
+            },
+            "description": "Discover the tokenized stock index: invest in NVIDIA, Apple, Meta and Alphabet, with live prices and fees. Returns: {protocol,chainId,factory,usdc,feeSink,constituents:[{symbol,address,decimals,priceUsd}],fees,minDepositUsdc,flow}. Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first."
+          }
+        },
+        {
+          "name": "Check a vault: its value (NAV), holdings, current vs target weights, and whether it needs rebalancing.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/vault/{address}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "vault",
+                "{address}"
+              ]
+            },
+            "description": "Check a vault: its value (NAV), holdings, current vs target weights, and whether it needs rebalancing. Input: path: vault address. Returns: {vault,strategist,owner,navUsdc,nav,weightsBps[4],rebalanceNeeded,rebalanceBandBps,maxTvlUsdc,mintFeeBps}. Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first."
+          }
+        },
+        {
+          "name": "List what an address owns: every vault it holds, its shares, and current USD value.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/balance/{agent}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "balance",
+                "{agent}"
+              ]
+            },
+            "description": "List what an address owns: every vault it holds, its shares, and current USD value. Input: path: agent address. Returns: {agent,vaultCount,vaults:[{vault,shares,valueUsdc,value}]}. Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first."
+          }
+        },
+        {
+          "name": "Preview a purchase before you buy: shares you would receive and the fee, for a given USDC amount.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/quote?usdc=2000000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "quote"
+              ],
+              "query": [
+                {
+                  "key": "usdc",
+                  "value": "2000000",
+                  "description": "amount in USDC-6 (2000000 = $2)",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Preview a purchase before you buy: shares you would receive and the fee, for a given USDC amount. Input: query: usdc=<amount USDC-6>. Returns: {usdcIn,mintFeeUsdc,netUsdc}. Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first."
+          }
+        },
+        {
+          "name": "Open your own vault (you control it, no one else). Returns a transaction for you to sign.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/create-vault",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "create-vault"
+              ]
+            },
+            "description": "Open your own vault (you control it, no one else). Returns a transaction for you to sign. Input: {} (empty body). Returns: unsigned {to,data,value,chainId} for createVault(). Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Set your custom stock allocation (default is equal weight). Returns a transaction for you to sign.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/set-weights",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "set-weights"
+              ]
+            },
+            "description": "Set your custom stock allocation (default is equal weight). Returns a transaction for you to sign. Input: {vault:address, weightsBps:[4 ints, sum 10000]}. Returns: unsigned {to,data,value,chainId} for setTargetWeights(uint16[]). Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Buy tokenized stocks: invest USDC into your vault from $1. One tx via EIP-2612 permit (no approve), or legacy approve + deposit. Own NVIDIA, Apple, Meta and Alphabet on-chain.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/buy",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "buy"
+              ]
+            },
+            "description": "Buy tokenized stocks: invest USDC into your vault from $1. One tx via EIP-2612 permit (no approve), or legacy approve + deposit. Own NVIDIA, Apple, Meta and Alphabet on-chain. Input: {vault:address, usdc:string(USDC-6), minShares?:string, permit?:true|{deadline,signature}, owner?:address}. Returns: permit:true -> {typedData} to sign; permit:{deadline,signature} -> ONE unsigned depositWithPermit tx; no permit -> {steps:[approve,deposit]}. Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SELL / cash out: redeem your basket shares to USDC, or take the raw stock tokens in-kind (un-trappable, any block). Anyone holding these shares can sell this way \u2014 no vault needed. Returns a transaction for you to sign.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/redeem",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "redeem"
+              ]
+            },
+            "description": "SELL / cash out: redeem your basket shares to USDC, or take the raw stock tokens in-kind (un-trappable, any block). Anyone holding these shares can sell this way \u2014 no vault needed. Returns a transaction for you to sign. Input: {vault:address, shares:string, minUsdcOut?:string, inKind?:bool}. Returns: unsigned {to,data,value,chainId} for redeem() (USDC) or redeemInKind() (raw tokens). Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Rebalance your vault back to its target weights. Returns a transaction for you to sign.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/rebalance",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "rebalance"
+              ]
+            },
+            "description": "Rebalance your vault back to its target weights. Returns a transaction for you to sign. Input: {vault:address}. Returns: unsigned {to,data,value,chainId} for rebalance(). Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Send your basket to anyone: transfer your tokenized-stock shares (LQMAG4) to any wallet \u2014 gift or hand off to another agent, no vault needed on their end. The recipient can then hold it, SELL it (redeem to USDC or in-kind), or forward it. Returns a transaction for you to sign.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/send",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "send"
+              ]
+            },
+            "description": "Send your basket to anyone: transfer your tokenized-stock shares (LQMAG4) to any wallet \u2014 gift or hand off to another agent, no vault needed on their end. The recipient can then hold it, SELL it (redeem to USDC or in-kind), or forward it. Returns a transaction for you to sign. Input: {vault:address, to:address, shares:string}. Returns: unsigned {to,data,value,chainId} for transfer(to,shares). Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Polymarket index: the 8 live Up/Down markets (BTC, ETH, SOL, XRP on 5m and 15m) with their paid endpoints.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/polymarket",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "polymarket"
+              ]
+            },
+            "description": "Polymarket index: the 8 live Up/Down markets (BTC, ETH, SOL, XRP on 5m and 15m) with their paid endpoints. Returns: {markets:[{asset,window,endpoint,priceUsd}]}. Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first."
+          }
+        },
+        {
+          "name": "System status: self-measured uptime, schema validity, and latency.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "status"
+              ]
+            },
+            "description": "System status: self-measured uptime, schema validity, and latency. Returns: {ok,uptime,latency}. Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first."
+          }
+        },
+        {
+          "name": "Website Watcher health: service version, x402 status, chains and prices.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/link/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "link",
+                "health"
+              ]
+            },
+            "description": "Website Watcher health: service version, x402 status, chains and prices. Returns: {ok,service,version,x402,chains,prices}. Free (optional SIWX wallet identity, no payment). New here? Read GET /v1/guide first."
+          }
+        },
+        {
+          "name": "Basket signals: the whole basket's rebalancing signal in one call \u2014 returns, volatility, RSI, trend, relative strength, correlation, plus an inverse-volatility target-weight signal.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/signals?vault=0x21Fe5d76379763b57Ed5Dd8AC43166edd4fe0975",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "signals"
+              ],
+              "query": [
+                {
+                  "key": "vault",
+                  "value": "0x21Fe5d76379763b57Ed5Dd8AC43166edd4fe0975",
+                  "description": "Optional. Your vault address (omit if you have none). If provided, the response adds that vault's current weights and their drift vs the suggested (inverse-vol) weights, so you know exactly what to change.",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "PAID: $0.007 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Quantitative signals for the tokenized NVDA/META/AAPL/GOOGL basket so an agent can decide weights in one call instead of visiting four sites, then execute via the free /v1/set-weights + /v1/rebalance. Aggregated data, not investment advice."
+          }
+        },
+        {
+          "name": "Web search for agents: ranked results with LLM-ready excerpts, $0.005 per search \u2014 half StableEnrich's $0.01.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/search?q=pulsechain validator price",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "pulsechain validator price",
+                  "description": "Search query.",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Web search, priced per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). $0.005 per search, 10 results with title, URL, publish date and LLM-ready excerpts. Wholesale is Parallel Turbo ($0.001/search). Pair with GET /v1/extract for full-page Markdown, then POST /v1/link/check/agent to scan what you found. No payment returns HTTP 402 \u2014 sign an EIP-3009 USDC authorization and send it in the X-PAYMENT header."
+          }
+        },
+        {
+          "name": "Turn any public web page into clean Markdown, $0.002 per page \u2014 built to feed the Website Watcher.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/extract?url=https://example.com",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "extract"
+              ],
+              "query": [
+                {
+                  "key": "url",
+                  "value": "https://example.com",
+                  "description": "Public http(s) URL to turn into Markdown.",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Page-to-Markdown, priced per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). $0.002 per page, up to 1MB fetched, 50k chars of Markdown. Built to feed the Website Watcher: search with GET /v1/search, extract the page, then scan it with POST /v1/link/check/agent. No payment returns HTTP 402 \u2014 sign an EIP-3009 USDC authorization and send it in the X-PAYMENT header."
+          }
+        },
+        {
+          "name": "On-chain reads on Base or Arc, no key, no account: latest block, native or ERC-20 balance, transaction details. $0.002 flat per read.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/rpc?op=block&address=0x8c6E26476b77193C9353a633FebB80f0441C1B03&token=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913&hash=0xc8e6ec6ad82b47c7e2825de4281276f971e7cceef4481ff26baae464692e7af3",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "rpc"
+              ],
+              "query": [
+                {
+                  "key": "op",
+                  "value": "block",
+                  "description": "block, balance, or tx.",
+                  "disabled": false
+                },
+                {
+                  "key": "address",
+                  "value": "0x8c6E26476b77193C9353a633FebB80f0441C1B03",
+                  "description": "0x wallet address (balance op).",
+                  "disabled": false
+                },
+                {
+                  "key": "token",
+                  "value": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                  "description": "Optional ERC-20 token address (balance op); omit for native ETH.",
+                  "disabled": false
+                },
+                {
+                  "key": "hash",
+                  "value": "0xc8e6ec6ad82b47c7e2825de4281276f971e7cceef4481ff26baae464692e7af3",
+                  "description": "0x transaction hash (tx op).",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "On-chain reads on Base, priced per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). $0.002 flat per read: op=block (latest block), op=balance&address=0x... (native ETH on Base, USDC on Arc, or add token=0x... for an ERC-20 balance), op=tx&hash=0x... (transaction + receipt status). Cheaper than onesource.io on balance ($0.003) and tx ($0.008). The product is the keyless wrapper: the same data is free from any public RPC if you run your own node. No payment returns HTTP 402 \u2014 sign an EIP-3009 USDC authorization and send it in the X-PAYMENT header."
+          }
+        },
+        {
+          "name": "Publish a live, shareable portfolio page for a vault (24h keep-alive).",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/publish",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "publish"
+              ]
+            },
+            "description": "PAID: $0.01 USDC flat per publish via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Mints or extends a shareable page at /v/<slug> showing the vault's holdings, allocation, live prices and signals for 24 hours; re-publish to keep it alive. Returns {viewUrl, slug, expiresAt}; your user opens the viewUrl with no wallet.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"brand\": {}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Base transaction preflight: simulate calldata, decode reverts and estimate gas plus an indicative USDC sponsorship price.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gas/preflight",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "gas",
+                "preflight"
+              ]
+            },
+            "description": "PAID $0.005 per completed preflight, including a decoded revert. Base 8453 only. Body {to,from?,data?,value?}; optional from sets msg.sender, otherwise the zero address is used. No signing or broadcast. Unpaid calls do no RPC work. Provider, timeout or pricing failures return before settlement. The sponsorship estimate is indicative for a plain transaction, excludes the Base L1 data fee, and is not an ERC-4337 quote or a guarantee against later state changes.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": \"0x\",\n  \"value\": \"0\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Decode an EVM transaction and its event logs with a caller-supplied ABI.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gas/decode",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "gas",
+                "decode"
+              ]
+            },
+            "description": "PAID $0.003 per completed decode. Chains: Base 8453, Polygon 137, Arbitrum 42161, Optimism 10, Avalanche 43114. Fetches transaction and receipt, decodes calldata and ordered logs. Unknown selectors/events retain raw data with decoded:false. Provider failures are not charged.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"chain\": 8453,\n  \"abi\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Batch Base transaction preflight with one settlement and ordered per-call results.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gas/preflight/batch",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "gas",
+                "preflight",
+                "batch"
+              ]
+            },
+            "description": "PAID $0.005 + $0.002 per additional call (1-20 calls, $0.043 maximum). One block, one fee snapshot and one native-price read. Per-call success or decoded revert, aggregate gas and indicative sponsorship estimate. Provider failures are not charged.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"calls\": [\n    {\n      \"data\": \"0x\",\n      \"value\": \"0\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Decoded EVM event logs with adaptive block chunking and raw fallback.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/chain/logs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "chain",
+                "logs"
+              ]
+            },
+            "description": "PAID $0.005 per started 1,000 blocks. Chains: Base 8453, Polygon 137, Arbitrum 42161, Optimism 10, Avalanche 43114. Maximum 10,000 blocks, 100 logs or 1 MiB output. Optional ABI for event decoding; unknown events retain raw topics/data with decoded:false. Provider failures and cap violations are not charged.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"chain\": 8453,\n  \"topics\": [],\n  \"abi\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Solana gas sponsor info: fee payer address, fee asset, and how to call it.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gas/solana",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "gas",
+                "solana"
+              ]
+            },
+            "description": "Free. Returns the sponsor's fee-payer address (build your transaction with it as feePayer), the fee network/asset (USDC on Solana mainnet), limits and the flow."
+          }
+        },
+        {
+          "name": "GAS SPONSOR (Solana): POST your transaction with our sponsor as fee payer; pay the exact fee in Solana USDC over x402; get it back co-signed.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gas/solana",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "gas",
+                "solana"
+              ]
+            },
+            "description": "PAID, dynamic (from $0.03 USDC, max $2.00; the 402 is the quote, issued only after a successful simulation). Body {transaction:<base64 v0 or legacy, signed by you, feePayer = the sponsor address from GET>, send?:true}. Without payment: 402 with the exact price = (network fee + priority fee + rent for token accounts it opens) x 1.3. Payment: one USDC TransferChecked of exactly `amount` from your token account to the sponsor's USDC account, sponsor as fee payer, signed by you, wrapped as {x402Version:2, scheme:'exact', network, accepted, payload:{transaction}} and base64d into PAYMENT-SIGNATURE (X-PAYMENT also works). The same POST then returns {transaction (co-signed), feePayer, priceUsd, lamports, feePaymentSig, settledBy, signature? when send:true, next}. Limits: sponsor only as fee payer and payer of <= 8 ATA creates; compute limit <= 1.4M units, price <= 50,000 micro-lamports/unit; 500 sponsorships per payer per day; 503 and no charge when the sponsor is low on SOL.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"send\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Gas sponsor info: paymaster addresses, price rule, and how to call it.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "gas"
+              ]
+            },
+            "description": "Bare GET returns the 402 quote (how x402 indexers recognise a paid resource); GET /v1/gas?docs=1 returns the docs. Describes the ERC-4337 paymaster paid over x402 (EntryPoint v0.8 on Base)."
+          }
+        },
+        {
+          "name": "GAS SPONSOR: pay per operation in USDC over x402 and we cover the gas on Base or Polygon (add chainId: 137 for Polygon). Pay the fee in USDC on Base or Polygon. One endpoint for plain wallets ({sender, calls}), any EntryPoint v0.8 smart account ({userOperation}, bring your own operation) and smart-wallet SDKs (ERC-7677 JSON-RPC). No ETH, no account, no API key.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/gas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "gas"
+              ]
+            },
+            "description": "PAID, dynamic (from $0.03 USDC per operation; the 402 is the quote, valid 120 s). ONE endpoint, the body picks the lane. (A) Smart-wallet SDKs: standard ERC-7677 JSON-RPC {jsonrpc:\"2.0\", method: pm_getPaymasterStubData | pm_getPaymasterData, params:[userOperation, entryPoint, chainId, context]} \u2014 HTTP is always 200 and an unpaid pm_getPaymasterData returns a JSON-RPC error {code:402, data:<x402 PaymentRequired>}; put the x402 payment object in params[3].context.x402 and retry. (B) Plain wallets, no ETH: POST {sender, calls:[{to,data,value?}]} -> 402 with the exact price; pay it (X-PAYMENT) and the same call returns {userOperation (sponsored), typedData, authorization? (EIP-7702, only if the EOA is not delegated yet), validUntil}. Sign typedData with the sender's key, sign the authorization if given, then POST {userOperation, authorization?} back to this URL: we submit it and our deposit pays the gas. No further charge; only operations we sponsored are accepted, once each. EntryPoint v0.8. Price = max($0.03, 1.3\u00d7 the op's gas cap) and the signed sponsorship locks the gas limits and max fee, so the sponsor can never charge more than quoted. (C) Bring your own operation, for any EntryPoint v0.8 smart account (a wallet already delegated to another EIP-7702 implementation, or a deployed Kernel / Safe / Nexus account): POST {userOperation} unsigned (your sender, calldata and gas limits; no paymaster fields) -> 402 with the exact price; pay it and repeat -> {userOperation with paymaster fields, typedData, validUntil}; sign it the way your account expects (viem: account.signUserOperation) and POST {userOperation} back: we dry-run it through the EntryPoint (a failing dry run returns 400 with the reason and costs nothing) and then submit it from our wallet. No bundler, no stake. Lane B note: if the EOA is already delegated to another implementation the first call returns 409; add \"redelegate\": true to the same body and the returned authorization (signed by you, applied in the same transaction, reversible) re-points the wallet to Simple7702Account."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Liquid Bridge",
+      "description": "Liquid Bridge endpoints",
+      "item": [
+        {
+          "name": "The one-signature USDC bridge for x402 agents. Arc -> Base, Base -> Arc, Base -> Arbitrum, Base -> OP Mainnet, Base -> Polygon, Base -> Avalanche, Base -> Unichain, Base -> Linea, Base -> World Chain, Base -> Sonic, Base -> Monad, Base -> Sei, Base -> Ink, Base -> HyperEVM, Base -> XDC, Base -> Plume, Base -> Codex. Pay on Base or Arc.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/bridge?from=base&to=arc&amount=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "bridge"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "base",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "to",
+                  "value": "arc",
+                  "description": "Chain you receive on. From Base: any of these except base. From Arc: base.",
+                  "disabled": false
+                },
+                {
+                  "key": "amount",
+                  "value": "1",
+                  "description": "USDC to RECEIVE (minimum 1)",
+                  "disabled": false
+                },
+                {
+                  "key": "ref",
+                  "value": "",
+                  "description": "Optional referrer EVM address (earns 20% of Liquid's fee). Omit it unless you have one; an invalid value is ignored.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Move USDC from Base to 16 chains (Arc, Arbitrum, OP Mainnet, Polygon, Avalanche, Unichain, Linea, World Chain, Sonic, Monad, Sei, Ink, HyperEVM, XDC, Plume and Codex), or from Arc to Base, with a single x402 payment. No transaction to build, no approvals, no gas token. You receive exactly the amount you ask for, at your own address, in about 12 seconds. Refer other agents and earn 20% of Liquid's fee on every bridge they make, credited on-chain in the same transaction. PAID, dynamic: the 402 is the exact price (Arc -> Base: about 1.080 USDC to receive 1; Base -> Arc: about 1.037 USDC to receive 1, payable on Base; minimum 1 USDC; Liquid's fee can never exceed max(3%, $0.05), enforced on-chain). Query: from=arc|base, to=base|arc, amount=<USDC to receive>, ref=<optional referrer address>. Pay once on the source chain (x402 exact, EIP-3009) to that chain's bridge contract: Arc 0x3bc7bf1afc96c1de35ac48e1a0a3cc3d617a77b1 (USDC domain \"USDC\" v2) or Base 0xbf43e09b91c4d4aa55e033a3487f345ce4ed7557 (USDC domain \"USD Coin\" v2). Guide: https://api.liquidagent.ai/v1/bridge/guide"
+          }
+        },
+        {
+          "name": "Liquid Bridge: free quote for a route, the exact price without the 402.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/bridge/quote?from=arc&to=arc&amount=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "bridge",
+                "quote"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "arc",
+                  "description": "",
+                  "disabled": false
+                },
+                {
+                  "key": "to",
+                  "value": "arc",
+                  "description": "Chain you receive on. From Base: any listed chain except base. From Arc: base.",
+                  "disabled": false
+                },
+                {
+                  "key": "amount",
+                  "value": "1",
+                  "description": "USDC to RECEIVE (minimum 1)",
+                  "disabled": false
+                },
+                {
+                  "key": "ref",
+                  "value": "",
+                  "description": "Optional referrer EVM address (earns 20% of Liquid's fee). Omit it unless you have one; an invalid value is ignored.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Liquid Bridge: free quote for a route, the exact price without the 402. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide"
+          }
+        },
+        {
+          "name": "Liquid Bridge: every route with its live price and whether it is open.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/bridge/routes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "bridge",
+                "routes"
+              ]
+            },
+            "description": "Liquid Bridge: every route with its live price and whether it is open. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide"
+          }
+        },
+        {
+          "name": "Liquid Bridge: Circle attestation and mint state for a bridge.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/bridge/status/{burnTx}?from=arc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "bridge",
+                "status",
+                "{burnTx}"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "arc",
+                  "description": "",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Liquid Bridge: Circle attestation and mint state for a bridge. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide"
+          }
+        },
+        {
+          "name": "Liquid Bridge: the sticky referrer of a payer (earns 20% of the fee on its unreferred bridges).",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/bridge/referrer/{payer}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "bridge",
+                "referrer",
+                "{payer}"
+              ]
+            },
+            "description": "Liquid Bridge: the sticky referrer of a payer (earns 20% of the fee on its unreferred bridges). Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide"
+          }
+        },
+        {
+          "name": "Liquid Bridge: a referrer's unclaimed earnings on each chain (Base, Arc) and how to claim them.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/bridge/earnings/{referrer}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "bridge",
+                "earnings",
+                "{referrer}"
+              ]
+            },
+            "description": "Liquid Bridge: a referrer's unclaimed earnings on each chain (Base, Arc) and how to claim them. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide"
+          }
+        },
+        {
+          "name": "Free: USDC and gas balance of an address on every CCTP chain (Ethereum, Base, Arbitrum, OP, Polygon, Avalanche, Unichain, Linea, Sonic, World Chain, Arc).",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/bridge/balances/{address}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "bridge",
+                "balances",
+                "{address}"
+              ]
+            },
+            "description": "Free: USDC and gas balance of an address on every CCTP chain (Ethereum, Base, Arbitrum, OP, Polygon, Avalanche, Unichain, Linea, Sonic, World Chain, Arc). Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide"
+          }
+        },
+        {
+          "name": "Free: status of ANY Circle CCTP v2 transfer by burn tx: attestation, mint check, and how to finish a stuck one.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/bridge/cctp/{txHash}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "bridge",
+                "cctp",
+                "{txHash}"
+              ]
+            },
+            "description": "Free: status of ANY Circle CCTP v2 transfer by burn tx: attestation, mint check, and how to finish a stuck one. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide"
+          }
+        },
+        {
+          "name": "Proof of delivery: every Liquid Bridge transfer with burn tx, mint tx, fee, and the incident record.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/bridge/proof",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "bridge",
+                "proof"
+              ]
+            },
+            "description": "Proof of delivery: every Liquid Bridge transfer with burn tx, mint tx, fee, and the incident record. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide"
+          }
+        },
+        {
+          "name": "Liquid Bridge: plain-English guide, positioning, three steps, referrals.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/bridge/guide",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "bridge",
+                "guide"
+              ]
+            },
+            "description": "Liquid Bridge: plain-English guide, positioning, three steps, referrals. Free, no payment. Guide: https://api.liquidagent.ai/v1/bridge/guide"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Polymarket",
+      "description": "Polymarket endpoints",
+      "item": [
+        {
+          "name": "Polymarket BTC 5m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/polymarket/btc-5m?",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "polymarket",
+                "btc-5m"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "",
+                  "description": "Optional. Unix start of a past 5m window (multiple of 300) to get its official settle and outcome. Omit for the live window.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 5m BTC window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice."
+          }
+        },
+        {
+          "name": "Polymarket BTC 15m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/polymarket/btc-15m?",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "polymarket",
+                "btc-15m"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "",
+                  "description": "Optional. Unix start of a past 15m window (multiple of 900) to get its official settle and outcome. Omit for the live window.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 15m BTC window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice."
+          }
+        },
+        {
+          "name": "Polymarket ETH 5m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/polymarket/eth-5m?",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "polymarket",
+                "eth-5m"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "",
+                  "description": "Optional. Unix start of a past 5m window (multiple of 300) to get its official settle and outcome. Omit for the live window.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 5m ETH window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice."
+          }
+        },
+        {
+          "name": "Polymarket ETH 15m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/polymarket/eth-15m?",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "polymarket",
+                "eth-15m"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "",
+                  "description": "Optional. Unix start of a past 15m window (multiple of 900) to get its official settle and outcome. Omit for the live window.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 15m ETH window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice."
+          }
+        },
+        {
+          "name": "Polymarket SOL 5m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/polymarket/sol-5m?",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "polymarket",
+                "sol-5m"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "",
+                  "description": "Optional. Unix start of a past 5m window (multiple of 300) to get its official settle and outcome. Omit for the live window.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 5m SOL window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice."
+          }
+        },
+        {
+          "name": "Polymarket SOL 15m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/polymarket/sol-15m?",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "polymarket",
+                "sol-15m"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "",
+                  "description": "Optional. Unix start of a past 15m window (multiple of 900) to get its official settle and outcome. Omit for the live window.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 15m SOL window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice."
+          }
+        },
+        {
+          "name": "Polymarket XRP 5m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/polymarket/xrp-5m?",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "polymarket",
+                "xrp-5m"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "",
+                  "description": "Optional. Unix start of a past 5m window (multiple of 300) to get its official settle and outcome. Omit for the live window.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 5m XRP window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice."
+          }
+        },
+        {
+          "name": "Polymarket XRP 15m Up/Down: official price to beat, live Chainlink price and market prices in one call.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/polymarket/xrp-15m?",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "polymarket",
+                "xrp-15m"
+              ],
+              "query": [
+                {
+                  "key": "start",
+                  "value": "",
+                  "description": "Optional. Unix start of a past 15m window (multiple of 900) to get its official settle and outcome. Omit for the live window.",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "PAID: $0.004 USDC per call via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042). Returns the OFFICIAL price to beat for the live 15m XRP window (the 60 s Chainlink TWAP before it starts, matched to every decimal against Polymarket's published values), the live Chainlink price and its distance from the price to beat, seconds left, token ids and the market's own prices. Polymarket's public API only shows the price to beat after the window closes. Pass ?start=<unix> for a past window's official settle and outcome. First call free: add ?free=1 for one live answer at no charge (one per agent). You are never charged when it cannot answer. Data, not financial advice."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Security",
+      "description": "Security endpoints",
+      "item": [
+        {
+          "name": "Website Watcher: is this link safe to click? Phishing, typosquat and scam check for a URL \u2014 verdict, score, action and facts (quick $0.01, full $0.05).",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/link/check/agent",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "link",
+                "check",
+                "agent"
+              ]
+            },
+            "description": "Phishing, typosquat, scam \u2014 is this link safe to click? PAID via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042 or Arc eip155:5042). Check a URL before you click it. Quick check ($0.01, quick:true): lookalike/typosquat detection, in-house IOC list, page content and brand checks, page-script malware patterns. Full report ($0.05, quick:false): DNS and SSL, domain age (direct WHOIS), brand impersonation, wallet address extraction, redirect analysis, forms and JS behavior. Returns a fixed-schema agent response: verdict (safe / suspicious / dangerous / unknown), score 0-100, confidence, action (allow / review / block / retry), one-sentence summary, top 5 findings, category scores and facts. No payment returns HTTP 402 \u2014 sign an EIP-3009 USDC authorization and send it in the X-PAYMENT header. Repeat scans within 1 hour return the cached result free. Unknown stays unknown: a paid scan never implies a security guarantee.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com\",\n  \"quick\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Website Watcher: is this link safe to click? Full security report for a URL \u2014 phishing, typosquat and scam check (quick $0.01, full $0.05).",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/link/check",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "link",
+                "check"
+              ]
+            },
+            "description": "Phishing, typosquat, scam \u2014 is this link safe to click? PAID via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453, Polygon eip155:137 or Arc eip155:5042 or Arc eip155:5042). Same check as /v1/link/check/agent, but returns the full report instead of the fixed agent format: verdict, score, cookies, ads/trackers, third-party domains, security headers, performance, scam signals, threat intel, lookalike/typosquat, brand impersonation, wallet extraction, redirect chain, DNS and SSL, forms and JS behavior. Quick check ($0.01, quick:true): phase-1 signals only. Full report ($0.05, quick:false): everything. No payment returns HTTP 402 \u2014 sign an EIP-3009 USDC authorization and send it in the X-PAYMENT header. Repeat scans within 1 hour return the cached result free. Unknown stays unknown: a paid scan never implies a security guarantee.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com\",\n  \"quick\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Malware scan for a file before installing, building, or running it: static PolinRider / Contagious Interview scan, $0.05 per scan.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/malware/scan",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "malware",
+                "scan"
+              ]
+            },
+            "description": "Static PolinRider / Contagious Interview malware scan for file text before installing, building, or running it. PAID via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Arc eip155:5042). $0.05 per scan. Returns verdict (clean / suspicious / dangerous), score 0-100, confidence, action (allow / review / block), one-sentence summary, top findings, category scores and facts. Static only \u2014 the file is never executed, scanned in memory, never stored. No payment returns HTTP 402 \u2014 sign an EIP-3009 USDC authorization and send it in the X-PAYMENT header.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filename\": \"postcss.config.mjs\",\n  \"content\": \"module.exports = {};\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Malware scan for a folder of files: static PolinRider / Contagious Interview scan for up to 100 files in one call, $0.05 per batch.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/malware/scan-batch",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "malware",
+                "scan-batch"
+              ]
+            },
+            "description": "Static PolinRider / Contagious Interview malware scan for up to 100 files (2 MB each, 10 MB total) in one call, one verdict for the folder. PAID via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Arc eip155:5042). $0.05 per batch. Static only \u2014 files are never executed, scanned in memory, never stored. No payment returns HTTP 402 \u2014 sign an EIP-3009 USDC authorization and send it in the X-PAYMENT header.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"files\": [\n    {}\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Malware scan for a public GitHub repo (working tree + history) before cloning it for use: static PolinRider / Contagious Interview scan, $0.05 per repo.",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/v1/malware/scan-repo",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "malware",
+                "scan-repo"
+              ]
+            },
+            "description": "Static PolinRider / Contagious Interview malware scan for a public GitHub repo (working tree + history) before cloning it for use. PAID via x402 (exact scheme, EIP-3009, USDC on Base eip155:8453 or Arc eip155:5042). $0.05 per repo. Public repos only \u2014 no tokens, no private repos, nothing stored. A slow clone and scan can exceed the payment validity window; then the agent is not charged and retries with a fresh payment. No payment returns HTTP 402 \u2014 sign an EIP-3009 USDC authorization and send it in the X-PAYMENT header.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"repoUrl\": \"https://github.com/owner/repo\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Shops",
+      "description": "Shops endpoints",
+      "item": [
+        {
+          "name": "Mint & Marquee: what the shop sells, price range and how to search (free).",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/shop/mintandmarquee",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "shop",
+                "mintandmarquee"
+              ]
+            },
+            "description": "Free. Custom 3D printed collectibles and gifts: figurines, statues, keychains, bag tags and branded merch. Soccer, anime, crypto, hypebeast and ancient-art collections. Lists the product count, price range and the paid search."
+          }
+        },
+        {
+          "name": "Search Mint & Marquee for gifts and collectibles: products with price, photo and a link to buy.",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/shop/mintandmarquee/search?q=soccer gift&max=30&limit=5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v1",
+                "shop",
+                "mintandmarquee",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "soccer gift",
+                  "description": "What to find, in words.",
+                  "disabled": false
+                },
+                {
+                  "key": "max",
+                  "value": "30",
+                  "description": "Optional price ceiling in USD.",
+                  "disabled": false
+                },
+                {
+                  "key": "limit",
+                  "value": "5",
+                  "description": "How many products, 1 to 10 (default 5).",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "PAID: $0.001 USDC per search via x402 (exact scheme, EIP-3009, USDC on Arc eip155:5042, Base eip155:8453 or Polygon eip155:137). Custom 3D printed collectibles and gifts: figurines, statues, keychains, bag tags and branded merch. Soccer, anime, crypto, hypebeast and ancient-art collections."
+          }
+        }
+      ]
+    }
+  ]
+}

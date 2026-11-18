@@ -1,0 +1,51 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
+  "name": "liquid-agent",
+  "owner": {
+    "name": "LiquidAgent",
+    "email": "liquidagentai@gmail.com"
+  },
+  "metadata": {
+    "description": "Money tools for AI agents, paid per call over x402. No account, no API key.",
+    "version": "1.13.0"
+  },
+  "plugins": [
+    {
+      "name": "liquid-agent",
+      "source": "./",
+      "description": "x402 money tools for agents: malware scanner, API Doctor, gas sponsorship, USDC bridge, tokenized US stocks, verified US business leads, web search, and on-chain reads. No account, no API key \u2014 every paid call returns HTTP 402 and you pay in USDC.",
+      "version": "1.13.0",
+      "author": {
+        "name": "Liquid Agent"
+      },
+      "homepage": "https://api.liquidagent.ai",
+      "repository": "https://github.com/LiquidAgent/liquidagentx402",
+      "keywords": [
+        "x402",
+        "usdc",
+        "mcp",
+        "ai-agents",
+        "security",
+        "bridge",
+        "stocks",
+        "leads"
+      ],
+      "category": "developer",
+      "tags": [
+        "x402",
+        "usdc",
+        "mcp",
+        "security",
+        "bridge",
+        "stocks"
+      ],
+      "mcpServers": {
+        "liquid-agent": {
+          "type": "http",
+          "url": "https://api.liquidagent.ai/mcp"
+        }
+      },
+      "strict": false
+    }
+  ]
+}
