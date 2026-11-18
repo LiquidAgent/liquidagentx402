@@ -2,12 +2,12 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "ai.liquidagent.api/liquid-agent",
   "title": "Liquid Agent",
-  "description": "x402 money tools for agents: web search, page Markdown, on-chain reads, leads, bridge, stocks, gas.",
-  "version": "1.11.0",
+  "description": "x402 money tools for agents: web search, on-chain reads, malware scans, leads, bridge, stocks, gas.",
+  "version": "1.12.0",
   "websiteUrl": "https://api.liquidagent.ai/",
   "repository": {
-    "url": "https://github.com/LiquidAgent/liquidagentx402",
-    "source": "github"
+    "source": "github",
+    "url": "https://github.com/LiquidAgent/liquidagentx402"
   },
   "remotes": [
     {
@@ -56,6 +56,9 @@
     "web_search",
     "web_extract",
     "rpc_read",
+    "malware_scan",
+    "malware_scan_batch",
+    "malware_scan_repo",
     "liquid_guide"
   ]
 }
